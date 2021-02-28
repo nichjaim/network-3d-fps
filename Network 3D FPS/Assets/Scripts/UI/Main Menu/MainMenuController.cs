@@ -1,11 +1,19 @@
 ﻿using MoreMountains.Tools;
+using Nichjaim.MasterSubMenu;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuController : MasterMenuController, MMEventListener<ExitGameSessionEvent>
+public class MainMenuController : MasterMenuController, MMEventListener<ExitGameSessionEvent>, 
+    MMEventListener<NetworkGameJoinedEvent>, MMEventListener<NewSaveCreatedEvent>
 {
     #region MonoBehaviour Functions
+
+    private void Start()
+    {
+        // start game with main menu's primary menu
+        SwitchToPrimaryMenu();
+    }
 
     private void OnEnable()
     {
@@ -24,35 +32,41 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
 
 
 
-    #region Override Functions
-
-    protected override void Start()
-    {
-        base.Start();
-
-        SwitchToPrimaryMenu();
-    }
-
-    #endregion
-
-
-
-
     #region Main Menu Controller
 
     public void SwitchToPrimaryMenu()
     {
-        SwitchSubMenu(0);
+        SwitchSubMenu("primary");
     }
 
     public void SwitchToPlayMenu()
     {
-        SwitchSubMenu(1);
+        SwitchSubMenu("play");
     }
 
     public void SwitchToNewMenu()
     {
-        SwitchSubMenu(2);
+        SwitchSubMenu("new");
+    }
+
+    public void SwitchToConnectMenu()
+    {
+        SwitchSubMenu("connect");
+    }
+
+    public void SwitchToLoadMenu()
+    {
+        SwitchSubMenu("load");
+    }
+
+    public void SwitchToLoadSelectedMenu()
+    {
+        SwitchSubMenu("loadselected");
+    }
+
+    public void SwitchToLoadDeleteMenu()
+    {
+        SwitchSubMenu("loaddelete");
     }
 
     #endregion
@@ -69,6 +83,8 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
     private void StartAllEventListening()
     {
         this.MMEventStartListening<ExitGameSessionEvent>();
+        this.MMEventStartListening<NetworkGameJoinedEvent>();
+        this.MMEventStartListening<NewSaveCreatedEvent>();
     }
 
     /// <summary>
@@ -78,11 +94,25 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
     private void StopAllEventListening()
     {
         this.MMEventStopListening<ExitGameSessionEvent>();
+        this.MMEventStopListening<NetworkGameJoinedEvent>();
+        this.MMEventStopListening<NewSaveCreatedEvent>();
     }
 
     public void OnMMEvent(ExitGameSessionEvent eventType)
     {
         SwitchToPrimaryMenu();
+    }
+
+    public void OnMMEvent(NetworkGameJoinedEvent eventType)
+    {
+        // turn of this menu
+        DeactivateMenu();
+    }
+
+    public void OnMMEvent(NewSaveCreatedEvent eventType)
+    {
+        // turn off this menu
+        DeactivateMenu();
     }
 
     #endregion

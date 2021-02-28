@@ -41,6 +41,35 @@ public struct StartNewGameEvent
 }
 
 /// <summary>
+/// An event fired when a new save file finished being created.
+/// </summary>
+public struct NewSaveCreatedEvent
+{
+	public GameSaveData saveData;
+	public int saveFileNumber;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="saveDataArg"></param>
+	/// <param name="saveFileNumberArg"></param>
+	public NewSaveCreatedEvent(GameSaveData saveDataArg, int saveFileNumberArg)
+	{
+		saveData = saveDataArg;
+		saveFileNumber = saveFileNumberArg;
+	}
+
+	static NewSaveCreatedEvent e;
+	public static void Trigger(GameSaveData saveDataArg, int saveFileNumberArg)
+	{
+		e.saveData = saveDataArg;
+		e.saveFileNumber = saveFileNumberArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
 /// An event fired when attempting a game pause/unpause.
 /// </summary>
 public struct GamePausingActionEvent
@@ -70,6 +99,71 @@ public struct ExitGameSessionEvent
 public struct BundleSystemSetupEvent
 {
 	static BundleSystemSetupEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when the multiplayer server is started up.
+/// </summary>
+public struct NetworkServerStartEvent
+{
+	static NetworkServerStartEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when user joins a multiplayer game.
+/// </summary>
+public struct NetworkGameJoinedEvent
+{
+	static NetworkGameJoinedEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when a game load slot is pressed.
+/// </summary>
+public struct LoadSlotPressedEvent
+{
+	public GameSaveData saveData;
+	public int saveFileNumber;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="saveDataArg"></param>
+	/// <param name="saveFileNumberArg"></param>
+	public LoadSlotPressedEvent(GameSaveData saveDataArg, int saveFileNumberArg)
+	{
+		saveData = saveDataArg;
+		saveFileNumber = saveFileNumberArg;
+	}
+
+	static LoadSlotPressedEvent e;
+	public static void Trigger(GameSaveData saveDataArg, int saveFileNumberArg)
+	{
+		e.saveData = saveDataArg;
+		e.saveFileNumber = saveFileNumberArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when entering the haven game state.
+/// </summary>
+public struct StartHavenGameStateEvent
+{
+	static StartHavenGameStateEvent e;
 	public static void Trigger()
 	{
 		MMEventManager.TriggerEvent(e);

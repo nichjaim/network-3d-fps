@@ -19,6 +19,24 @@ MonoBehaviour:
       guid: bd743b995f79c324598c4e7c5dc9e828
     IncludeSubfolder: 1
     CompressBundle: 1
+  - BundleName: PlayCharDataTemp
+    IncludedInPlayer: 1
+    Folder:
+      guid: 3b1cd5feff158744aa6abaa600d21c26
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: CharAnim
+    IncludedInPlayer: 1
+    Folder:
+      guid: d8435c240c748ed499b04b9e2e2a76d5
+    IncludeSubfolder: 1
+    CompressBundle: 1
+  - BundleName: CharEnemy
+    IncludedInPlayer: 1
+    Folder:
+      guid: 1fdded2ce9580e5409dea18257f7d256
+    IncludeSubfolder: 0
+    CompressBundle: 1
   AutoCreateSharedBundles: 1
   m_RemoteOutputFolder: RemoteBundles
   m_LocalOutputFolder: LocalBundles

@@ -1,4 +1,5 @@
 ﻿using MoreMountains.Tools;
+using Nichjaim.MasterSubMenu;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,7 +29,7 @@ public class PauseMenuController : MasterMenuController, MMEventListener<GamePau
 
     public void SwitchToMainMenu()
     {
-        SwitchSubMenu(0);
+        SwitchSubMenu("main");
     }
 
     #endregion

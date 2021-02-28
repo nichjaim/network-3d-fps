@@ -150,6 +150,44 @@ public static class AssetRefMethods
 
 
 
+    #region Asset Bundle Character Functions
+
+    public static CharacterDataTemplate[] LoadAllBundleAssetPlayableCharacterDataTemplate()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "PlayCharDataTemp";
+
+        //load and return asset
+        return LoadAllBundleAsset<CharacterDataTemplate>(BUNDLE_NAME);
+    }
+
+    public static AnimatorOverrideController LoadBundleAssetPlayableCharacterAnimator(string charIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharAnim";
+        string ASSET_NAME_PREFIX = "playable/charanim-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + charIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static GameObject[] LoadAllBundleAssetCharacterEnemy()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharEnemy";
+
+        //load and return asset
+        return LoadAllBundleAsset<GameObject>(BUNDLE_NAME);
+    }
+
+    #endregion
+
+
+
+
     /*#region Asset Bundle Environment Functions
 
     public static GameObject LoadBundleAssetWorldChunk(bool isUniqueChunkArg, WorldBiomeType worldBiomeTypeArg, string chunkIdArg)

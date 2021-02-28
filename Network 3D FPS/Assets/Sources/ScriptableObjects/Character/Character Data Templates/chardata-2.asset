@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86279ce7dd27d584b9a421f541b987f7, type: 3}
+  m_Name: chardata-2
+  m_EditorClassIdentifier: 
+  characterInfoColor: {r: 0, g: 0, b: 0, a: 0}
+  template:
+    characterInfo:
+      characterId: 2
+      characterName: Survivor
+      characterHeight: 1
+      characterHexColorCode: FFFFFF
+    characterStats:
+      healthMaxBase: 1
+      healthCurrent: 1
+      healthFatigue: 0
+      healthFatigueBuildup: 0
+      manaMaxBase: 1
+      manaCurrent: 1
+      manaFatigue: 0
+      manaFatigueBuildup: 0
+      fatigueBuildupCap: 10
+      fatigueMaxPercentage: 0.7
+      statStamina: 1
+      statIntelligence: 1
+      statStrength: 1
+      statDexterity: 1
+      statMovementSpeed: 1
+      statJumpHeight: 1
+      statConsecutiveJumps: 1
+      statDefense: 0
+      statHealing: 0
+      threatMultiplier: 1
+      manaRegenerationRate: 1
+      manaRegenerationAmount: 1
+      flashlightReachDirectional: 1
+      flashlightReachOmniDirectional: 0

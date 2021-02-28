@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
+using Nichjaim.MasterSubMenu;
 
-public class MainMenuPlayMenuController : StandardSubMenuController
+public class MainMenuPlayMenuController : SubMenuController
 {
     #region Class Variables
 
@@ -23,9 +24,9 @@ public class MainMenuPlayMenuController : StandardSubMenuController
 
     #region Override Functions
 
-    public override void RefreshSubMenu()
+    public override void OnMenuOpen()
     {
-        base.RefreshSubMenu();
+        base.OnMenuOpen();
 
         // set input field text to default joining address
         _inputField.text = _networkManager.networkAddress;
@@ -41,20 +42,21 @@ public class MainMenuPlayMenuController : StandardSubMenuController
     public void ButtonPressNew()
     {
         // switch main menu's sub menu to the new menu
-        menuMaster.GetComponent<MainMenuController>().SwitchToNewMenu();
+        ((MainMenuController)menuMaster).SwitchToNewMenu();
     }
 
     public void ButtonPressContinue()
     {
-        Debug.LogWarning("Continue button not implemented!"); // NEED IMPL
+        // switch to main menu's load menu
+        ((MainMenuController)menuMaster).SwitchToLoadMenu();
     }
 
     public void ButtonPressJoin()
     {
-        // start network client
-        _networkManager.StartClient();
-        // turn off main menu
-        menuMaster.DeactivateMenu();
+        // set network address to inputted address
+        _networkManager.networkAddress = _inputField.text;
+        // switch to main menu's connect menu
+        ((MainMenuController)menuMaster).SwitchToConnectMenu();
     }
 
     public void ButtonPressBack()

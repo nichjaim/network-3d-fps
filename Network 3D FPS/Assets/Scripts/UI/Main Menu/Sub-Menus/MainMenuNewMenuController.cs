@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Nichjaim.MasterSubMenu;
 
-public class MainMenuNewMenuController : StandardSubMenuController
+public class MainMenuNewMenuController : SubMenuController
 {
     #region Class Variables
 
@@ -21,9 +22,11 @@ public class MainMenuNewMenuController : StandardSubMenuController
 
     public void ButtonPressYes()
     {
-        Instantiate(_networkManager.playerPrefab);
+        //Instantiate(_networkManager.playerPrefab);
         // turn off main menu
-        menuMaster.DeactivateMenu();
+        //menuMaster.DeactivateMenu();
+        // trigger event to denote that a new game should be started
+        StartNewGameEvent.Trigger();
     }
 
     public void ButtonPressNo()

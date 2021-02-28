@@ -58,6 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-# Parrel sync project clone (used for testing networking)
-Network 3D FPS_clone_0/
+# Parrel sync project clones (used for testing networking)
+*_clone_[0-9]*/
 

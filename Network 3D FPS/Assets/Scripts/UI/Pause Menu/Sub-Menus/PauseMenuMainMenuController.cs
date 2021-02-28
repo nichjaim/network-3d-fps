@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Nichjaim.MasterSubMenu;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PauseMenuMainMenuController : StandardSubMenuController
+public class PauseMenuMainMenuController : SubMenuController
 {
     #region Button Press Functions
 

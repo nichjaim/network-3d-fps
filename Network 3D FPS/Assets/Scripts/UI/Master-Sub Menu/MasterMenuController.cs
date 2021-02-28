@@ -2,183 +2,195 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MasterMenuController : MonoBehaviour
+namespace Nichjaim.MasterSubMenu
 {
-    #region Class Variables
-
-    [SerializeField]
-    private GameObject menuObject = null;
-
-    [Header("Sub Menu Controller Properties")]
-
-    /// gets the sub menu controllers from the child objects of this master menu 
-    /// controller object
-    [SerializeField]
-    private bool SetSubMenuControllersFromChildren = false;
-    [SerializeField]
-    private List<GameObject> subMenuControllerObjects = new List<GameObject>();
-
-    #endregion
-
-
-
-
-    #region MonoBehaviour Functions
-
-    protected virtual void Start()
+    public class MasterMenuController : MonoBehaviour
     {
-        /// sets the sub menu controller object references to the child objects 
-        /// if appropriate to do so
-        InitializeSubMenuControllerReferencesIfAppropriate();
-        // set the important variable data for all sub menus
-        InitializeSubMenuData();
+        #region Class Variables
 
-        // turn off the master menu
-        DeactivateMenu();
-    }
+        [Header("Base Master Menu Properties")]
 
-    #endregion
+        [Tooltip("UI menu head object acting as master menu.")]
+        [SerializeField]
+        protected GameObject menuObject = null;
+
+        [Tooltip("Object that parents all the sub menu controller objects.")]
+        [SerializeField]
+        protected GameObject subMenuControllersParent = null;
+
+        // sub menu controllers held by the sub menu controller parent
+        protected List<SubMenuController> _subMenuControllers;
+
+        #endregion
 
 
 
 
-    #region Initialization Functions
+        #region MonoBehaviour Functions
 
-    /// <summary>
-    /// Sets the sub menu controller object references to the child objects 
-    /// if appropriate to do so. 
-    /// Call in Start().
-    /// </summary>
-    protected void InitializeSubMenuControllerReferencesIfAppropriate()
-    {
-        // if sub menu controllers are NOT the children of this object
-        if (!SetSubMenuControllersFromChildren)
+        protected virtual void Awake()
         {
-            // DONT continue code
-            return;
+            // setup list of sub menu controller references
+            InitializeSubMenuControllerReferences();
+            // sets up the master menu for all sub menus
+            SetSubMenusMenuMaster();
+
+            // turn off the master menu
+            DeactivateMenu();
         }
 
-        // reset sub menu controller list to empty list
-        subMenuControllerObjects = new List<GameObject>();
+        #endregion
 
-        // loop through all child objects
-        foreach (Transform child in transform)
-        {
-            // add iterating object to list
-            subMenuControllerObjects.Add(child.gameObject);
-        }
-    }
 
-    /// <summary>
-    /// Sets the important variable data for all sub menus. 
-    /// Call in Start().
-    /// </summary>
-    protected void InitializeSubMenuData()
-    {
-        // initialize this variable for the upcoming loop
-        ISubMenu subMenuInterface;
-        // loop through all sub menu controller objects
-        for (int i = 0; i < subMenuControllerObjects.Count; i++)
+
+
+        #region Initialization Functions
+
+        /// <summary>
+        /// Sets up list of sub menu controller references. 
+        /// Call in Awake().
+        /// </summary>
+        protected void InitializeSubMenuControllerReferences()
         {
-            //get sub menu interface component off the iterating object
-            subMenuInterface = subMenuControllerObjects[i].GetComponent<ISubMenu>();
-            // if there actually was a sub menu interface component on the iterating object
-            if (subMenuInterface != null)
+            // reset controller list to fresh empty list
+            _subMenuControllers = new List<SubMenuController>();
+
+            // initialize var for upcoming loop
+            SubMenuController iterSubMenuController;
+
+            // loop through all children of the sub menu controllers parent
+            foreach (Transform child in subMenuControllersParent.transform)
             {
-                // set sub menu's master menu reference
-                subMenuInterface.SetMenuMaster(this);
+                // get sub menu controller component from iterating child object
+                iterSubMenuController = child.GetComponent<SubMenuController>();
+                // if component found
+                if (iterSubMenuController != null)
+                {
+                    // add component to list of references
+                    _subMenuControllers.Add(iterSubMenuController);
+                }
+                // else component didn't exist on object
+                else
+                {
+                    // print warning to console
+                    Debug.LogWarning("Sub menu controller object does not have " +
+                        $"SubMenuController component! Name: {child.name}");
+                }
             }
-            // else there was NOT a sub menu interface component on the iterating object
+        }
+
+        /// <summary>
+        /// Sets up the master menu for all sub menus. 
+        /// Call in Awake().
+        /// </summary>
+        protected virtual void SetSubMenusMenuMaster()
+        {
+            // loop through all sub menu controllers
+            foreach (SubMenuController iterContr in _subMenuControllers)
+            {
+                // setup iterating sub menu's master menu
+                iterContr.SetMenuMaster(this);
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region Menu Functions
+
+        /// <summary>
+        /// Switches to the sub menu associated with the given ID.
+        /// </summary>
+        /// <param name="subMenuIdArg"></param>
+        protected virtual void SwitchSubMenu(string subMenuIdArg)
+        {
+            // activate master menu object
+            SetMenuActivation(true);
+
+            // loop through all sub menu controllers
+            foreach (SubMenuController iterContr in _subMenuControllers)
+            {
+                /// if iterating menu should be opened (lowercase both IDs to ensure 
+                /// capitalization doesn't affect comparison)
+                if (iterContr.GetMenuId().ToLower() == subMenuIdArg.ToLower())
+                {
+                    // if iterating menu is closed
+                    if (!iterContr.IsMenuOpen())
+                    {
+                        // open iterating menu
+                        iterContr.SetMenuObjectActive(true);
+                        // call on open function on iterating menu
+                        iterContr.OnMenuOpen();
+                    }
+                }
+                // else iterating menu should be closed
+                else
+                {
+                    // if menu is open
+                    if (iterContr.IsMenuOpen())
+                    {
+                        // close iterating menu
+                        iterContr.SetMenuObjectActive(false);
+                        // call on close function on iterating menu
+                        iterContr.OnMenuClose();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Turn off the master menu.
+        /// </summary>
+        public virtual void DeactivateMenu()
+        {
+            // deactivate master menu object
+            SetMenuActivation(false);
+        }
+
+        /// <summary>
+        /// Activates/deactivates the menu object based on given bool.
+        /// </summary>
+        /// <param name="activeArg"></param>
+        protected virtual void SetMenuActivation(bool activeArg)
+        {
+            // if menu object reference is setup
+            if (menuObject != null)
+            {
+                // deactivate menu object
+                menuObject.SetActive(activeArg);
+            }
+            // else menu object reference was NOT setup
             else
             {
                 // print warning to console
-                Debug.LogWarning("object named " + subMenuControllerObjects[i].name +
-                    " does not have component that implements sub menu interface!");
+                Debug.LogWarning($"Master menu controller does not have a menuObject! Name: {gameObject.name}");
             }
         }
-    }
 
-    #endregion
-
-
-
-
-    #region Menu Functions
-
-    /// <summary>
-    /// Switches to the sub menu associated with the given index.
-    /// </summary>
-    /// <param name="listIndexArg"></param>
-    protected void SwitchSubMenu(int listIndexArg)
-    {
-        // if index argument is outside list range
-        if (listIndexArg < 0 || listIndexArg >= subMenuControllerObjects.Count)
+        /// <summary>
+        /// Returns bool that denotes if menu is currently open or not.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool IsMenuOpen()
         {
-            // print warning to console
-            Debug.LogWarning("menu index argument is not valid index!");
-            // DONT continue code
-            return;
-        }
-
-        // turn ON master menu object
-        menuObject.SetActive(true);
-
-        // initialize this variable for the upcoming loop
-        ISubMenu subMenuInterface;
-        // loop through all sub menu controller objects
-        for (int i = 0; i < subMenuControllerObjects.Count; i++)
-        {
-            // get sub menu interface component off the iterating object
-            subMenuInterface = subMenuControllerObjects[i].GetComponent<ISubMenu>();
-            // if there actually was a sub menu interface component on the iterating object
-            if (subMenuInterface != null)
+            // if menu object reference is setup
+            if (menuObject != null)
             {
-                /// if the iterating sub menu controller objects IS the one associated with 
-                /// the sub menu being switched to
-                if (i == listIndexArg)
-                {
-                    // turn ON the menu
-                    subMenuInterface.SetMenuObjectActive(true);
-                    // refresh menu contents
-                    subMenuInterface.RefreshSubMenu();
-                }
-                /// if the iterating sub menu controller objects is NOT the one associated with 
-                /// the sub menu being switched to
-                else
-                {
-                    // turn OFF the menu
-                    subMenuInterface.SetMenuObjectActive(false);
-                }
+                return menuObject.activeSelf;
             }
-            // else there was NOT a sub menu interface component on the iterating object
+            // else menu object reference was NOT setup
             else
             {
-                //print warning to console
-                Debug.LogWarning("object named " + subMenuControllerObjects[i].name + 
-                    " does not have component that implements sub menu interface!");
+                // print warning to console
+                Debug.LogWarning($"Master menu controller does not have a menuObject! Name: {gameObject.name}");
+                return false;
             }
         }
+
+        #endregion
+
+
     }
-
-    /// <summary>
-    /// Turn off the master menu.
-    /// </summary>
-    public void DeactivateMenu()
-    {
-        // deactivate menu object
-        menuObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// Returns bool that denotes if menu is currently open or not.
-    /// </summary>
-    /// <returns></returns>
-    protected bool IsMenuOpen()
-    {
-        return menuObject.activeSelf;
-    }
-
-    #endregion
-
-
 }

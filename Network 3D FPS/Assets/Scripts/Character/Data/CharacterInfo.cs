@@ -7,7 +7,7 @@ public class CharacterInfo
 
     public string characterId;
     public string characterName;
-    public float characterHeight;
+    public float characterHeightInCm;
 
     [HideInInspector]
     public string characterHexColorCode;
@@ -40,7 +40,8 @@ public class CharacterInfo
     {
         characterId = "0";
         characterName = "NAME";
-        characterHeight = 1f;
+        // below-average height (5'5)
+        characterHeightInCm = 165f;
 
         characterHexColorCode = "FFFFFF";
     }
@@ -49,7 +50,7 @@ public class CharacterInfo
     {
         characterId = templateArg.characterId;
         characterName = templateArg.characterName;
-        characterHeight = templateArg.characterHeight;
+        characterHeightInCm = templateArg.characterHeightInCm;
 
         characterHexColorCode = templateArg.characterHexColorCode;
     }

@@ -9,7 +9,8 @@ public class HavenMenuMainMenuController : SubMenuController
 
     public void ButtonPressMultiplayer()
     {
-        //menuMaster.GetComponent<HavenMenuController>().SwitchToMainMenu(); ;
+        // switch to haven menu's multiplayer menu
+        ((HavenMenuController)menuMaster).SwitchToMultiplayerMenu();
     }
 
     #endregion

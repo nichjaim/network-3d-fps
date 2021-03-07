@@ -1,10 +1,9 @@
 ﻿using MoreMountains.Tools;
-using Nichjaim.MasterSubMenu;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PauseMenuController : MasterMenuController, MMEventListener<GamePausingActionEvent>
+public class PauseMenuController : MasterMenuControllerCustom, MMEventListener<GamePausingActionEvent>
 {
     #region MonoBehaviour Functions
 

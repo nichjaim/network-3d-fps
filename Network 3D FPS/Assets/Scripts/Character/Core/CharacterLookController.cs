@@ -7,6 +7,8 @@ public class CharacterLookController : MonoBehaviour
 {
     #region Class Variables
 
+    private NetworkManagerCustom _networkManagerCustom;
+
     [Header("Component References")]
 
     /*[SerializeField]
@@ -48,7 +50,7 @@ public class CharacterLookController : MonoBehaviour
     private void Start()
     {
         //setup all variables that reference singleton instance related components
-        //InitializeSingletonReferences();
+        InitializeSingletonReferences();
 
         //locks mouse cursor movement if properties set to do so
         //LockMouseCursorIfAppropriate();
@@ -58,6 +60,13 @@ public class CharacterLookController : MonoBehaviour
     {
         // if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if the current state of menus does NOT allow the player chars to perform actions
+        if (!_networkManagerCustom.DoesMenusStateAllowPlayerCharacterAction())
         {
             // DONT continue code
             return;
@@ -82,14 +91,15 @@ public class CharacterLookController : MonoBehaviour
 
     #region Initialization Functions
 
-    /*/// <summary>
+    /// <summary>
     /// Setup all variables that reference singleton instance related components. 
     /// Call in Start(), needs to be start to give the instances time to be created.
     /// </summary>
     private void InitializeSingletonReferences()
     {
-        touchFieldLook = UIManager.Instance.GetTouchFieldRight();
-    }*/
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
+        //touchFieldLook = UIManager.Instance.GetTouchFieldRight();
+    }
 
     #endregion
 

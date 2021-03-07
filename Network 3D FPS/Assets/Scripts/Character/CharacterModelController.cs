@@ -6,8 +6,11 @@ public class CharacterModelController : MonoBehaviour
 {
     #region Class Variables
 
+    [Header("Component References")]
+
     [SerializeField]
     private CharacterMasterController _characterMasterController = null;
+    private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
     #endregion
 
@@ -15,6 +18,12 @@ public class CharacterModelController : MonoBehaviour
 
 
     #region MonoBehaviour Functions
+
+    private void Awake()
+    {
+        // setup all the relevent component references
+        InitializeComponentReferences();
+    }
 
     private void OnEnable()
     {
@@ -36,6 +45,22 @@ public class CharacterModelController : MonoBehaviour
 
 
 
+    #region Initialization Functions
+
+    /// <summary>
+    /// Sets up all the relevent component references.
+    /// Call in Awake().
+    /// </summary>
+    private void InitializeComponentReferences()
+    {
+        _playerCharacterMasterController = _characterMasterController as PlayerCharacterMasterController;
+    }
+
+    #endregion
+
+
+
+
     #region Model Functions
 
     /// <summary>
@@ -44,7 +69,7 @@ public class CharacterModelController : MonoBehaviour
     private void RefreshCharacterAnimator()
     {
         GetComponent<Animator>().runtimeAnimatorController = AssetRefMethods.
-            LoadBundleAssetPlayableCharacterAnimator(GetAppropriateCharId());
+            LoadBundleAssetCharacterAnimator(GetAppropriateCharId());
     }
 
     /// <summary>
@@ -53,9 +78,28 @@ public class CharacterModelController : MonoBehaviour
     /// <returns></returns>
     private string GetAppropriateCharId()
     {
-        // get char master's assigned character data
-        CharacterData charData = _characterMasterController.GetCharData();
-        // if char data found
+        // initialize var for upcoming conditionals
+        CharacterData charData;
+        // if char is a player
+        if (_playerCharacterMasterController != null)
+        {
+            // get secondary char data
+            charData = _playerCharacterMasterController.GetCharDataSecondary();
+            // if no secondary char data is set
+            if (charData == null)
+            {
+                // get primary char data
+                charData = _characterMasterController.GetCharData();
+            }
+        }
+        // else char master is NOT a player
+        else
+        {
+            // get primary char data
+            charData = _characterMasterController.GetCharData();
+        }
+
+        // if char data was found
         if (charData != null)
         {
             // return the char's ID
@@ -83,6 +127,12 @@ public class CharacterModelController : MonoBehaviour
     private void StartAllEventListening()
     {
         _characterMasterController.OnCharDataChangedAction += RefreshCharacterAnimator;
+
+        // if char is a player
+        if (_playerCharacterMasterController != null)
+        {
+            _playerCharacterMasterController.OnCharDataSecondaryChangedAction += RefreshCharacterAnimator;
+        }
     }
 
     /// <summary>
@@ -92,6 +142,12 @@ public class CharacterModelController : MonoBehaviour
     private void StopAllEventListening()
     {
         _characterMasterController.OnCharDataChangedAction -= RefreshCharacterAnimator;
+
+        // if char is a player
+        if (_playerCharacterMasterController != null)
+        {
+            _playerCharacterMasterController.OnCharDataSecondaryChangedAction -= RefreshCharacterAnimator;
+        }
     }
 
     #endregion

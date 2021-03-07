@@ -7,12 +7,17 @@ public class SightPivotPointController : MonoBehaviour
 {
     #region Class Variables
 
-    private GameManager _gameManager;
+    private NetworkManagerCustom _networkManagerCustom;
 
     private Camera sightCamera = null;
 
+    [Header("Component References")]
+
     [SerializeField]
     private NetworkIdentity _networkIdentity = null;
+
+    [SerializeField]
+    private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
     #endregion
 
@@ -41,6 +46,21 @@ public class SightPivotPointController : MonoBehaviour
         ResetPlayerCameraTransform();
     }
 
+    private void OnEnable()
+    {
+        // starts listening for all relevant events
+        StartAllEventListening();
+
+        // sets the camera heigth based on based on current char's heigth
+        RefreshCameraHeight();
+    }
+
+    private void OnDisable()
+    {
+        // stops listening for all relevant events
+        StopAllEventListening();
+    }
+
     private void OnDestroy()
     {
         // removes the camera from this pivot point
@@ -60,7 +80,7 @@ public class SightPivotPointController : MonoBehaviour
     /// </summary>
     private void InitializeSingletonReferences()
     {
-        _gameManager = GameManager.Instance;
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
     }
 
     #endregion
@@ -110,10 +130,10 @@ public class SightPivotPointController : MonoBehaviour
         if (sightCamera != null)
         {
             // if game manager reference setup
-            if (_gameManager != null)
+            if (_networkManagerCustom != null)
             {
                 // parent the camera to the network manager
-                sightCamera.transform.SetParent(_gameManager.transform);
+                sightCamera.transform.SetParent(_networkManagerCustom.transform);
                 ResetPlayerCameraTransform();
             }
             // else game manager reference NOT setup
@@ -128,6 +148,65 @@ public class SightPivotPointController : MonoBehaviour
             // print warning to log
             Debug.LogWarning("No sightCamera reference to detach!");
         }
+    }
+
+    /// <summary>
+    /// Sets the camera heigth based on based on current char's heigth.
+    /// </summary>
+    private void RefreshCameraHeight()
+    {
+        // get scondary character data (which is the char used for visuals such as heigth)
+        CharacterData charDataSecondary = _playerCharacterMasterController.GetCharDataSecondary();
+        // if NO valid char data set
+        if (charDataSecondary == null)
+        {
+            // DONT continue code
+            return;
+        }
+
+        // set the camera heigth based on char's heigth
+        SetupCameraHeight(charDataSecondary.characterInfo.characterHeightInCm);
+    }
+
+    /// <summary>
+    /// Sets the camera heigth based on given heigth value.
+    /// </summary>
+    /// <param name="heightInCmArg"></param>
+    private void SetupCameraHeight(float heightInCmArg)
+    {
+        /// get height in world space units from given cm heigth (calculated on assumption 
+        /// that 170cm (5'7, which is around average) is equal to 1 local world space unit)
+        float worldSpaceUnitHeight = heightInCmArg / 170f;
+        // get the new position based on current position and calculated heigth
+        Vector3 newPos = new Vector3(transform.localPosition.x, worldSpaceUnitHeight, 
+            transform.localPosition.z);
+        // set local pos to new position
+        transform.localPosition = newPos;
+    }
+
+    #endregion
+
+
+
+
+    #region Event Functions
+
+    /// <summary>
+    /// Starts listening for all relevant events. 
+    /// Call in OnEnable().
+    /// </summary>
+    private void StartAllEventListening()
+    {
+        _playerCharacterMasterController.OnCharDataSecondaryChangedAction += RefreshCameraHeight;
+    }
+
+    /// <summary>
+    /// Stops listening for all relevant events. 
+    /// Call in OnDisable().
+    /// </summary>
+    private void StopAllEventListening()
+    {
+        _playerCharacterMasterController.OnCharDataSecondaryChangedAction -= RefreshCameraHeight;
     }
 
     #endregion

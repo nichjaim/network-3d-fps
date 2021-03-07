@@ -1,11 +1,10 @@
 ﻿using MoreMountains.Tools;
-using Nichjaim.MasterSubMenu;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuController : MasterMenuController, MMEventListener<ExitGameSessionEvent>, 
-    MMEventListener<NetworkGameJoinedEvent>, MMEventListener<NewSaveCreatedEvent>
+public class MainMenuController : MasterMenuControllerCustom, MMEventListener<ExitGameSessionEvent>, 
+    MMEventListener<NetworkGameLocalJoinedEvent>, MMEventListener<NewSaveCreatedEvent>
 {
     #region MonoBehaviour Functions
 
@@ -83,7 +82,7 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
     private void StartAllEventListening()
     {
         this.MMEventStartListening<ExitGameSessionEvent>();
-        this.MMEventStartListening<NetworkGameJoinedEvent>();
+        this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStartListening<NewSaveCreatedEvent>();
     }
 
@@ -94,7 +93,7 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
     private void StopAllEventListening()
     {
         this.MMEventStopListening<ExitGameSessionEvent>();
-        this.MMEventStopListening<NetworkGameJoinedEvent>();
+        this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStopListening<NewSaveCreatedEvent>();
     }
 
@@ -103,7 +102,7 @@ public class MainMenuController : MasterMenuController, MMEventListener<ExitGame
         SwitchToPrimaryMenu();
     }
 
-    public void OnMMEvent(NetworkGameJoinedEvent eventType)
+    public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)
     {
         // turn of this menu
         DeactivateMenu();

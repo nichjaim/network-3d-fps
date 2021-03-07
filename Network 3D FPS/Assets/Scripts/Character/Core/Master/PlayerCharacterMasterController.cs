@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using MoreMountains.Tools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,12 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
 
     [SyncVar(hook = nameof(OnPlayerNumberChange))]
     private int playerNumber = 1;
+
+    /// the char data used for info/stats/etc. (needed in single player when this char data 
+    /// is determined by equipped weapon slot)
+    [SyncVar(hook = nameof(OnCharDataSecondaryChanged))]
+    private CharacterData charDataSecondary = null;
+    public Action OnCharDataSecondaryChangedAction;
 
     #endregion
 
@@ -47,7 +54,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         StartAllEventListening();
 
         // sets the char master's character data based on the current player number
-        RefreshPlayerCharData();
+        //RefreshPlayerCharData();
     }
 
     private void OnDisable()
@@ -91,35 +98,30 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         base.OnStartLocalPlayer();
 
-        // trigger event to denote that network game has been joined
-        NetworkGameJoinedEvent.Trigger();
+        // trigger event to denote that this player joined a network game
+        NetworkGameLocalJoinedEvent.Trigger(this);
     }
+
+    /*public override void OnStartClient()
+    {
+        base.OnStartClient();
+        Debug.Log("OnStartClient Called!"); // DEBUG LINE
+        // sets the char master's character data based on the current player number
+        RefreshPlayerCharData();
+        // trigger event to denote that this player joined a network game
+        NetworkGameLocalJoinedEvent.Trigger(this);
+    }*/
 
     public override void OnStopClient()
     {
         base.OnStopClient();
 
-        // if this user's character is leacing multiplayer session
+        // if this user's character is leaving multiplayer session
         if (isLocalPlayer)
         {
             // trigger event to exit the game session
             ExitGameSessionEvent.Trigger();
         }
-    }
-
-    #endregion
-
-
-
-
-    #region Player Character Functions
-
-    /// <summary>
-    /// Sets the char master's character data based on the current player number.
-    /// </summary>
-    private void RefreshPlayerCharData()
-    {
-        SetCharData(GameManager.Instance.GetAppropriatePlayableCharacter(playerNumber));
     }
 
     #endregion
@@ -154,6 +156,13 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         // nothing right now
     }
 
+    public void OnCharDataSecondaryChanged(CharacterData oldCharArg,
+        CharacterData newCharArg)
+    {
+        // call char data change actions if NOT null
+        OnCharDataSecondaryChangedAction?.Invoke();
+    }
+
     #endregion
 
 
@@ -170,8 +179,8 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         this.MMEventStartListening<ExitGameSessionEvent>();
         this.MMEventStartListening<NetworkServerStartEvent>();
 
-        GameManager.Instance.OnPlayableCharactersChangedAction += RefreshPlayerCharData;
-        GameManager.Instance.OnPlayerNumbersToPlayableCharactersChangedAction += RefreshPlayerCharData;
+        //GameManager.Instance.OnPartyCharactersChangedAction += RefreshPlayerCharData;
+        //GameManager.Instance.OnPartyOrderChangedAction += RefreshPlayerCharData;
     }
 
     /// <summary>
@@ -183,8 +192,8 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         this.MMEventStopListening<ExitGameSessionEvent>();
         this.MMEventStopListening<NetworkServerStartEvent>();
 
-        GameManager.Instance.OnPlayableCharactersChangedAction -= RefreshPlayerCharData;
-        GameManager.Instance.OnPlayerNumbersToPlayableCharactersChangedAction -= RefreshPlayerCharData;
+        //GameManager.Instance.OnPartyCharactersChangedAction -= RefreshPlayerCharData;
+        //GameManager.Instance.OnPartyOrderChangedAction -= RefreshPlayerCharData;
     }
 
     public void OnMMEvent(ExitGameSessionEvent eventType)
@@ -211,6 +220,11 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         return playerNumber;
     }
 
+    public CharacterData GetCharDataSecondary()
+    {
+        return charDataSecondary;
+    }
+
     #endregion
 
 
@@ -221,6 +235,42 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     public void SetPlayerNumber(int playerNumArg)
     {
         playerNumber = playerNumArg;
+    }
+
+    public void SetCharDataSecondary(CharacterData charDataArg)
+    {
+        // call internal function as coroutine
+        StartCoroutine(SetCharDataSecondaryInternal(charDataArg));
+    }
+
+    private IEnumerator SetCharDataSecondaryInternal(CharacterData charDataArg)
+    {
+        /// wait till network properties setup (NOTE: not sure why or if should 
+        /// do this, but seems to fix some things, idk)
+        yield return new WaitForEndOfFrame();
+
+        if (NetworkClient.isConnected)
+        {
+            CmdSetCharDataSecondary(charDataArg);
+        }
+        else
+        {
+            SetCharDataSecondaryMain(charDataArg);
+            // call sync hook method, as won't be called in offline mode
+            OnCharDataSecondaryChanged(charDataArg, charDataArg);
+        }
+    }
+
+    //[Command(ignoreAuthority = true)]
+    [Command]
+    private void CmdSetCharDataSecondary(CharacterData charDataArg)
+    {
+        SetCharDataSecondaryMain(charDataArg);
+    }
+
+    private void SetCharDataSecondaryMain(CharacterData charDataArg)
+    {
+        charDataSecondary = charDataArg;
     }
 
     #endregion

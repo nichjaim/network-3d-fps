@@ -7,6 +7,8 @@ public class CharacterMovementController : MonoBehaviour
 {
     #region Class Variables
 
+    private NetworkManagerCustom _networkManagerCustom;
+
     [Header("Component References")]
 
     [SerializeField]
@@ -40,14 +42,21 @@ public class CharacterMovementController : MonoBehaviour
 
     private void Start()
     {
-        //setup all variables that reference singleton instance related components
-        //InitializeSingletonReferences();
+        // setup all variables that reference singleton instance related components
+        InitializeSingletonReferences();
     }
 
     private void Update()
     {
         // if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if the current state of menus does NOT allow the player chars to perform actions
+        if (!_networkManagerCustom.DoesMenusStateAllowPlayerCharacterAction())
         {
             // DONT continue code
             return;
@@ -66,6 +75,13 @@ public class CharacterMovementController : MonoBehaviour
             return;
         }
 
+        // if the current state of menus does NOT allow the player chars to perform actions
+        if (!_networkManagerCustom.DoesMenusStateAllowPlayerCharacterAction())
+        {
+            // DONT continue code
+            return;
+        }
+
         //performs the actions necessary to move the character based on move input
         ProcessCharacterMovement();
     }
@@ -77,14 +93,15 @@ public class CharacterMovementController : MonoBehaviour
 
     #region Initialization Functions
 
-    /*/// <summary>
+    /// <summary>
     /// Setup all variables that reference singleton instance related components. 
     /// Call in Start(), needs to be start to give the instances time to be created.
     /// </summary>
     private void InitializeSingletonReferences()
     {
-        touchJoystickMove = UIManager.Instance.GetTouchJoystickLeft();
-    }*/
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
+        //touchJoystickMove = UIManager.Instance.GetTouchJoystickLeft();
+    }
 
     #endregion
 

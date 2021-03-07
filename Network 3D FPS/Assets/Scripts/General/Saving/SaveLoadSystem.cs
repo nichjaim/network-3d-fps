@@ -161,16 +161,29 @@ public static class SaveLoadSystem
     /// <returns></returns>
     private static string GetSaveFolderPath()
     {
+        // initialize the name of the saves folder
+        string SAVES_FOLDER_NAME = "saves";
+
         // if should be using the StreamingAssets folder
         if (ShouldUseStreamingAssets())
         {
             // return the StreamingAssets' save folder path
-            return Path.Combine(Application.streamingAssetsPath, "saves");
+            return Path.Combine(Application.streamingAssetsPath, SAVES_FOLDER_NAME);
         }
-        // else should be using the persistentDataPath folder
+        // else should be using the PersistentDataPath folder
         else
         {
-            return Application.persistentDataPath;
+            // get PersistentDataPath save folder path
+            string saveFolderPath = Path.Combine(Application.persistentDataPath, SAVES_FOLDER_NAME);
+            // if that path has NOT been made yet
+            if (!Directory.Exists(saveFolderPath))
+            {
+                // create saves folder path
+                Directory.CreateDirectory(saveFolderPath);
+            }
+
+            // return the path
+            return saveFolderPath;
         }
     }
 

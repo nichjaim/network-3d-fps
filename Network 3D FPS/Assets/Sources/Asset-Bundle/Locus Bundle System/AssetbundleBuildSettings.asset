@@ -37,6 +37,18 @@ MonoBehaviour:
       guid: 1fdded2ce9580e5409dea18257f7d256
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: CharIcon
+    IncludedInPlayer: 1
+    Folder:
+      guid: 98e373793afed244baad548aaddffeb4
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: HudWepModelAnim
+    IncludedInPlayer: 1
+    Folder:
+      guid: 1cb3098019dd3834da2cfbbffe073aff
+    IncludeSubfolder: 0
+    CompressBundle: 1
   AutoCreateSharedBundles: 1
   m_RemoteOutputFolder: RemoteBundles
   m_LocalOutputFolder: LocalBundles

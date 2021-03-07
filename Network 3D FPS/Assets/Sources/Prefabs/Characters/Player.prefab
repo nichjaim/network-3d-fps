@@ -209,6 +209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _networkIdentity: {fileID: 1155702855888981319}
+  _playerCharacterMasterController: {fileID: 7713174688871147706}
 --- !u!1 &1155702855682428537
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +487,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1940821518068956074}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2982519638370809671
 MonoBehaviour:
@@ -502,7 +503,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkIdentity: {fileID: 1155702855888981319}
   _characterGravityController: {fileID: 1155702854836947202}
+  _groundCheckController: {fileID: 1155702855903461589}
   jumpHeigth: 3
+  consecutiveJumpsTotal: 1
+--- !u!1 &3032736020200553414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8050088598664920297}
+  - component: {fileID: 7739512234874481268}
+  m_Layer: 0
+  m_Name: CharacterSwap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8050088598664920297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3032736020200553414}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1940821518068956074}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7739512234874481268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3032736020200553414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff89dab1c40b2bc488ef9b08d324187f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerCharacterMasterController: {fileID: 7713174688871147706}
 --- !u!1 &4767083125650837567
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +578,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 466971270297468968}
+  - {fileID: 8050088598664920297}
   - {fileID: 7165778580187051220}
+  - {fileID: 765516786965376107}
   m_Father: {fileID: 1155702855682428536}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -695,3 +744,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _networkIdentity: {fileID: 1155702855888981319}
+--- !u!1 &7332303323539586205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765516786965376107}
+  - component: {fileID: 8257964245124834242}
+  m_Layer: 0
+  m_Name: CharacterWeaponSwitch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &765516786965376107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7332303323539586205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1940821518068956074}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8257964245124834242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7332303323539586205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e178252001b8a8c44a74ac9bb0b527b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkIdentity: {fileID: 1155702855888981319}
+  _characterMasterController: {fileID: 7713174688871147706}

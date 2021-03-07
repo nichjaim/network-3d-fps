@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: chardata-3
   m_EditorClassIdentifier: 
   characterInfoColor: {r: 1, g: 0.5330188, b: 0.89558953, a: 0}
+  favoredWeaponTypesTemplate: {fileID: 11400000, guid: 50c2b854613cd8a438abfaecf70805f0, type: 2}
+  characterInventoryTemplate: {fileID: 11400000, guid: 1da721a1bd2b17a4abc4ae72096d9dcf, type: 2}
   template:
     characterInfo:
       characterId: 3
       characterName: Hubert
-      characterHeight: 3
+      characterHeightInCm: 188
       characterHexColorCode: FFFFFF
     characterStats:
       healthMaxBase: 1
@@ -44,3 +46,9 @@ MonoBehaviour:
       manaRegenerationAmount: 1
       flashlightReachDirectional: 1
       flashlightReachOmniDirectional: 0
+    characterInventory:
+      weaponSlots: []
+    favoredWeaponTypes:
+      setId: 0
+      setName: NAME
+      weaponTypes: 

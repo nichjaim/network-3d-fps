@@ -6,7 +6,8 @@ using MoreMountains.Tools;
 using BundleSystem;
 
 public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSessionEvent>, 
-    MMEventListener<StartNewGameEvent>, MMEventListener<BundleSystemSetupEvent>
+    MMEventListener<StartNewGameEvent>, MMEventListener<BundleSystemSetupEvent>,
+    MMEventListener<MenuActivationEvent>
 {
     #region Class Variables
 
@@ -24,6 +25,14 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
 
     // the players who are connected to the multiplayer session
     internal readonly List<PlayerCharacterMasterController> connectedPlayers = new List<PlayerCharacterMasterController>();
+
+    [Header("Mechanic Properties")]
+
+    // bool that denotes if game should be messing with cursor lock and visbility.
+    [SerializeField]
+    private bool shouldAlterCursorFreedom = false;
+
+    private List<MasterMenuControllerCustom> openMenus = new List<MasterMenuControllerCustom>();
 
     #endregion
 
@@ -126,6 +135,9 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // assigns the appropriate player number to all connected players
         RefreshPlayerNumbers();
         //Debug.Log($"importantNumber = {importantNumber}"); // TEST LINE
+
+        // trigger event to denote that server added a new player
+        ServerAddedPlayerEvent.Trigger(conn);
     }
 
     public override void OnStartServer()
@@ -149,6 +161,8 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
 
         // assigns the appropriate player number to all connected players
         RefreshPlayerNumbers();
+        // trigger event to denote that server disconnected a player
+        ServerDisconnectedPlayerEvent.Trigger(conn);
     }
 
     #endregion
@@ -166,7 +180,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // ensure no actual network connections can be made
         maxConnections = 0;
         // point address to local machine
-        networkAddress = "localhost";
+        networkAddress = GetLocalHostNetworkAddress();
         // start host server
         StartServer();
     }
@@ -225,7 +239,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     /// <summary>
     /// Stop any new players from joining session.
     /// </summary>
-    private void CloseToNewConnections()
+    public void CloseToNewConnections()
     {
         maxConnections = numPlayers;
     }
@@ -242,9 +256,44 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     /// <summary>
     /// Allows the standard amount of players to join session.
     /// </summary>
-    private void OpenToNewConnectionsDefault()
+    public void OpenToNewConnectionsDefault()
     {
         OpenToNewConnections(4);
+    }
+
+    /// <summary>
+    /// Is the user hosting an online game session.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsHostingOnlineSession()
+    {
+        return networkAddress != GetLocalHostNetworkAddress() && numPlayers >= 1;
+    }
+
+    /// <summary>
+    /// Returns the network address for a machine's local hosting.
+    /// </summary>
+    /// <returns></returns>
+    private string GetLocalHostNetworkAddress()
+    {
+        return "localhost";
+    }
+
+    /// <summary>
+    /// Starts hosting an online game session.
+    /// </summary>
+    public void StartHostingOnlineSession()
+    {
+        // stop local offline hosting (not sure if supposed to do this step)
+        StopHost();
+
+        // set the network address to the user's local IP
+        networkAddress = GeneralMethods.GetLocalIPAddress();
+        // allows the standard amount of players to join session
+        OpenToNewConnectionsDefault();
+
+        // start host
+        StartHost();
     }
 
     #endregion
@@ -287,6 +336,94 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         return (newSaveData, newSaveFile);
     }
 
+    /// <summary>
+    /// Sets cursor's lock and visible status.
+    /// </summary>
+    /// <param name="shouldFreeArg"></param>
+    private void SetCursorFreedom(bool shouldFreeArg)
+    {
+        // if game should NOT be messing with cursor lock and visbility.
+        if (!shouldAlterCursorFreedom)
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if should unlock cursor
+        if (shouldFreeArg)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        // else should lock cursor
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        // set cursor visiblity based on given freedom status
+        Cursor.visible = shouldFreeArg;
+    }
+
+    #endregion
+
+
+
+
+    #region Menu Functions
+
+    /// <summary>
+    /// Sets up list of menus that denote what menus is open.
+    /// </summary>
+    /// <param name="menuArg"></param>
+    /// <param name="isOpeningArg"></param>
+    private void RefreshOpenMenus(MasterMenuControllerCustom menuArg, bool isOpeningArg)
+    {
+        // if given menu is considered open when it is closing OR closed when it is opening
+        if (openMenus.Exists(iterMenu => iterMenu == menuArg) != isOpeningArg)
+        {
+            // if menu opening
+            if (isOpeningArg)
+            {
+                // add menu to list of open menus
+                openMenus.Add(menuArg);
+            }
+            // else menu closing
+            else
+            {
+                // remove menu from list of open menus
+                openMenus.Remove(menuArg);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if any menu is open.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsAnyMenuOpen()
+    {
+        return openMenus.Count > 0;
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if the current state of menu's allow the 
+    /// player chars to perform actions
+    /// </summary>
+    public bool DoesMenusStateAllowPlayerCharacterAction()
+    {
+        return !IsAnyMenuOpen();
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if the current state of menu's allow the 
+    /// player chars to be harmed.
+    /// </summary>
+    public bool DoesMenusStateAllowPlayerCharacterHarming()
+    {
+        // if one of the open menus is the haven menu then char can NOT be harmed
+        return !openMenus.Exists(iterMenu => (iterMenu as HavenMenuController) != null);
+    }
+
     #endregion
 
 
@@ -303,6 +440,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         this.MMEventStartListening<ExitGameSessionEvent>();
         this.MMEventStartListening<StartNewGameEvent>();
         this.MMEventStartListening<BundleSystemSetupEvent>();
+        this.MMEventStartListening<MenuActivationEvent>();
     }
 
     /// <summary>
@@ -314,6 +452,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         this.MMEventStopListening<ExitGameSessionEvent>();
         this.MMEventStopListening<StartNewGameEvent>();
         this.MMEventStopListening<BundleSystemSetupEvent>();
+        this.MMEventStopListening<MenuActivationEvent>();
     }
 
     public void OnMMEvent(ExitGameSessionEvent eventType)
@@ -341,6 +480,14 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     {
         // register all relevant prefabs for network spawnability
         //RegisterSpawnablePrefabs();
+    }
+
+    public void OnMMEvent(MenuActivationEvent eventType)
+    {
+        // setup list of menus that denote what menus is open
+        RefreshOpenMenus(eventType.menu, eventType.isOpening);
+        // sets cursor's lock and visible status based on menu activation
+        SetCursorFreedom(IsAnyMenuOpen());
     }
 
     #endregion

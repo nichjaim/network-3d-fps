@@ -44,4 +44,36 @@ public static class GeneralMethods
     {
         return ".png";
     }
+
+    /// <summary>
+    /// Swaps the content of the given list indices.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="listArg"></param>
+    /// <param name="indexA"></param>
+    /// <param name="indexB"></param>
+    public static void ListIndexSwap<T>(List<T> listArg, int indexA, int indexB)
+    {
+        T tmp = listArg[indexA];
+        listArg[indexA] = listArg[indexB];
+        listArg[indexB] = tmp;
+    }
+
+    /// <summary>
+    /// Returns the user's local IP address.
+    /// </summary>
+    /// <returns></returns>
+    public static string GetLocalIPAddress()
+    {
+        var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+
+        throw new System.Exception("No network adapters with an IPv4 address in the system!");
+    }
 }

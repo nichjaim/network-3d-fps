@@ -44,7 +44,8 @@ public static class AssetRefMethods
     /// <returns></returns>
     public static bool IsHcontentInstalled()
     {
-        return DoesAssetBundleHcontentExist() || DoesStreamingAssetsHcontentExist();
+        return DoesAssetBundleHcontentExist() || DoesStreamingAssetsHcontentExist() || 
+            DoesPersistentDataPathHcontentExist();
     }
 
     /// <summary>
@@ -66,12 +67,30 @@ public static class AssetRefMethods
     }
 
     /// <summary>
-    /// Returns the folder path that holds the hcontent files.
+    /// Returns bool that denotes if the hcontent PersistentDataPath files are in the game.
+    /// </summary>
+    /// <returns></returns>
+    private static bool DoesPersistentDataPathHcontentExist()
+    {
+        return Directory.Exists(GetPersistentDataPathHcontentFolderPath());
+    }
+
+    /// <summary>
+    /// Returns the StreamingAssets folder path that holds the hcontent files.
     /// </summary>
     /// <returns></returns>
     private static string GetStreamingAssetsHcontentFolderPath()
     {
         return Path.Combine(Application.streamingAssetsPath, "hcontent");
+    }
+
+    /// <summary>
+    /// Returns the persistentDataPath folder path that holds the hcontent files.
+    /// </summary>
+    /// <returns></returns>
+    private static string GetPersistentDataPathHcontentFolderPath()
+    {
+        return Path.Combine(Application.persistentDataPath, "hcontent");
     }
 
     /// <summary>
@@ -86,10 +105,15 @@ public static class AssetRefMethods
         {
             return LoadAssetBundleHcontentBackground(bgIdArg);
         }
-        // if hcontent is in game files through the StreamingAssets
+        // else if hcontent is in game files through the StreamingAssets
         else if (DoesStreamingAssetsHcontentExist())
         {
             return LoadStreamingAssetsHcontentBackground(bgIdArg);
+        }
+        // else if hcontent is in game files through the PersistentDataPath
+        else if (DoesPersistentDataPathHcontentExist())
+        {
+            return LoadPersistentDataPathHcontentBackground(bgIdArg);
         }
         // else hcontent NOT in game files
         else
@@ -124,10 +148,30 @@ public static class AssetRefMethods
     /// <returns></returns>
     private static Sprite LoadStreamingAssetsHcontentBackground(string bgIdArg)
     {
+        return LoadFolderBasedHcontentBackground(GetStreamingAssetsHcontentFolderPath(), bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from the PersistentDataPath.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadPersistentDataPathHcontentBackground(string bgIdArg)
+    {
+        return LoadFolderBasedHcontentBackground(GetPersistentDataPathHcontentFolderPath(), bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from one of the folder-based asset locations.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadFolderBasedHcontentBackground(string folderPathArg, string bgIdArg)
+    {
         // get the asset's file name
         string fileName = $"bg-{bgIdArg}{GeneralMethods.GetPngFileExtension()}";
         // get the path to the asset file
-        string filePath = Path.Combine(GetStreamingAssetsHcontentFolderPath(), "bg", fileName);
+        string filePath = Path.Combine(folderPathArg, "bg", fileName);
 
         // if asset file actually exists
         if (File.Exists(filePath))
@@ -139,7 +183,7 @@ public static class AssetRefMethods
         else
         {
             // print warning to console
-            Debug.LogWarning($"StreamingAssets file path does not exist: {filePath}");
+            Debug.LogWarning($"Asset file path does not exist: {filePath}");
             // return null sprite
             return null;
         }
@@ -161,11 +205,24 @@ public static class AssetRefMethods
         return LoadAllBundleAsset<CharacterDataTemplate>(BUNDLE_NAME);
     }
 
-    public static AnimatorOverrideController LoadBundleAssetPlayableCharacterAnimator(string charIdArg)
+    /*public static AnimatorOverrideController LoadBundleAssetPlayableCharacterAnimator(string charIdArg)
     {
         // initialize bundle properties
         string BUNDLE_NAME = "CharAnim";
         string ASSET_NAME_PREFIX = "playable/charanim-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + charIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);
+    }*/
+
+    public static AnimatorOverrideController LoadBundleAssetCharacterAnimator(string charIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharAnim";
+        string ASSET_NAME_PREFIX = "charanim-";
 
         // get name of asset to load
         string loadAssetName = ASSET_NAME_PREFIX + charIdArg;
@@ -181,6 +238,39 @@ public static class AssetRefMethods
 
         //load and return asset
         return LoadAllBundleAsset<GameObject>(BUNDLE_NAME);
+    }
+
+    public static Sprite LoadBundleAssetCharacterIcon(string charIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharIcon";
+        string ASSET_NAME_PREFIX = "charicon-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + charIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    #endregion
+
+
+
+
+    #region Asset Bundle Inventory Functions
+
+    public static AnimatorOverrideController LoadBundleAssetHudWeaponModelAnimator(string weaponIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HudWepModelAnim";
+        string ASSET_NAME_PREFIX = "wepanim-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + weaponIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);
     }
 
     #endregion

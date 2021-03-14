@@ -147,12 +147,13 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // trigger event denoting server started
         NetworkServerStartEvent.Trigger();
 
-        // get zombie network spawnable prefab
+        /*// get zombie network spawnable prefab
         GameObject zombieSpawnPrefab = spawnPrefabs.Find(prefab => prefab.name == "Zombie");
         // instanitate zombie into world
         GameObject spawnedZombie = Instantiate(zombieSpawnPrefab, new Vector3(10f, 0f, 10f), Quaternion.identity);
         // spawn the created zombie on the network
-        NetworkServer.Spawn(spawnedZombie);
+        NetworkServer.Spawn(spawnedZombie);*/
+        //GameManager.Instance.SpawnEnemy(new Vector3(10f, 0f, 10f), Quaternion.identity);
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)
@@ -363,6 +364,32 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // set cursor visiblity based on given freedom status
         Cursor.visible = shouldFreeArg;
     }
+
+    #endregion
+
+
+
+
+    #region Spawn Functions
+
+    /*/// <summary>
+    /// Returns the spawn prefab based on given name.
+    /// </summary>
+    /// <param name="prefabNameArg"></param>
+    /// <returns></returns>
+    public GameObject GetSpawnPrefabFromName(string prefabNameArg)
+    {
+        return spawnPrefabs.Find(prefab => prefab.name == prefabNameArg);
+    }
+
+    /// <summary>
+    /// Returns zombie spawn prefab.
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetSpawnPrefabZombie()
+    {
+        return GetSpawnPrefabFromName("Zombie");
+    }*/
 
     #endregion
 

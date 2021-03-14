@@ -192,7 +192,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 8639921421563885493}
   m_Father: {fileID: 1155702854745451267}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -256,6 +257,7 @@ GameObject:
   - component: {fileID: 3600711554798767869}
   - component: {fileID: 1155702855888981322}
   - component: {fileID: 7713174688871147706}
+  - component: {fileID: 4709019603047949054}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -360,6 +362,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+--- !u!114 &4709019603047949054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155702855888981323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b896366ffb36b24f852f11d3a27a50b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _networkIdentity: {fileID: 1155702855888981319}
+  _characterMasterController: {fileID: 7713174688871147706}
+  firePoint: {fileID: 8639921421563885493}
 --- !u!1 &1155702855903461591
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +569,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCharacterMasterController: {fileID: 7713174688871147706}
+--- !u!1 &3878257959708161672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8639921421563885493}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8639921421563885493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878257959708161672}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1155702855654681592}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4767083125650837567
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,3 +838,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkIdentity: {fileID: 1155702855888981319}
   _characterMasterController: {fileID: 7713174688871147706}
+  weaponScrollCooldownTime: 0.3

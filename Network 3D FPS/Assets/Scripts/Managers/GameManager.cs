@@ -16,6 +16,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     [SyncVar(hook = nameof(OnPartyCharactersChanged))]
     private List<CharacterData> partyCharacters = new List<CharacterData>();
     public Action OnPartyCharactersChangedAction;
+    /*readonly SyncList<CharacterData> partyCharacters = new SyncList<CharacterData>();
+    public Action OnPartyCharactersChangedAction;*/
 
     /// each list entry denotes a party slot and the entry value denotes the associated 
     /// partyCharacters list index key (ex. if partyOrder[0] = 2 then that means that in 
@@ -31,6 +33,18 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     [SyncVar(hook = nameof(OnDefaultPartyCharacterChanged))]
     private CharacterData defaultPartyCharacter = null;
     public Action OnDefaultPartyCharacterChangedAction;
+
+    [Header("Object Poolers")]
+
+    [SerializeField]
+    private NetworkObjectPooler projectilePooler = null;
+    public NetworkObjectPooler ProjectilePooler
+    {
+        get { return projectilePooler; }
+    }
+
+    [SerializeField]
+    private NetworkObjectPooler enemyPooler = null;
 
     #endregion
 
@@ -256,6 +270,99 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
 
 
+    #region Network Functions
+
+    /*[Command]
+    public void SpawnObjectOnNetwork(GameObject objArg)
+    {
+        NetworkServer.Spawn(objArg);
+    }*/
+
+    /*[Command]
+    public GameObject CmdSpawnObject(NetworkObjectPooler objectPoolerArg, Vector3 posArg, 
+        Quaternion rotArg)
+    {
+        // get object from given pooler
+        GameObject pooledObj = objectPoolerArg.GetFromPool(posArg, rotArg);
+
+        // spawn pooled object on network
+        NetworkServer.Spawn(pooledObj);
+
+        // return the pooled object
+        return pooledObj;
+    }
+
+    [Command]
+    public void CmdUnspawnObject(NetworkObjectPooler objectPoolerArg, GameObject pooledObjArg)
+    {
+        // return object to pool on server
+        objectPoolerArg.PutBackInPool(pooledObjArg);
+
+        // tell server to send ObjectDestroyMessage, which will call UnspawnHandler on client
+        NetworkServer.UnSpawn(pooledObjArg);
+    }*/
+
+    #endregion
+
+
+
+
+    #region Spawn Functions
+
+    /// <summary>
+    /// Spawns an enemy.
+    /// </summary>
+    /// <param name="posArg"></param>
+    /// <param name="rotArg"></param>
+    public void SpawnEnemy(Vector3 posArg, Quaternion rotArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSpawnEnemy(posArg, rotArg);
+        }
+        else
+        {
+            SpawnEnemyInternal(posArg, rotArg);
+        }
+    }
+
+    /// <summary>
+    /// Perform the act of attacking.
+    /// </summary>
+    [Command]
+    private void CmdSpawnEnemy(Vector3 posArg, Quaternion rotArg)
+    {
+        SpawnEnemyInternal(posArg, rotArg);
+    }
+
+    private void SpawnEnemyInternal(Vector3 posArg, Quaternion rotArg)
+    {
+        // get pooled enemy object
+        GameObject enemyObj = enemyPooler.GetFromPool(posArg, rotArg);
+        // spawn pooled object on network
+        NetworkServer.Spawn(enemyObj);
+
+        /*// get enemy char from pooled object
+        CharacterMasterController enemyChar = enemyObj.GetComponent<CharacterMasterController>();
+        // if no such component found
+        if (enemyChar == null)
+        {
+            // print warning to console
+            Debug.LogWarning("Enemy object does NOT have CharacterMasterController component! " +
+                $"Object name: {enemyObj.name}");
+            // DONT continue code
+            return;
+        }*/
+
+        // setup projectile data
+        //projectile.SetupProjectile(_projectilePooler, _characterMasterController);
+    }
+
+    #endregion
+
+
+
+
     #region Sync Functions
 
     public void OnPartyCharactersChanged(List<CharacterData> oldListArg, 
@@ -264,6 +371,35 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // call party char change actions if NOT null
         OnPartyCharactersChangedAction?.Invoke();
     }
+
+    /*void OnPartyCharactersChanged(SyncList<CharacterData>.Operation op, int index, CharacterData oldItem, CharacterData newItem)
+    {
+        switch (op)
+        {
+            case SyncList<CharacterData>.Operation.OP_ADD:
+                // index is where it got added in the list
+                // item is the new item
+                break;
+            case SyncList<CharacterData>.Operation.OP_CLEAR:
+                // list got cleared
+                break;
+            case SyncList<CharacterData>.Operation.OP_INSERT:
+                // index is where it got added in the list
+                // item is the new item
+                break;
+            case SyncList<CharacterData>.Operation.OP_REMOVEAT:
+                // index is where it got removed in the list
+                // item is the item that was removed
+                break;
+            case SyncList<CharacterData>.Operation.OP_SET:
+                // index is the index of the item that was updated
+                // item is the previous item
+                break;
+        }
+
+        // call party char change actions if NOT null
+        OnPartyCharactersChangedAction?.Invoke();
+    }*/
 
     public void OnPartyOrderChanged(List<int> oldListArg, 
         List<int> newListArg)
@@ -294,6 +430,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStartListening<GamePausingActionEvent>();
         this.MMEventStartListening<NewSaveCreatedEvent>();
+
+        //partyCharacters.Callback += OnPartyCharactersChanged;
     }
 
     /// <summary>
@@ -304,6 +442,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStopListening<GamePausingActionEvent>();
         this.MMEventStopListening<NewSaveCreatedEvent>();
+
+        //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
 
     public void OnMMEvent(GamePausingActionEvent eventType)
@@ -315,6 +455,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void OnMMEvent(NewSaveCreatedEvent eventType)
     {
         SetPartyCharacters(eventType.saveData.playableCharacterData);
+        //SetPartyCharacters(new SyncList<CharacterData>(eventType.saveData.playableCharacterData));
         // setup player char order list to the default order
         SetPartyOrderToDefault();
     }
@@ -331,12 +472,23 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         return partyCharacters;
     }
 
+    /*public SyncList<CharacterData> GetPartyCharacters()
+    {
+        List<CharacterData> returnList = new List<CharacterData>();
+        foreach (CharacterData iterChar in partyCharacters)
+        {
+            returnList.Add(iterChar);
+        }
+        return returnList;
+        return partyCharacters;
+    }*/
+
     #endregion
 
 
 
 
-    #region Setter Functions
+    #region PartyCharacters Setter Functions
 
     public void SetPartyCharacters(List<CharacterData> charListArg)
     {
@@ -362,6 +514,38 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         partyCharacters = charListArg;
     }
 
+    /*public void SetPartyCharacters(SyncList<CharacterData> charListArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            SetPartyCharactersCommand(charListArg);
+        }
+        else
+        {
+            SetPartyCharactersInternal(charListArg);
+            //OnPartyCharactersChanged(charListArg, charListArg);
+        }
+    }
+
+    [Command]
+    public void SetPartyCharactersCommand(SyncList<CharacterData> charListArg)
+    {
+        SetPartyCharactersInternal(charListArg);
+    }
+
+    public void SetPartyCharactersInternal(SyncList<CharacterData> charListArg)
+    {
+        partyCharacters.Clear();
+        partyCharacters.AddRange(charListArg);
+    }*/
+
+    #endregion
+
+
+
+
+    #region PartyOrder Setter Functions
+
     public void SetPartyOrder(List<int> orderListArg)
     {
         if (NetworkClient.isConnected)
@@ -375,7 +559,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         }
     }
 
-    [Command]
+    [Command(ignoreAuthority = true)]
     public void SetPartyOrderCommand(List<int> orderListArg)
     {
         SetPartyOrderInternal(orderListArg);
@@ -385,6 +569,13 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         partyOrder = orderListArg;
     }
+
+    #endregion
+
+
+
+
+    #region DefaultPartyCharacter Setter Functions
 
     public void SetDefaultPartyCharacter(CharacterData charArg)
     {

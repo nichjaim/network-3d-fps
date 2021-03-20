@@ -12,6 +12,9 @@ public class CharacterSwapController : MonoBehaviour
     [SerializeField]
     private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
+    [SerializeField]
+    private NetworkIdentity _networkIdentity = null;
+
     /// the character that the char is underneath all the char swapping. Uses this 
     /// char's inventory through all swapping
     private CharacterData primaryCharacter = null;
@@ -47,13 +50,31 @@ public class CharacterSwapController : MonoBehaviour
 
     #region Swap Functions
 
+    private void RefreshSwapCharacters()
+    {
+        // if player is online but NOT associated with the machine running this
+        if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            return;
+        }
+
+        StartCoroutine(RefreshSwapCharactersInternal());
+    }
+
     /// <summary>
     /// Sets up the swap characters based on current game session conditions.
     /// </summary>
-    private void RefreshSwapCharacters()
+    private IEnumerator RefreshSwapCharactersInternal()
     {
+        // wait till network properties are actually set
+        yield return new WaitForEndOfFrame();
+
         // if playing solo
-        if (((NetworkManagerCustom)NetworkManager.singleton).numPlayers <= 1)
+        //if (((NetworkManagerCustom)NetworkManager.singleton).numPlayers <= 1)
+        //if (((NetworkManagerCustom)NetworkManager.singleton).connectedPlayers.Count <= 1)
+        //if (NetworkServer.connections.Count <= 1)
+        if (((NetworkManagerCustom)NetworkManager.singleton).GetNumberOfPlayerObjects() <= 1)
         {
             // get entire party
             List<CharacterData> partyChars = GameManager.Instance.GetPartyCharacters();
@@ -172,6 +193,13 @@ public class CharacterSwapController : MonoBehaviour
     /// </summary>
     private void RefreshCharDataSecondary()
     {
+        // if player is online but NOT associated with the machine running this
+        if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            return;
+        }
+
         /// set this character's secondary char data (one used for models/heigth/stats/etc. to 
         /// the swapping character associated with the weapon slot they currently have equipped)
         _playerCharacterMasterController.SetCharDataSecondary(GetSwappingCharacter(
@@ -210,7 +238,7 @@ public class CharacterSwapController : MonoBehaviour
 
         GameManager.Instance.OnPartyCharactersChangedAction -= RefreshSwapCharacters;
         GameManager.Instance.OnPartyOrderChangedAction -= RefreshSwapCharacters;
-        _playerCharacterMasterController.OnEquippedWeaponSlotNumChangedAction -= RefreshCharData;
+        _playerCharacterMasterController.OnEquippedWeaponSlotNumChangedAction -= RefreshCharDataSecondary;
     }
 
     #endregion

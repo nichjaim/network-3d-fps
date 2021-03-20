@@ -31,12 +31,6 @@ MonoBehaviour:
       guid: d8435c240c748ed499b04b9e2e2a76d5
     IncludeSubfolder: 1
     CompressBundle: 1
-  - BundleName: CharEnemy
-    IncludedInPlayer: 1
-    Folder:
-      guid: 1fdded2ce9580e5409dea18257f7d256
-    IncludeSubfolder: 0
-    CompressBundle: 1
   - BundleName: CharIcon
     IncludedInPlayer: 1
     Folder:
@@ -47,6 +41,12 @@ MonoBehaviour:
     IncludedInPlayer: 1
     Folder:
       guid: 1cb3098019dd3834da2cfbbffe073aff
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: WepTypeSets
+    IncludedInPlayer: 1
+    Folder:
+      guid: 3faac997e623fe641ad5c2f3ed0cba58
     IncludeSubfolder: 0
     CompressBundle: 1
   AutoCreateSharedBundles: 1

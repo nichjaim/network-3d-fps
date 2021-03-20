@@ -33,8 +33,6 @@ public class CharacterLookController : MonoBehaviour
 
     [SerializeField]
     private bool onlyHorizontalLook = false;
-    [SerializeField]
-    private bool lockMouseCursor = false;
 
     private float lookRotationX = 0f;
     private float lookInputX = 0f;

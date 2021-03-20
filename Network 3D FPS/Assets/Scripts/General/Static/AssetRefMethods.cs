@@ -231,14 +231,14 @@ public static class AssetRefMethods
         return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);
     }
 
-    public static GameObject[] LoadAllBundleAssetCharacterEnemy()
+    /*public static GameObject[] LoadAllBundleAssetCharacterEnemy()
     {
         // initialize bundle properties
         string BUNDLE_NAME = "CharEnemy";
 
         //load and return asset
         return LoadAllBundleAsset<GameObject>(BUNDLE_NAME);
-    }
+    }*/
 
     public static Sprite LoadBundleAssetCharacterIcon(string charIdArg)
     {
@@ -271,6 +271,15 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static WeaponTypeSetTemplate[] LoadAllBundleAssetWeaponTypeSetTemplate()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "WepTypeSets";
+
+        // load and return assets
+        return LoadAllBundleAsset<WeaponTypeSetTemplate>(BUNDLE_NAME);
     }
 
     #endregion

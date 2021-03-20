@@ -45,6 +45,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
     [SerializeField]
     private NetworkObjectPooler enemyPooler = null;
+    [SerializeField]
+    private NetworkObjectPooler pickupAmmoPooler = null;
 
     #endregion
 
@@ -322,7 +324,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         }
         else
         {
-            SpawnEnemyInternal(posArg, rotArg);
+            SpawnEnemyMain(posArg, rotArg);
         }
     }
 
@@ -332,30 +334,15 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     [Command]
     private void CmdSpawnEnemy(Vector3 posArg, Quaternion rotArg)
     {
-        SpawnEnemyInternal(posArg, rotArg);
+        SpawnEnemyMain(posArg, rotArg);
     }
 
-    private void SpawnEnemyInternal(Vector3 posArg, Quaternion rotArg)
+    private void SpawnEnemyMain(Vector3 posArg, Quaternion rotArg)
     {
         // get pooled enemy object
         GameObject enemyObj = enemyPooler.GetFromPool(posArg, rotArg);
         // spawn pooled object on network
         NetworkServer.Spawn(enemyObj);
-
-        /*// get enemy char from pooled object
-        CharacterMasterController enemyChar = enemyObj.GetComponent<CharacterMasterController>();
-        // if no such component found
-        if (enemyChar == null)
-        {
-            // print warning to console
-            Debug.LogWarning("Enemy object does NOT have CharacterMasterController component! " +
-                $"Object name: {enemyObj.name}");
-            // DONT continue code
-            return;
-        }*/
-
-        // setup projectile data
-        //projectile.SetupProjectile(_projectilePooler, _characterMasterController);
     }
 
     #endregion

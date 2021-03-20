@@ -24,6 +24,9 @@ public class CharacterActionAttackController : NetworkBehaviour
     [SerializeField]
     private Transform firePoint = null;
 
+    // denotes if attacking is on cooldown
+    private bool attackOnCooldown = false;
+
     #endregion
 
 
@@ -35,6 +38,12 @@ public class CharacterActionAttackController : NetworkBehaviour
     {
         // setup all variables that reference singleton instance related components
         InitializeSingletonReferences();
+    }
+
+    private void OnEnable()
+    {
+        // ensure attacking is OFF cooldown
+        attackOnCooldown = false;
     }
 
     private void Update()
@@ -86,6 +95,34 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// </summary>
     private void AttackAction()
     {
+        // if attacking is ON cooldown
+        if (attackOnCooldown)
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if NO weapon equipped
+        if (!_characterMasterController.HaveWeaponEquipped())
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if do NOT have enough ammo
+        if (!_characterMasterController.HaveEnoughAmmo())
+        {
+            // TODO: play some empty ammo sound (based on weapon type??)
+            // DONT continue code
+            return;
+        }
+
+        // reduces amount of ammo currently held based on equipped weapon
+        _characterMasterController.ReduceEquippedAmmoByEquippedWeapon();
+        // put attacking on cooldown for weapon fire rate length
+        AttackCooldown(_characterMasterController.GetEquippedWeapon().weaponStats.
+            attackRateRarityModified);
+
         if (NetworkClient.isConnected)
         {
             CmdAttackAction();
@@ -157,6 +194,28 @@ public class CharacterActionAttackController : NetworkBehaviour
         // tell server to send ObjectDestroyMessage, which will call UnspawnHandler on client
         NetworkServer.UnSpawn(pooledObjArg);
     }*/
+
+    /// <summary>
+    /// Put attacking on cooldown then take it off after the given amount of time.
+    /// </summary>
+    /// <param name="cooldownTimeArg"></param>
+    private void AttackCooldown(float cooldownTimeArg)
+    {
+        // call internal function as coroutine
+        StartCoroutine(AttackCooldownInternal(cooldownTimeArg));
+    }
+
+    private IEnumerator AttackCooldownInternal(float cooldownTimeArg)
+    {
+        // put attack ON cooldown
+        attackOnCooldown = true;
+
+        // wait given cooldown time
+        yield return new WaitForSeconds(cooldownTimeArg);
+
+        // take attack OFF cooldown
+        attackOnCooldown = false;
+    }
 
     #endregion
 

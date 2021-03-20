@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3805aa920398d4f43b6ee2dcdd5c73b7, type: 3}
+  m_Name: invamm-pc3
+  m_EditorClassIdentifier: 
+  ammoPouchTemplates:
+  - {fileID: 11400000, guid: ac3862d5d4543ba459bd7a59fc6edd30, type: 2}
+  - {fileID: 11400000, guid: 5950aebee77a6c746b0cad2dbc0e77f3, type: 2}
+  - {fileID: 11400000, guid: 681b614a24937e9429c2276c5620fc2a, type: 2}
+  - {fileID: 11400000, guid: 4d28adbd8af5b584d9e5663117130ad1, type: 2}

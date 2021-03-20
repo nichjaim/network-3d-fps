@@ -90,6 +90,107 @@ public class CharacterMasterController : NetworkBehaviour
         SetEquippedWeaponSlotNum(newEquippedWepSlot);
     }
 
+    /// <summary>
+    /// Returns the currently equipped weapon.
+    /// </summary>
+    /// <returns></returns>
+    public WeaponData GetEquippedWeapon()
+    {
+        // get currently equipped weapon slot
+        WeaponSlotData equippedWepSlot = GetEquippedWeaponSlot();
+        // if no weapon slot found
+        if (equippedWepSlot == null)
+        {
+            // return a null weapon
+            return null;
+        }
+
+        // return found weapon slot's weapon
+        return equippedWepSlot.slotWeapon;
+    }
+
+    /// <summary>
+    /// Returns the weapon slot that is currently being used.
+    /// </summary>
+    /// <returns></returns>
+    private WeaponSlotData GetEquippedWeaponSlot()
+    {
+        // if no char data is set
+        if (charData == null)
+        {
+            // return a null weapon slot
+            return null;
+        }
+
+        // return currently equipped weapon slot
+        return charData.characterInventory.GetWeaponSlot(
+            equippedWeaponSlotNum);
+    }
+
+    private AmmoPouch GetEquippedAmmoPouch()
+    {
+        // get currently equipped weapon slot
+        WeaponSlotData equippedWepSlot = GetEquippedWeaponSlot();
+        // if no weapon slot found
+        if (equippedWepSlot == null)
+        {
+            // return a null weapon pouch
+            return null;
+        }
+
+        InventoryAmmo invAmmo = charData.characterInventory.inventoryAmmo;
+        return invAmmo.GetAmmoPouchFromAmmoType(equippedWepSlot.requiredWeaponTypeSet);
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if char has a weapon equipped.
+    /// </summary>
+    /// <returns></returns>
+    public bool HaveWeaponEquipped()
+    {
+        return GetEquippedWeapon() != null;
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if char has enough ammo to use equipped weapon.
+    /// </summary>
+    /// <returns></returns>
+    public bool HaveEnoughAmmo()
+    {
+        // if no weapon equipped
+        if (!HaveWeaponEquipped())
+        {
+            // return that do NOT have enough ammo
+            return false;
+        }
+
+        return GetEquippedAmmoPouch().HaveEnoughAmmo(GetEquippedWeapon().weaponStats.ammoPerUse);
+    }
+
+    /// <summary>
+    /// Reduces amount of ammo currently held based on equipped weapon. 
+    /// Reutrns bool that denotes if action successful.
+    /// </summary>
+    /// <returns></returns>
+    public bool ReduceEquippedAmmoByEquippedWeapon()
+    {
+        // get currently equipped ammo pouch
+        AmmoPouch ammoPouch = GetEquippedAmmoPouch();
+        // if no ammo pouch found
+        if (ammoPouch == null)
+        {
+            // print warning to console
+            Debug.LogWarning("No ammo pouch found to reduce ammo from!");
+            // return that action failed
+            return false;
+        }
+
+        // reduce ammo based on equipped weapon
+        ammoPouch.ReduceCurrentAmmo(GetEquippedWeapon().weaponStats.ammoPerUse);
+        // return that action succeeded
+        return true;
+    }
+
     #endregion
 
 
@@ -159,8 +260,7 @@ public class CharacterMasterController : NetworkBehaviour
         }
     }
 
-    //[Command(ignoreAuthority = true)]
-    [Command]
+    [Command(ignoreAuthority = true)]
     private void CmdSetCharData(CharacterData charDataArg)
     {
         SetCharDataMain(charDataArg);
@@ -202,8 +302,7 @@ public class CharacterMasterController : NetworkBehaviour
         }
     }
 
-    //[Command(ignoreAuthority = true)]
-    [Command]
+    [Command(ignoreAuthority = true)]
     private void CmdSetEquippedWeaponSlotNum(int slotNumArg)
     {
         SetEquippedWeaponSlotNumMain(slotNumArg);

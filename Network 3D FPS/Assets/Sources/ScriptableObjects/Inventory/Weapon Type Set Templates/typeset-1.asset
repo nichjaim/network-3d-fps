@@ -15,4 +15,5 @@ MonoBehaviour:
   template:
     setId: 1
     setName: Fallback
+    doesNeedAmmo: 0
     weaponTypes: 0100000002000000

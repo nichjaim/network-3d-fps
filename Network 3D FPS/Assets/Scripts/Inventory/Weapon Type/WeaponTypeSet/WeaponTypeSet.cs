@@ -10,6 +10,9 @@ public class WeaponTypeSet
     public string setId;
     public string setName;
 
+    // denotes if the weapon needs any ammo to be used
+    public bool doesNeedAmmo = true;
+
     public List<WeaponType> weaponTypes;
 
     #endregion

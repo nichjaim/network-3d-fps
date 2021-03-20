@@ -476,7 +476,6 @@ MonoBehaviour:
   _networkIdentity: {fileID: 1155702855888981319}
   lookSensitivity: 2
   onlyHorizontalLook: 0
-  lockMouseCursor: 0
 --- !u!1 &1920185707292541811
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,6 +524,57 @@ MonoBehaviour:
   _groundCheckController: {fileID: 1155702855903461589}
   jumpHeigth: 3
   consecutiveJumpsTotal: 1
+--- !u!1 &2225929910933152995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6691954441533128084}
+  - component: {fileID: 757221042403335601}
+  m_Layer: 0
+  m_Name: CharacterInteract
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6691954441533128084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225929910933152995}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1940821518068956074}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &757221042403335601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225929910933152995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aecd31abdd8dbcf4194c338d2f1328dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkIdentity: {fileID: 1155702855888981319}
+  _characterMasterController: {fileID: 7713174688871147706}
+  _sightPoint: {fileID: 8718833833645726600}
+  detectRange: 2
+  detectRefreshRate: 0.3
+  interactableLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &3032736020200553414
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,6 +619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCharacterMasterController: {fileID: 7713174688871147706}
+  _networkIdentity: {fileID: 1155702855888981319}
 --- !u!1 &3878257959708161672
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,6 +681,7 @@ Transform:
   - {fileID: 8050088598664920297}
   - {fileID: 7165778580187051220}
   - {fileID: 765516786965376107}
+  - {fileID: 6691954441533128084}
   m_Father: {fileID: 1155702855682428536}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

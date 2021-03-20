@@ -6,4 +6,6 @@ using UnityEngine;
 public class CharacterInventoryTemplate : ScriptableObject
 {
     public List<WeaponSlotDataTemplate> weaponSlotDataTemplates;
+
+    public InventoryAmmoTemplate inventoryAmmoTemplate;
 }

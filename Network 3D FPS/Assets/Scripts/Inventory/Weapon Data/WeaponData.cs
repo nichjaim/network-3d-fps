@@ -7,10 +7,11 @@ public class WeaponData
 {
     #region Class Variables
 
-    public string weaponId;
-    public string weaponName;
+    public InventoryItemInfo itemInfo;
 
     public WeaponType weaponType;
+
+    public WeaponStats weaponStats;
 
     #endregion
 
@@ -38,6 +39,8 @@ public class WeaponData
         }
 
         Setup(templateArg.template);
+
+        itemInfo.SetupPrefixName(templateArg.potentialPrefixNames);
     }
 
     #endregion
@@ -49,18 +52,20 @@ public class WeaponData
 
     private void Setup()
     {
-        weaponId = "0";
-        weaponName = "NAME";
+        itemInfo = new InventoryItemInfo();
 
         weaponType = WeaponType.None;
+
+        weaponStats = new WeaponStats();
     }
 
     private void Setup(WeaponData templateArg)
     {
-        weaponId = templateArg.weaponId;
-        weaponName = templateArg.weaponName;
+        itemInfo = new InventoryItemInfo(templateArg.itemInfo);
 
         weaponType = templateArg.weaponType;
+
+        weaponStats = new WeaponStats(templateArg.weaponStats);
     }
 
     #endregion

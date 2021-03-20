@@ -8,6 +8,7 @@ public class CharacterInventory
     #region Class Variables
 
     public List<WeaponSlotData> weaponSlots;
+    public InventoryAmmo inventoryAmmo;
 
     #endregion
 
@@ -33,6 +34,8 @@ public class CharacterInventory
         {
             weaponSlots.Add(new WeaponSlotData(iterSlotTemp));
         }
+
+        inventoryAmmo = new InventoryAmmo(templateArg.inventoryAmmoTemplate);
     }
 
     #endregion
@@ -45,6 +48,7 @@ public class CharacterInventory
     private void Setup()
     {
         weaponSlots = new List<WeaponSlotData>();
+        inventoryAmmo = new InventoryAmmo();
     }
 
     private void Setup(CharacterInventory templateArg)
@@ -54,6 +58,8 @@ public class CharacterInventory
         {
             weaponSlots.Add(new WeaponSlotData(iterSlot));
         }
+
+        //inventoryAmmo = new InventoryAmmo(templateArg.inventoryAmmo);
     }
 
     #endregion

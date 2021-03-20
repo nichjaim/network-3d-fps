@@ -61,7 +61,7 @@ public class HudWeaponModelController : MonoBehaviour
         {
             // get equipped weapon's associated HUD model animator
             wepAnimator = AssetRefMethods.LoadBundleAssetHudWeaponModelAnimator(
-                equippedWeapon.weaponId);
+                equippedWeapon.itemInfo.itemId);
         }
 
         // turn ON image comp if got valid animator and turn OFF if got null animator

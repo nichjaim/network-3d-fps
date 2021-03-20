@@ -222,7 +222,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         }
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Register all relevant prefabs for network spawnability.
     /// </summary>
     private void RegisterSpawnablePrefabs()
@@ -235,7 +235,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
             // registering iterating prefab to network spawnable objects
             ClientScene.RegisterPrefab(iterObj);
         }
-    }
+    }*/
 
     /// <summary>
     /// Stop any new players from joining session.
@@ -363,6 +363,18 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
 
         // set cursor visiblity based on given freedom status
         Cursor.visible = shouldFreeArg;
+    }
+
+    /// <summary>
+    /// Returns the number of player objects currently in the game.
+    /// </summary>
+    /// <returns></returns>
+    public int GetNumberOfPlayerObjects()
+    {
+        // find all player objects
+        PlayerCharacterMasterController[] playerObjects = FindObjectsOfType<PlayerCharacterMasterController>();
+        // return amount found
+        return playerObjects.Length;
     }
 
     #endregion

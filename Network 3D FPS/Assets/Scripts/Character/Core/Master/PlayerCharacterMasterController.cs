@@ -46,6 +46,17 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         {
             StartHavenGameStateEvent.Trigger();
         }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.Log("((NetworkManagerCustom)NetworkManager.singleton).numPlayers = " +
+                ((NetworkManagerCustom)NetworkManager.singleton).numPlayers);
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Debug.Log("((NetworkManagerCustom)NetworkManager.singleton).connectedPlayers.Count = " +
+                ((NetworkManagerCustom)NetworkManager.singleton).connectedPlayers.Count);
+        }
     }
 
     private void OnEnable()
@@ -261,8 +272,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         }
     }
 
-    //[Command(ignoreAuthority = true)]
-    [Command]
+    [Command(ignoreAuthority = true)]
     private void CmdSetCharDataSecondary(CharacterData charDataArg)
     {
         SetCharDataSecondaryMain(charDataArg);

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterInfoColor: {r: 0.51418114, g: 0, b: 1, a: 0}
   favoredWeaponTypesTemplate: {fileID: 11400000, guid: 7344bf697f54d8b41b489856696c1a30, type: 2}
-  characterInventoryTemplate: {fileID: 11400000, guid: 1da721a1bd2b17a4abc4ae72096d9dcf, type: 2}
+  characterInventoryTemplate: {fileID: 11400000, guid: 44bb71c0da813af4e9ec366752b56d55, type: 2}
   template:
     characterInfo:
       characterId: 6
@@ -48,6 +48,8 @@ MonoBehaviour:
       flashlightReachOmniDirectional: 0
     characterInventory:
       weaponSlots: []
+      inventoryAmmo:
+        ammoPouches: []
     favoredWeaponTypes:
       setId: 0
       setName: NAME

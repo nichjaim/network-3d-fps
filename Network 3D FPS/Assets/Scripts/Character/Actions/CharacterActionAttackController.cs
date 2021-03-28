@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class CharacterActionAttackController : NetworkBehaviour
 {
@@ -17,8 +18,6 @@ public class CharacterActionAttackController : NetworkBehaviour
     [SerializeField]
     private CharacterMasterController _characterMasterController = null;
 
-    //[SerializeField]
-    //private MMSimpleObjectPoolerCustom projectilePooler = null;
     private NetworkObjectPooler _projectilePooler = null;
 
     [SerializeField]
@@ -26,6 +25,8 @@ public class CharacterActionAttackController : NetworkBehaviour
 
     // denotes if attacking is on cooldown
     private bool attackOnCooldown = false;
+
+    public Action OnCharacterAttackAction;
 
     #endregion
 
@@ -80,7 +81,7 @@ public class CharacterActionAttackController : NetworkBehaviour
     private void InitializeSingletonReferences()
     {
         _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
-        _projectilePooler = GameManager.Instance.ProjectilePooler;
+        _projectilePooler = GameManager.Instance.SpawnManager.ProjectilePooler;
     }
 
     #endregion
@@ -119,9 +120,13 @@ public class CharacterActionAttackController : NetworkBehaviour
 
         // reduces amount of ammo currently held based on equipped weapon
         _characterMasterController.ReduceEquippedAmmoByEquippedWeapon();
+
         // put attacking on cooldown for weapon fire rate length
         AttackCooldown(_characterMasterController.GetEquippedWeapon().weaponStats.
             attackRateRarityModified);
+
+        // call attack actions if NOT null
+        OnCharacterAttackAction?.Invoke();
 
         if (NetworkClient.isConnected)
         {

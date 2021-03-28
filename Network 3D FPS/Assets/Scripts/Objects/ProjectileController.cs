@@ -8,13 +8,12 @@ public class ProjectileController : NetworkBehaviour
     #region Class Variables
 
     private CharacterMasterController charOwner = null;
-    private WeaponData firingWeapon = null;
-    // pooler where this object resides
-    //private NetworkObjectPooler objectPoolerOwner = null;
+    private CharacterData _frontFacingCharData = null;
 
-    [Header("Component References")]
+    private WeaponData firingWeapon = null;
 
     private Rigidbody _rigidbody = null;
+    private PooledObjectController _pooledObjectController = null;
 
     private float projectileSpeed = 1f;
     private float projectileLifetime = 5f;
@@ -44,6 +43,27 @@ public class ProjectileController : NetworkBehaviour
         DeactivateAfterLifetime();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        // get collididng object's hitbox component
+        HitboxController collidingHitbox = other.GetComponent<HitboxController>();
+
+        // if comp found
+        if (collidingHitbox != null)
+        {
+            // if CAN harm hitbox target
+            if (collidingHitbox.CharHealth.CanAttackerCauseHarmBasedOnReputation(
+                _frontFacingCharData.factionReputation))
+            {
+                // deal weapon damage to hitbox target
+                collidingHitbox.CharHealth.TakeDamage(GetRandomWeaponDamage());
+
+                // unspawn this object
+                _pooledObjectController.UnspawnObject();
+            }
+        }
+    }
+
     #endregion
 
 
@@ -58,6 +78,7 @@ public class ProjectileController : NetworkBehaviour
     private void InitializeComponentReferences()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _pooledObjectController = GetComponent<PooledObjectController>();
     }
 
     #endregion
@@ -69,8 +90,10 @@ public class ProjectileController : NetworkBehaviour
 
     public void SetupProjectile(CharacterMasterController charArg)
     {
-        //objectPoolerOwner = objectPoolerArg;
         charOwner = charArg;
+        _frontFacingCharData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+            charOwner);
+
         firingWeapon = charArg.GetEquippedWeapon();
 
         projectileSpeed = firingWeapon.weaponStats.projectileSpeed;
@@ -100,9 +123,7 @@ public class ProjectileController : NetworkBehaviour
         yield return new WaitForSeconds(projectileLifetime);
 
         // unspawn this object
-        //GameManager.Instance.CmdUnspawnObject(objectPoolerOwner, gameObject);
-        GetComponent<PooledObjectController>().UnspawnObject();
-        //UnspawnObject();
+        _pooledObjectController.UnspawnObject();
     }
 
     /*private void UnspawnObject()
@@ -131,6 +152,16 @@ public class ProjectileController : NetworkBehaviour
         // tell server to send ObjectDestroyMessage, which will call UnspawnHandler on client
         NetworkServer.UnSpawn(gameObject);
     }*/
+
+    /// <summary>
+    /// Returns random damage within weapon boundaries.
+    /// </summary>
+    /// <returns></returns>
+    private int GetRandomWeaponDamage()
+    {
+        return Random.Range(firingWeapon.weaponStats.damageBoundaryLowRarityModified, 
+            firingWeapon.weaponStats.damageBoundaryHighRarityModified);
+    }
 
     #endregion
 

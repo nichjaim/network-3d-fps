@@ -6,9 +6,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCharacterMasterController : CharacterMasterController, MMEventListener<ExitGameSessionEvent>,
-    MMEventListener<NetworkServerStartEvent>
+    MMEventListener<NetworkServerStartEvent>, MMEventListener<StartHavenGameStateEvent>
 {
     #region Class Variables
+
+    [Header("Component References")]
+
+    [SerializeField]
+    private ObjectActivationController _objectActivationController = null;
 
     private NetworkIdentity _networkIdentity;
 
@@ -20,6 +25,10 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     [SyncVar(hook = nameof(OnCharDataSecondaryChanged))]
     private CharacterData charDataSecondary = null;
     public Action OnCharDataSecondaryChangedAction;
+    public CharacterData CharDataSecondary
+    {
+        get { return charDataSecondary; }
+    }
 
     #endregion
 
@@ -63,6 +72,9 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         // starts listening for all relevant events
         StartAllEventListening();
+
+        // attempt to set UI manager's player char to this char
+        UIManager.Instance.SetPlayerCharacterIfAppropriate(this);
 
         // sets the char master's character data based on the current player number
         //RefreshPlayerCharData();
@@ -189,6 +201,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         this.MMEventStartListening<ExitGameSessionEvent>();
         this.MMEventStartListening<NetworkServerStartEvent>();
+        this.MMEventStartListening<StartHavenGameStateEvent>();
 
         //GameManager.Instance.OnPartyCharactersChangedAction += RefreshPlayerCharData;
         //GameManager.Instance.OnPartyOrderChangedAction += RefreshPlayerCharData;
@@ -202,6 +215,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         this.MMEventStopListening<ExitGameSessionEvent>();
         this.MMEventStopListening<NetworkServerStartEvent>();
+        this.MMEventStopListening<StartHavenGameStateEvent>();
 
         //GameManager.Instance.OnPartyCharactersChangedAction -= RefreshPlayerCharData;
         //GameManager.Instance.OnPartyOrderChangedAction -= RefreshPlayerCharData;
@@ -219,6 +233,11 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         DestroyIfNotConnectedToNetwork();
     }
 
+    public void OnMMEvent(StartHavenGameStateEvent eventType)
+    {
+        _objectActivationController.SetObjectActivation(false);
+    }
+
     #endregion
 
 
@@ -229,11 +248,6 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     public int GetPlayerNumber()
     {
         return playerNumber;
-    }
-
-    public CharacterData GetCharDataSecondary()
-    {
-        return charDataSecondary;
     }
 
     #endregion

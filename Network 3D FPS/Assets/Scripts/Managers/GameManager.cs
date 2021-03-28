@@ -7,7 +7,7 @@ using BundleSystem;
 using System;
 
 public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEvent>, 
-    MMEventListener<NewSaveCreatedEvent>
+    MMEventListener<NewSaveCreatedEvent>, MMEventListener<NetworkGameLocalJoinedEvent>
 {
     #region Class Variables
 
@@ -34,19 +34,32 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private CharacterData defaultPartyCharacter = null;
     public Action OnDefaultPartyCharacterChangedAction;
 
-    [Header("Object Poolers")]
+    [SyncVar(hook = nameof(OnGameSeedChanged))]
+    private int gameSeed = 0;
+    public Action OnGameSeedChangedAction;
+
+    [Header("Manager References")]
 
     [SerializeField]
-    private NetworkObjectPooler projectilePooler = null;
-    public NetworkObjectPooler ProjectilePooler
+    private SpawnManager spawnManager = null;
+    public SpawnManager SpawnManager
     {
-        get { return projectilePooler; }
+        get { return spawnManager; }
     }
 
     [SerializeField]
-    private NetworkObjectPooler enemyPooler = null;
+    private LevelManager levelManager = null;
+    public LevelManager LevelManager
+    {
+        get { return levelManager; }
+    }
+
     [SerializeField]
-    private NetworkObjectPooler pickupAmmoPooler = null;
+    private GameSeedManager gameSeedManager = null;
+    public GameSeedManager GameSeedManager
+    {
+        get { return gameSeedManager; }
+    }
 
     #endregion
 
@@ -267,6 +280,14 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         SetPartyOrder(partyOrder);
     }
 
+    /// <summary>
+    /// Set game seed to current synced seed.
+    /// </summary>
+    private void SetupGameSeed()
+    {
+        GameSeedManager.SetupSeed(gameSeed);
+    }
+
     #endregion
 
 
@@ -340,7 +361,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private void SpawnEnemyMain(Vector3 posArg, Quaternion rotArg)
     {
         // get pooled enemy object
-        GameObject enemyObj = enemyPooler.GetFromPool(posArg, rotArg);
+        GameObject enemyObj = SpawnManager.EnemyPooler.GetFromPool(posArg, rotArg);
         // spawn pooled object on network
         NetworkServer.Spawn(enemyObj);
     }
@@ -402,6 +423,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         OnDefaultPartyCharacterChangedAction?.Invoke();
     }
 
+    public void OnGameSeedChanged(int oldArg, int newArg)
+    {
+        // call game seed change actions if NOT null
+        OnGameSeedChangedAction?.Invoke();
+    }
+
     #endregion
 
 
@@ -417,6 +444,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStartListening<GamePausingActionEvent>();
         this.MMEventStartListening<NewSaveCreatedEvent>();
+        this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
 
         //partyCharacters.Callback += OnPartyCharactersChanged;
     }
@@ -429,6 +457,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStopListening<GamePausingActionEvent>();
         this.MMEventStopListening<NewSaveCreatedEvent>();
+        this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
 
         //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
@@ -445,6 +474,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         //SetPartyCharacters(new SyncList<CharacterData>(eventType.saveData.playableCharacterData));
         // setup player char order list to the default order
         SetPartyOrderToDefault();
+    }
+
+    public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)
+    {
+        // set game seed to current synced seed
+        SetupGameSeed();
     }
 
     #endregion

@@ -11,6 +11,10 @@ public class CharacterMasterController : NetworkBehaviour
     [SyncVar(hook = nameof(OnCharDataChanged))]
     private CharacterData charData = null;
     public Action OnCharDataChangedAction;
+    public CharacterData CharData
+    {
+        get { return charData; }
+    }
 
     [SyncVar(hook = nameof(OnEquippedWeaponSlotNumChanged))]
     private int equippedWeaponSlotNum = 1;
@@ -113,7 +117,7 @@ public class CharacterMasterController : NetworkBehaviour
     /// Returns the weapon slot that is currently being used.
     /// </summary>
     /// <returns></returns>
-    private WeaponSlotData GetEquippedWeaponSlot()
+    public WeaponSlotData GetEquippedWeaponSlot()
     {
         // if no char data is set
         if (charData == null)
@@ -127,7 +131,7 @@ public class CharacterMasterController : NetworkBehaviour
             equippedWeaponSlotNum);
     }
 
-    private AmmoPouch GetEquippedAmmoPouch()
+    public AmmoPouch GetEquippedAmmoPouch()
     {
         // get currently equipped weapon slot
         WeaponSlotData equippedWepSlot = GetEquippedWeaponSlot();
@@ -218,11 +222,6 @@ public class CharacterMasterController : NetworkBehaviour
 
 
     #region Getter Functions
-
-    public CharacterData GetCharData()
-    {
-        return charData;
-    }
 
     public int GetEquippedWeaponSlotNum()
     {

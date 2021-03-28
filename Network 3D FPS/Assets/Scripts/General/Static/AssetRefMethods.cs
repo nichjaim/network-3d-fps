@@ -287,7 +287,7 @@ public static class AssetRefMethods
 
 
 
-    /*#region Asset Bundle Environment Functions
+    #region Asset Bundle Environment Functions
 
     public static GameObject LoadBundleAssetWorldChunk(bool isUniqueChunkArg, WorldBiomeType worldBiomeTypeArg, string chunkIdArg)
     {
@@ -342,16 +342,16 @@ public static class AssetRefMethods
 
     #region Asset Bundle Animation Functions
 
-    public static AnimatorOverrideController[] LoadAllBundleAssetAnimatorZombie()
+    /*public static AnimatorOverrideController[] LoadAllBundleAssetAnimatorZombie()
     {
         // initialize bundle properties
         string BUNDLE_NAME = "AnimatorZombie";
 
         // load and return asset
         return LoadAllBundleAsset<AnimatorOverrideController>(BUNDLE_NAME);
-    }
+    }*/
 
-    #endregion*/
+    #endregion
 
 
 }

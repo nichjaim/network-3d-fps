@@ -13,6 +13,8 @@ public class CharacterData
     public CharacterInventory characterInventory;
     public WeaponTypeSet favoredWeaponTypes;
 
+    public FactionReputation factionReputation;
+
     #endregion
 
 
@@ -40,6 +42,8 @@ public class CharacterData
         favoredWeaponTypes = new WeaponTypeSet(templateArg.favoredWeaponTypesTemplate);
 
         characterInventory = new CharacterInventory(templateArg.characterInventoryTemplate);
+
+        factionReputation = new FactionReputation(templateArg.factionReputationTemplate);
     }
 
     #endregion
@@ -56,6 +60,8 @@ public class CharacterData
 
         characterInventory = new CharacterInventory();
         favoredWeaponTypes = new WeaponTypeSet();
+
+        factionReputation = new FactionReputation();
     }
 
     private void Setup(CharacterData templateArg)
@@ -65,6 +71,8 @@ public class CharacterData
 
         characterInventory = new CharacterInventory(templateArg.characterInventory);
         favoredWeaponTypes = new WeaponTypeSet(templateArg.favoredWeaponTypes);
+
+        factionReputation = new FactionReputation(templateArg.factionReputation);
     }
 
     #endregion

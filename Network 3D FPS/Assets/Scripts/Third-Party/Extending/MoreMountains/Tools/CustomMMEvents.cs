@@ -5,31 +5,6 @@ using UnityEngine;
 using Mirror;
 
 /// <summary>
-/// An event fired when an player performs a primary attack.
-/// </summary>
-public struct PlayerAttackEvent
-{
-	public int playerNumber;
-
-	/// <summary>
-	/// Initializes a new instance of the struct.
-	/// </summary>
-	/// <param name="playerNumberArg"></param>
-	public PlayerAttackEvent(int playerNumberArg)
-	{
-		playerNumber = playerNumberArg;
-	}
-
-	static PlayerAttackEvent e;
-	public static void Trigger(int playerNumberArg)
-	{
-		e.playerNumber = playerNumberArg;
-
-		MMEventManager.TriggerEvent(e);
-	}
-}
-
-/// <summary>
 /// An event fired when starting a fresh new game.
 /// </summary>
 public struct StartNewGameEvent
@@ -258,6 +233,93 @@ public struct MenuActivationEvent
 	{
 		e.menu = menuArg;
 		e.isOpening = isOpeningArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when a teleporter is used.
+/// </summary>
+public struct TeleportingEvent
+{
+	public TeleporterController teleporter;
+	public GameObject teleportingObject;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="teleporterArg"></param>
+	/// <param name="teleportingObjectArg"></param>
+	public TeleportingEvent(TeleporterController teleporterArg,
+		GameObject teleportingObjectArg)
+	{
+		teleporter = teleporterArg;
+		teleportingObject = teleportingObjectArg;
+	}
+
+	static TeleportingEvent e;
+	public static void Trigger(TeleporterController teleporterArg,
+		GameObject teleportingObjectArg)
+	{
+		e.teleporter = teleporterArg;
+		e.teleportingObject = teleportingObjectArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired for the various stages of world level generation.
+/// </summary>
+public struct GenerateWorldLevelEvent
+{
+	public ActionProgressType generateProgress;
+	public WorldChunkController[][] generatedWorld;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="generateProgressArg"></param>
+	/// <param name="generatedWorldArg"></param>
+	public GenerateWorldLevelEvent(ActionProgressType generateProgressArg,
+		WorldChunkController[][] generatedWorldArg)
+	{
+		generateProgress = generateProgressArg;
+		generatedWorld = generatedWorldArg;
+	}
+
+	static GenerateWorldLevelEvent e;
+	public static void Trigger(ActionProgressType generateProgressArg,
+		WorldChunkController[][] generatedWorldArg)
+	{
+		e.generateProgress = generateProgressArg;
+		e.generatedWorld = generatedWorldArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when the player char associated with the UI has been changed.
+/// </summary>
+public struct UiPlayerCharChangedEvent
+{
+	public PlayerCharacterMasterController playerChar;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="playerCharArg"></param>
+	public UiPlayerCharChangedEvent(PlayerCharacterMasterController playerCharArg)
+	{
+		playerChar = playerCharArg;
+	}
+
+	static UiPlayerCharChangedEvent e;
+	public static void Trigger(PlayerCharacterMasterController playerCharArg)
+	{
+		e.playerChar = playerCharArg;
 
 		MMEventManager.TriggerEvent(e);
 	}

@@ -15,6 +15,7 @@ MonoBehaviour:
   characterInfoColor: {r: 1, g: 0.4933104, b: 0, a: 0}
   favoredWeaponTypesTemplate: {fileID: 11400000, guid: ebd12ea7ec2008b41b8dad9f59097934, type: 2}
   characterInventoryTemplate: {fileID: 11400000, guid: 75a4a17424aed4e459411ebf3a121e17, type: 2}
+  factionReputationTemplate: {fileID: 11400000, guid: f39d188f74cfbea4ea23fd104c786441, type: 2}
   template:
     characterInfo:
       characterId: 5
@@ -53,4 +54,13 @@ MonoBehaviour:
     favoredWeaponTypes:
       setId: 0
       setName: NAME
+      doesNeedAmmo: 1
       weaponTypes: 
+    factionReputation:
+      homeFaction:
+        factionId: 0
+        factionName: NAME
+        factionDescription: DESCRIPTION
+        canFriendlyFire: 0
+        inherentlyHostile: 0
+      factionsAndReputationPoints: []

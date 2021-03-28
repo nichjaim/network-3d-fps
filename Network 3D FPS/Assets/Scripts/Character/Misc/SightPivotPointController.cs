@@ -156,7 +156,7 @@ public class SightPivotPointController : MonoBehaviour
     private void RefreshCameraHeight()
     {
         // get scondary character data (which is the char used for visuals such as heigth)
-        CharacterData charDataSecondary = _playerCharacterMasterController.GetCharDataSecondary();
+        CharacterData charDataSecondary = _playerCharacterMasterController.CharDataSecondary;
         // if NO valid char data set
         if (charDataSecondary == null)
         {

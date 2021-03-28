@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: chardata-1
   m_EditorClassIdentifier: 
   characterInfoColor: {r: 0, g: 0, b: 0, a: 0}
+  favoredWeaponTypesTemplate: {fileID: 0}
+  characterInventoryTemplate: {fileID: 0}
   template:
     characterInfo:
       characterId: 1
       characterName: Template
-      characterHeight: 1
+      characterHeightInCm: 165
       characterHexColorCode: FFFFFF
     characterStats:
       healthMaxBase: 1
@@ -44,3 +46,12 @@ MonoBehaviour:
       manaRegenerationAmount: 1
       flashlightReachDirectional: 1
       flashlightReachOmniDirectional: 0
+    characterInventory:
+      weaponSlots: []
+      inventoryAmmo:
+        ammoPouches: []
+    favoredWeaponTypes:
+      setId: 0
+      setName: NAME
+      doesNeedAmmo: 1
+      weaponTypes: 

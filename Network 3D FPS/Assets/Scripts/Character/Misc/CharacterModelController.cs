@@ -84,19 +84,19 @@ public class CharacterModelController : MonoBehaviour
         if (_playerCharacterMasterController != null)
         {
             // get secondary char data
-            charData = _playerCharacterMasterController.GetCharDataSecondary();
+            charData = _playerCharacterMasterController.CharDataSecondary;
             // if no secondary char data is set
             if (charData == null)
             {
                 // get primary char data
-                charData = _characterMasterController.GetCharData();
+                charData = _characterMasterController.CharData;
             }
         }
         // else char master is NOT a player
         else
         {
             // get primary char data
-            charData = _characterMasterController.GetCharData();
+            charData = _characterMasterController.CharData;
         }
 
         // if char data was found

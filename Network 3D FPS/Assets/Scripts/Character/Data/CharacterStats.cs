@@ -214,6 +214,33 @@ public class CharacterStats
     }
 
     /// <summary>
+    /// Sets the char's current health based on the given percentage.
+    /// </summary>
+    /// <param name="percentageArg"></param>
+    public void SetHealthToPercentage(float percentageArg)
+    {
+        // if the char is still alive
+        if (!IsOutOfHealth())
+        {
+            // get the new health value from the given percentage as a float
+            float newHealthFloat = (float)GetTrueMaxHealthWithoutFatigueModifier() * percentageArg;
+            // round ehalth value to an int
+            int newHealth = Mathf.RoundToInt(newHealthFloat);
+            // ensure new health value stays within the alive value boundaries
+            newHealth = Mathf.Clamp(newHealth, 1, GetTrueMaxHealthWithoutFatigueModifier());
+
+            // set current health to new calculated health
+            healthCurrent = newHealth;
+        }
+        // else the char is already dead
+        else
+        {
+            // set health to zero
+            healthCurrent = 0;
+        }
+    }
+
+    /// <summary>
     /// Decreases health based on given damage.
     /// </summary>
     /// <param name="damageArg"></param>

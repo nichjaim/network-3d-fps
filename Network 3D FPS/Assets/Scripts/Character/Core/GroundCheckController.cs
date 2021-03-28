@@ -89,14 +89,15 @@ public class GroundCheckController : MonoBehaviour
 
     private IEnumerator RefreshGroundingCycleInternal()
     {
-        // wait refresh rate time
-        yield return new WaitForSeconds(automaticRefreshRate);
+        // infinitely loop
+        while (true)
+        {
+            // wait refresh rate time
+            yield return new WaitForSeconds(automaticRefreshRate);
 
-        // refresh whether grounded
-        RefreshGrounding();
-
-        // continue the cycle
-        RefreshGroundingCycle();
+            // refresh whether grounded
+            RefreshGrounding();
+        }
     }
 
     #endregion

@@ -18,8 +18,16 @@ public class CharacterSwapController : MonoBehaviour
     /// the character that the char is underneath all the char swapping. Uses this 
     /// char's inventory through all swapping
     private CharacterData primaryCharacter = null;
+    public CharacterData PrimaryCharacter
+    {
+        get { return primaryCharacter; }
+    }
 
     private List<CharacterData> swappableCharacters = new List<CharacterData>();
+    public List<CharacterData> SwappableCharacters
+    {
+        get { return swappableCharacters; }
+    }
 
     #endregion
 
@@ -121,7 +129,7 @@ public class CharacterSwapController : MonoBehaviour
 
         /// get the character's primary data (which is the data used for inventory, not the one for 
         /// models/heigth/stats/etc.)
-        CharacterData characterData = _playerCharacterMasterController.GetCharData();
+        CharacterData characterData = _playerCharacterMasterController.CharData;
         // if no char data found
         if (characterData == null)
         {

@@ -8,6 +8,7 @@ public class CharacterDataTemplate : ScriptableObject
     public Color characterInfoColor;
     public WeaponTypeSetTemplate favoredWeaponTypesTemplate;
     public CharacterInventoryTemplate characterInventoryTemplate;
+    public FactionReputationTemplate factionReputationTemplate;
 
     public CharacterData template;
 }

@@ -29,7 +29,17 @@ public class WeaponSlotData
 
     public WeaponSlotData(WeaponSlotDataTemplate templateArg)
     {
-        slotWeapon = new WeaponData(templateArg.weaponDataTemplate);
+        // if given a weapon
+        if (templateArg.weaponDataTemplate != null)
+        {
+            slotWeapon = new WeaponData(templateArg.weaponDataTemplate);
+        }
+        // else NO weapon template given
+        else
+        {
+            slotWeapon = null;
+        }
+
         requiredWeaponTypeSet = new WeaponTypeSet(templateArg.weaponTypeSetTemplate);
     }
 

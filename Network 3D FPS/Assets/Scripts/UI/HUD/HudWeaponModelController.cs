@@ -86,9 +86,10 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
             // if a weapon is equipped
             if (equippedWep != null)
             {
+                string wepId = equippedWep.itemInfo.itemId;
                 // get equipped weapon's associated HUD model animator
                 newWepAnim = AssetRefMethods.LoadBundleAssetHudWeaponModelAnimator(
-                    equippedWep.itemInfo.itemId);
+                    /*equippedWep.itemInfo.itemId*/wepId);
             }
 
             // turn ON image comp if got valid animator and turn OFF if got null animator

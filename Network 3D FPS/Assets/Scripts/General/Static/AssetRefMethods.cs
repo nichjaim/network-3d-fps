@@ -253,6 +253,32 @@ public static class AssetRefMethods
         return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
     }
 
+    public static Sprite LoadBundleAssetWeaponTypeSetIcon(string setIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "WepTypeSetIcon";
+        string ASSET_NAME_PREFIX = "seticon-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + setIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetActiveAbilityIcon(string abilityIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "ActiveAbilityIcon";
+        string ASSET_NAME_PREFIX = "abilityicon-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + abilityIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
     #endregion
 
 

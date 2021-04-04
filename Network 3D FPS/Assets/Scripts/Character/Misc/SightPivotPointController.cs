@@ -19,6 +19,15 @@ public class SightPivotPointController : MonoBehaviour
     [SerializeField]
     private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
+    [Header("Sight Components")]
+
+    [SerializeField]
+    private Transform firePoint = null;
+    public Transform FirePoint
+    {
+        get { return firePoint; }
+    }
+
     #endregion
 
 

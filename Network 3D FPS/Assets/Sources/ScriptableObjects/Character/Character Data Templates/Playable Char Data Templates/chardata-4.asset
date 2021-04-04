@@ -16,6 +16,8 @@ MonoBehaviour:
   favoredWeaponTypesTemplate: {fileID: 11400000, guid: 78e1986665721f2478e0eaa6a507db22, type: 2}
   characterInventoryTemplate: {fileID: 11400000, guid: c9ead6ddd32e9d14dbf03e4492248002, type: 2}
   factionReputationTemplate: {fileID: 11400000, guid: f39d188f74cfbea4ea23fd104c786441, type: 2}
+  activeAbilityTemplates:
+  - {fileID: 11400000, guid: 6f0b938e611fa2a4c90e1bd08be9c05b, type: 2}
   template:
     characterInfo:
       characterId: 4
@@ -23,7 +25,7 @@ MonoBehaviour:
       characterHeightInCm: 183
       characterHexColorCode: FFFFFF
     characterStats:
-      healthMaxBase: 1
+      healthMaxBase: 15
       healthCurrent: 1
       healthFatigue: 0
       healthFatigueBuildup: 0
@@ -33,7 +35,7 @@ MonoBehaviour:
       manaFatigueBuildup: 0
       fatigueBuildupCap: 10
       fatigueMaxPercentage: 0.7
-      statStamina: 1
+      statStamina: 5
       statIntelligence: 1
       statStrength: 1
       statDexterity: 1
@@ -64,3 +66,6 @@ MonoBehaviour:
         canFriendlyFire: 0
         inherentlyHostile: 0
       factionsAndReputationPoints: []
+    activeAbilityLoadout:
+      activeAbilities: []
+      quickSlotsAbilityIndices: ffffffffffffffffffffffff

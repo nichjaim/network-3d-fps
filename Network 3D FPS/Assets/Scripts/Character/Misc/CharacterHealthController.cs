@@ -58,12 +58,16 @@ public class CharacterHealthController : MonoBehaviour
         {
             // have the surface level char recover health
             charFrontFacingData.characterStats.HealHealth(changeValueArg);
+
+            Debug.Log("NEED IMPL: Spawn healing action text popup!"); // NEED IMPL!
         }
         // else removing health
         else
         {
             // have the surface level char take health damage
             charFrontFacingData.characterStats.TakeDamage(changeValueArg);
+
+            Debug.Log("NEED IMPL: Spawn damage action text popup!"); // NEED IMPL!
         }
 
         /// set all the swap characters health based on the surface level char's health percentage, 
@@ -115,6 +119,24 @@ public class CharacterHealthController : MonoBehaviour
         {
             // returns whether this char's reputation allows the attacker to harm them
             return attackerRepArg.DoesReputationAllowHarm(surfaceLevelCharData.factionReputation);
+        }
+        // else no char data found
+        else
+        {
+            // return some default bool
+            return false;
+        }
+    }
+
+    public bool AreFactionAllies(FactionReputation attackerRepArg)
+    {
+        // get front facing char data from this character
+        CharacterData surfaceLevelCharData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+            _characterMasterController);
+        // if char data retrieved
+        if (surfaceLevelCharData != null)
+        {
+            return surfaceLevelCharData.factionReputation.AreFactionAllies(attackerRepArg);
         }
         // else no char data found
         else

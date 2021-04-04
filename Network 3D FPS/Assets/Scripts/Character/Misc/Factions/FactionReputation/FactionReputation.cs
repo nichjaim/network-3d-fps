@@ -187,7 +187,7 @@ public class FactionReputation
     /// <returns></returns>
     private SerializableDataFactionDataAndInt GetDataEntryAssociatedWithFaction(FactionData factionDataArg)
     {
-        return factionsAndReputationPoints.First(
+        return factionsAndReputationPoints.FirstOrDefault(
             iterData => iterData.valueFactionData.factionId == factionDataArg.factionId);
     }
 
@@ -210,6 +210,16 @@ public class FactionReputation
             // add new rep standing entry for given faction
             factionsAndReputationPoints.Add(new SerializableDataFactionDataAndInt(factionArg, repPtsArg));
         }
+    }
+
+    /// <summary>
+    /// Returns bool that denotes if this char is in the same faction as given rep holder.
+    /// </summary>
+    /// <param name="factionRepArg"></param>
+    /// <returns></returns>
+    public bool AreFactionAllies(FactionReputation factionRepArg)
+    {
+        return homeFaction.factionId == factionRepArg.homeFaction.factionId;
     }
 
     #endregion

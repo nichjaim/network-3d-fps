@@ -60,13 +60,14 @@ public class CharacterSwapController : MonoBehaviour
 
     private void RefreshSwapCharacters()
     {
-        // if player is online but NOT associated with the machine running this
+        /*// if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
         {
             // DONT continue code
             return;
-        }
+        }*/
 
+        // call internal function as coroutine
         StartCoroutine(RefreshSwapCharactersInternal());
     }
 
@@ -77,6 +78,13 @@ public class CharacterSwapController : MonoBehaviour
     {
         // wait till network properties are actually set
         yield return new WaitForEndOfFrame();
+
+        // if player is online but NOT associated with the machine running this
+        if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            yield break;
+        }
 
         // if playing solo
         //if (((NetworkManagerCustom)NetworkManager.singleton).numPlayers <= 1)
@@ -127,18 +135,15 @@ public class CharacterSwapController : MonoBehaviour
         // reset list of swapping characters to fresh empty list
         swappableCharacters = new List<CharacterData>();
 
-        /// get the character's primary data (which is the data used for inventory, not the one for 
-        /// models/heigth/stats/etc.)
-        CharacterData characterData = _playerCharacterMasterController.CharData;
-        // if no char data found
-        if (characterData == null)
+        // if no primary char data setup
+        if (primaryCharacter == null)
         {
             // DONT continue code
             return;
         }
 
         // get inventory of char's primary data
-        CharacterInventory charInv = characterData.characterInventory;
+        CharacterInventory charInv = primaryCharacter.characterInventory;
 
         // initialize var for upcoming loop
         WeaponSlotData iterWepSlot;
@@ -163,6 +168,13 @@ public class CharacterSwapController : MonoBehaviour
             {
                 // add the char to the swappable chars to lock them into iterating weapon slot
                 swappableCharacters.Add(slotChar);
+            }
+            // else no char matching found
+            else
+            {
+                // print warning to log
+                Debug.LogWarning("No party character exists whose weapon preference matches weapon " +
+                    $"slot's weapon set. Weapon type set name: {iterWepSlot.requiredWeaponTypeSet.setName}");
             }
         }
     }

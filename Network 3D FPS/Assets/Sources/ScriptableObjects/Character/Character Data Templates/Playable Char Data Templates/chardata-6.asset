@@ -16,6 +16,8 @@ MonoBehaviour:
   favoredWeaponTypesTemplate: {fileID: 11400000, guid: 7344bf697f54d8b41b489856696c1a30, type: 2}
   characterInventoryTemplate: {fileID: 11400000, guid: 44bb71c0da813af4e9ec366752b56d55, type: 2}
   factionReputationTemplate: {fileID: 11400000, guid: f39d188f74cfbea4ea23fd104c786441, type: 2}
+  activeAbilityTemplates:
+  - {fileID: 11400000, guid: fadc342ed7054c24fba189a5a6a04740, type: 2}
   template:
     characterInfo:
       characterId: 6
@@ -64,3 +66,6 @@ MonoBehaviour:
         canFriendlyFire: 0
         inherentlyHostile: 0
       factionsAndReputationPoints: []
+    activeAbilityLoadout:
+      activeAbilities: []
+      quickSlotsAbilityIndices: ffffffffffffffffffffffff

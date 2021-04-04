@@ -18,7 +18,7 @@ public class CharacterActionAttackController : NetworkBehaviour
     [SerializeField]
     private CharacterMasterController _characterMasterController = null;
 
-    private NetworkObjectPooler _projectilePooler = null;
+    private NetworkObjectPooler _bulletPooler = null;
 
     [SerializeField]
     private Transform firePoint = null;
@@ -81,7 +81,7 @@ public class CharacterActionAttackController : NetworkBehaviour
     private void InitializeSingletonReferences()
     {
         _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
-        _projectilePooler = GameManager.Instance.SpawnManager.ProjectilePooler;
+        _bulletPooler = GameManager.Instance.SpawnManager.BulletPooler;
     }
 
     #endregion
@@ -128,77 +128,9 @@ public class CharacterActionAttackController : NetworkBehaviour
         // call attack actions if NOT null
         OnCharacterAttackAction?.Invoke();
 
-        if (NetworkClient.isConnected)
-        {
-            CmdAttackAction();
-        }
-        else
-        {
-            AttackActionInternal();
-        }
+        // spawns and fires a projectile
+        SpawnProjectile();
     }
-
-    [Command]
-    private void CmdAttackAction()
-    {
-        AttackActionInternal();
-    }
-
-    private void AttackActionInternal()
-    {
-        // get pooled projectile object
-        //GameObject projectileObj = projectilePooler.GetPooledGameObject();
-        /*GameObject projectileObj = GameManager.Instance.CmdSpawnObject(projectilePooler, 
-            firePoint.position, _characterMasterController.transform.rotation);*/
-        // get object from given pooler
-        GameObject projectileObj = _projectilePooler.GetFromPool(firePoint.position,
-            firePoint.rotation);
-        // spawn pooled object on network
-        NetworkServer.Spawn(projectileObj);
-
-        // get projectile from pooled object
-        ProjectileController projectile = projectileObj.GetComponent<ProjectileController>();
-        // if no such component found
-        if (projectile == null)
-        {
-            // print warning to console
-            Debug.LogWarning("Projectile object does NOT have ProjectileController component! " +
-                $"Object name: {projectileObj.name}");
-            // DONT continue code
-            return;
-        }
-
-        // set projectile object to appropriate position and rotation
-        /*projectileObj.transform.SetPositionAndRotation(firePoint.position, 
-            _characterMasterController.transform.rotation);*/
-        // setup projectile data
-        projectile.SetupProjectile(_characterMasterController);
-        //projectileObj.SetActive(true);
-    }
-
-    /*[Command]
-    public GameObject CmdSpawnObject(Vector3 posArg,
-        Quaternion rotArg)
-    {
-        // get object from given pooler
-        GameObject pooledObj = projectilePooler.GetFromPool(posArg, rotArg);
-
-        // spawn pooled object on network
-        NetworkServer.Spawn(pooledObj);
-
-        // return the pooled object
-        return pooledObj;
-    }
-
-    [Command]
-    public void CmdUnspawnObject(NetworkObjectPooler objectPoolerArg, GameObject pooledObjArg)
-    {
-        // return object to pool on server
-        objectPoolerArg.PutBackInPool(pooledObjArg);
-
-        // tell server to send ObjectDestroyMessage, which will call UnspawnHandler on client
-        NetworkServer.UnSpawn(pooledObjArg);
-    }*/
 
     /// <summary>
     /// Put attacking on cooldown then take it off after the given amount of time.
@@ -241,6 +173,60 @@ public class CharacterActionAttackController : NetworkBehaviour
             // performs the act of attacking
             AttackAction();
         }
+    }
+
+    #endregion
+
+
+
+
+    #region Spawn Projectile Functions
+
+    /// <summary>
+    /// Spawns and fires a projectile.
+    /// </summary>
+    private void SpawnProjectile()
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSpawnProjectile();
+        }
+        else
+        {
+            SpawnProjectileInternal();
+        }
+    }
+
+    [Command]
+    private void CmdSpawnProjectile()
+    {
+        SpawnProjectileInternal();
+    }
+
+    private void SpawnProjectileInternal()
+    {
+        // get object from given pooler
+        GameObject projectileObj = _bulletPooler.GetFromPool(firePoint.position,
+            firePoint.rotation);
+
+        // spawn pooled object on network
+        NetworkServer.Spawn(projectileObj);
+
+        // get projectile from pooled object
+        BulletController projectile = projectileObj.GetComponent<BulletController>();
+        // if no such component found
+        if (projectile == null)
+        {
+            // print warning to console
+            Debug.LogWarning("Projectile object does NOT have ProjectileController component! " +
+                $"Object name: {projectileObj.name}");
+
+            // DONT continue code
+            return;
+        }
+
+        // setup projectile data
+        projectile.SetupProjectile(_characterMasterController);
     }
 
     #endregion

@@ -15,6 +15,8 @@ public class CharacterData
 
     public FactionReputation factionReputation;
 
+    public ActiveAbilityLoadout activeAbilityLoadout;
+
     #endregion
 
 
@@ -44,6 +46,12 @@ public class CharacterData
         characterInventory = new CharacterInventory(templateArg.characterInventoryTemplate);
 
         factionReputation = new FactionReputation(templateArg.factionReputationTemplate);
+
+        activeAbilityLoadout = new ActiveAbilityLoadout();
+        foreach (ActiveAbilityTemplate iterAbilityTemp in templateArg.activeAbilityTemplates)
+        {
+            activeAbilityLoadout.AddActiveAbility(new ActiveAbility(iterAbilityTemp));
+        }
     }
 
     #endregion
@@ -62,6 +70,8 @@ public class CharacterData
         favoredWeaponTypes = new WeaponTypeSet();
 
         factionReputation = new FactionReputation();
+
+        activeAbilityLoadout = new ActiveAbilityLoadout();
     }
 
     private void Setup(CharacterData templateArg)
@@ -73,6 +83,8 @@ public class CharacterData
         favoredWeaponTypes = new WeaponTypeSet(templateArg.favoredWeaponTypes);
 
         factionReputation = new FactionReputation(templateArg.factionReputation);
+
+        activeAbilityLoadout = new ActiveAbilityLoadout(templateArg.activeAbilityLoadout);
     }
 
     #endregion

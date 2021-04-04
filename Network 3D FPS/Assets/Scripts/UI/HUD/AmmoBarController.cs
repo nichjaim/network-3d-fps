@@ -2,12 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AmmoBarController : ValueBarController, MMEventListener<UiPlayerCharChangedEvent>
 {
     #region Class Variables
 
     private UIManager _uiManager = null;
+
+    [Header("Ammo Properties")]
+
+    [SerializeField]
+    private Image imageAmmoType = null;
 
     #endregion
 
@@ -92,6 +98,9 @@ public class AmmoBarController : ValueBarController, MMEventListener<UiPlayerCha
                         // refresh ammo bar based on ammo pouch
                         RefreshBarDimensions(equippedAmmoPouch.currentAmmo, equippedAmmoPouch.maxAmmo);
 
+                        // setup the ammo type image based on ammo being used
+                        RefreshAmmoTypeImage();
+
                         // DONT continue code
                         return;
                     }
@@ -101,6 +110,8 @@ public class AmmoBarController : ValueBarController, MMEventListener<UiPlayerCha
 
         // getting here means that ammo bar should NOT be used, so turn OFF the ammo bar
         SetBarActivation(false);
+        // turn OFF ammo type icon image
+        imageAmmoType.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -117,6 +128,39 @@ public class AmmoBarController : ValueBarController, MMEventListener<UiPlayerCha
             // refresh ammo bar based on ammo pouch
             RefreshBarValue(equippedAmmoPouch.currentAmmo);
         }
+    }
+
+    /// <summary>
+    /// Sets up the ammo type image based on ammo being used.
+    /// </summary>
+    private void RefreshAmmoTypeImage()
+    {
+        // get currently equipped ammo pouch
+        AmmoPouch equippedAmmoPouch = _uiManager.UiPlayerCharacter.GetEquippedAmmoPouch();
+
+        // if pouch found
+        if (equippedAmmoPouch != null)
+        {
+            // load sprite icon associated with type of ammo being used
+            Sprite ammoTypeIcon = AssetRefMethods.LoadBundleAssetWeaponTypeSetIcon(
+                equippedAmmoPouch.ammoType.setId);
+
+            // if sprite successfully loaded
+            if (ammoTypeIcon != null)
+            {
+                // set ammo type image to loaded sprite
+                imageAmmoType.sprite = ammoTypeIcon;
+
+                // turn ON ammo type image object
+                imageAmmoType.gameObject.SetActive(true);
+
+                // DONT continue code
+                return;
+            }
+        }
+
+        // getting here means that ammo type image should NOT be used, so turn OFF the image object
+        imageAmmoType.gameObject.SetActive(false);
     }
 
     #endregion

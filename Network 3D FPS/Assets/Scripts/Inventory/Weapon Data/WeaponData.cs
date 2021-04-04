@@ -32,12 +32,6 @@ public class WeaponData
 
     public WeaponData(WeaponDataTemplate templateArg)
     {
-        if (templateArg == null)
-        {
-            // DONT continue code
-            return;
-        }
-
         Setup(templateArg.template);
 
         itemInfo.SetupPrefixName(templateArg.potentialPrefixNames);

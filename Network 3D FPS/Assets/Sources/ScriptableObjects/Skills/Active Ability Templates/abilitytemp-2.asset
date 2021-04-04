@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45ef76e36c59a944692abbbd9772faeb, type: 3}
+  m_Name: abilitytemp-2
+  m_EditorClassIdentifier: 
+  template:
+    abilityId: 2
+    abilityName: Scavenged Shield
+    abilityDescription: Holds up a shielding object, nullifies all contacting enemy
+      projectiles.
+    abilityRank: 1
+    resourceCostBase: 1
+    resourceCostRankIncreasePercentage: 0.1
+    resourceCostCeiling: 1
+    cooldownTimeBase: 5
+    cooldownTimeRankReductionPercentage: 0.1
+    cooldownTimeFloor: 1

@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _networkIdentity: {fileID: 1155702855888981319}
   _playerCharacterMasterController: {fileID: 7713174688871147706}
+  firePoint: {fileID: 8639921421563885493}
 --- !u!1 &1155702855682428537
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +292,7 @@ GameObject:
   - component: {fileID: 1155702855888981322}
   - component: {fileID: 7713174688871147706}
   - component: {fileID: 4709019603047949054}
+  - component: {fileID: 1861988728948902557}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -432,6 +434,23 @@ MonoBehaviour:
   _networkIdentity: {fileID: 1155702855888981319}
   _characterMasterController: {fileID: 7713174688871147706}
   firePoint: {fileID: 8639921421563885493}
+--- !u!114 &1861988728948902557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155702855888981323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4020557c2d0097d4fa89a9552c9fe899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _networkIdentity: {fileID: 1155702855888981319}
+  _characterMasterController: {fileID: 7713174688871147706}
+  abilitySpawnPoint: {fileID: 8639921421563885493}
 --- !u!1 &1155702855903461591
 GameObject:
   m_ObjectHideFlags: 0

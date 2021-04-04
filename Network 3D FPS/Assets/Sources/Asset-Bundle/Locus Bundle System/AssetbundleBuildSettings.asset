@@ -49,6 +49,18 @@ MonoBehaviour:
       guid: 3faac997e623fe641ad5c2f3ed0cba58
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: WepTypeSetIcon
+    IncludedInPlayer: 1
+    Folder:
+      guid: 7276b67d7de6ee243827a7928088405f
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: ActiveAbilityIcon
+    IncludedInPlayer: 1
+    Folder:
+      guid: 60abf6f2c55cf3748a898cfce75b0f91
+    IncludeSubfolder: 0
+    CompressBundle: 1
   AutoCreateSharedBundles: 1
   m_RemoteOutputFolder: RemoteBundles
   m_LocalOutputFolder: LocalBundles

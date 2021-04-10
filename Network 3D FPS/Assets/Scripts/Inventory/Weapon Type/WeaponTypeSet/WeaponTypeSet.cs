@@ -49,6 +49,8 @@ public class WeaponTypeSet
         setId = "0";
         setName = "NAME";
 
+        doesNeedAmmo = true;
+
         weaponTypes = new List<WeaponType>();
     }
 
@@ -56,6 +58,8 @@ public class WeaponTypeSet
     {
         setId = templateArg.setId;
         setName = templateArg.setName;
+
+        doesNeedAmmo = templateArg.doesNeedAmmo;
 
         weaponTypes = new List<WeaponType>();
         foreach (WeaponType iterType in templateArg.weaponTypes)

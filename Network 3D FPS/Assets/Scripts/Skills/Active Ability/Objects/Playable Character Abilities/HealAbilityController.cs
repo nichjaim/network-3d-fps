@@ -34,7 +34,8 @@ public class HealAbilityController : ActiveAbilityController
         if (collidingHitbox != null)
         {
             // get health associated with health
-            CharacterHealthController collidingHealth = collidingHitbox.CharHealth;
+            CharacterHealthController collidingHealth = collidingHitbox.CharMaster.
+                CharHealth;
 
             // if colliding char already been healed
             if (healthAlreadyHealed.Contains(collidingHealth))
@@ -44,11 +45,11 @@ public class HealAbilityController : ActiveAbilityController
             }
 
             // if hit target is ally of caster
-            if (collidingHitbox.CharHealth.AreFactionAllies(
+            if (collidingHitbox.CharMaster.CharHealth.AreFactionAllies(
                 _casterCharData.factionReputation))
             {
                 // heal hitbox target to full health
-                collidingHitbox.CharHealth.HealHealth(999999);
+                collidingHitbox.CharMaster.CharHealth.HealHealth(_casterCharMaster, 999999);
 
                 // denote that hitbox target has been healed
                 healthAlreadyHealed.Add(collidingHealth);

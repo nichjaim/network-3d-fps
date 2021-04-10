@@ -2,12 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthBarController : ValueBarController, MMEventListener<UiPlayerCharChangedEvent>
 {
     #region Class Variables
 
     private UIManager _uiManager = null;
+
+    [Header("Health Bar properties")]
+
+    [SerializeField]
+    private Image healthFatigueBar = null;
 
     #endregion
 
@@ -58,7 +64,7 @@ public class HealthBarController : ValueBarController, MMEventListener<UiPlayerC
 
 
 
-    #region Ammo Functions
+    #region Health Functions
 
     /// <summary>
     /// Fully sets up the health bar properties.
@@ -84,6 +90,9 @@ public class HealthBarController : ValueBarController, MMEventListener<UiPlayerC
                 RefreshBarDimensions(charStats.healthCurrent, charStats.
                     GetTrueMaxHealthWithoutFatigueModifier());
 
+                // refreshes the current health fatigue bar's fill
+                RefreshFatigueBar(charStats);
+
                 // turn ON the health bar
                 SetBarActivation(true);
 
@@ -107,6 +116,18 @@ public class HealthBarController : ValueBarController, MMEventListener<UiPlayerC
 
         // refresh health bar based on char stats
         RefreshBarValue(charStats.healthCurrent);
+
+        // refreshes the current health fatigue bar's fill
+        RefreshFatigueBar(charStats);
+    }
+
+    /// <summary>
+    /// Refreshes the current health fatigue bar's fill.
+    /// </summary>
+    /// <param name="charStatsArg"></param>
+    private void RefreshFatigueBar(CharacterStats charStatsArg)
+    {
+        healthFatigueBar.fillAmount = charStatsArg.healthFatigue / maxValue;
     }
 
     #endregion

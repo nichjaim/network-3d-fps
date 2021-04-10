@@ -15,20 +15,20 @@ public class ValueBarController : MonoBehaviour
     private GameObject objectContainer = null;
 
     [SerializeField]
-    private GameObject barBorder = null;
-    private Image _imageBarBorder = null;
-    private RectTransform _transBarBorder = null;
+    private RectTransform _barBorder = null;
 
+    [Tooltip("The root object of the inner bar. Usually the black \"empty\" bar underneath the content bar.")]
     [SerializeField]
-    private GameObject barInner = null;
-    private Image _imageBarInner = null;
-    private RectTransform _transBarInner = null;
+    private RectTransform _barInnerBase = null;
+    [Tooltip("The inner bar's main content bar. Usually the colored bar that is above the black \"empty\" bar.")]
+    [SerializeField]
+    private Image _barInnerContent = null;
 
     [SerializeField]
     private TextMeshProUGUI valueText = null;
 
     // the current max value of the bar
-    private float maxValue = 1;
+    protected float maxValue = 1;
 
     [Header("Bar Length Properties")]
 
@@ -45,39 +45,6 @@ public class ValueBarController : MonoBehaviour
 
 
 
-    #region MonoBehaviour Functions
-
-    private void Awake()
-    {
-        // setup the references to the bars component references
-        InitializeBarComponentReferences();
-    }
-
-    #endregion
-
-
-
-
-    #region Initialization Functions
-
-    /// <summary>
-    /// Sets up the references to the bars component references. 
-    /// Call in Awake().
-    /// </summary>
-    private void InitializeBarComponentReferences()
-    {
-        _imageBarBorder = barBorder.GetComponent<Image>();
-        _transBarBorder = barBorder.GetComponent<RectTransform>();
-
-        _imageBarInner = barInner.GetComponent<Image>();
-        _transBarInner = barInner.GetComponent<RectTransform>();
-    }
-
-    #endregion
-
-
-
-
     #region Bar Functions
 
     /// <summary>
@@ -85,7 +52,7 @@ public class ValueBarController : MonoBehaviour
     /// </summary>
     /// <param name="currentValueArg"></param>
     /// <param name="maxValueArg"></param>
-    public void RefreshBarDimensions(float currentValueArg, float maxValueArg)
+    public virtual void RefreshBarDimensions(float currentValueArg, float maxValueArg)
     {
         // set the max value to the one given
         maxValue = maxValueArg;
@@ -99,8 +66,8 @@ public class ValueBarController : MonoBehaviour
         float borderBarLength = innerBarLength + (borderBarLengthAdvantage * 2f);
 
         // set the bar sizes
-        _transBarInner.sizeDelta = new Vector2(innerBarLength, _transBarInner.sizeDelta.y);
-        _transBarBorder.sizeDelta = new Vector2(borderBarLength, _transBarBorder.sizeDelta.y);
+        _barInnerBase.sizeDelta = new Vector2(innerBarLength, _barInnerBase.sizeDelta.y);
+        _barBorder.sizeDelta = new Vector2(borderBarLength, _barBorder.sizeDelta.y);
 
         // setup the bar's properties based on a current value change
         RefreshBarValue(currentValueArg);
@@ -110,10 +77,10 @@ public class ValueBarController : MonoBehaviour
     /// Sets up the bar's properties based on a current value change.
     /// </summary>
     /// <param name="currentValueArg"></param>
-    public void RefreshBarValue(float currentValueArg)
+    public virtual void RefreshBarValue(float currentValueArg)
     {
         // set inner bar's fill to the appropriate percentage
-        _imageBarInner.fillAmount = currentValueArg / maxValue;
+        _barInnerContent.fillAmount = currentValueArg / maxValue;
 
         // set value text to appropriate string
         valueText.text = GetValueText(currentValueArg);

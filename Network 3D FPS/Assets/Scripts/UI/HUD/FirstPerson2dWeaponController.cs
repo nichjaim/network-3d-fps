@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerCharChangedEvent>
+public class FirstPerson2dWeaponController : MonoBehaviour, MMEventListener<UiPlayerCharChangedEvent>
 {
     #region Class Variables
 
@@ -13,9 +13,9 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
     [Header("Component References")]
 
     [SerializeField]
-    private Image wepImage = null;
+    private Animator wepHeadAnim = null;
     [SerializeField]
-    private Animator wepAnimator = null;
+    private Animator wepModelAnim = null;
 
     #endregion
 
@@ -69,45 +69,46 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
     #region Weapon Model Functions
 
     /// <summary>
-    /// Setup image comp and sets the image's animator based on the equipped weapon.
+    /// Sets up weapon model animator based on the equipped weapon.
     /// </summary>
     private void RefreshWeaponModel()
     {
         // get player char the UI is associated with
         PlayerCharacterMasterController playerChar = _uiManager.UiPlayerCharacter;
+
         // if player char found
         if (playerChar != null)
         {
-            // initialize wep animator as a NULL animator
-            AnimatorOverrideController newWepAnim = null;
             // get currently equipped weapon
             WeaponData equippedWep = playerChar.GetEquippedWeapon();
 
             // if a weapon is equipped
             if (equippedWep != null)
             {
+                // get equipped weapon's ID
                 string wepId = equippedWep.itemInfo.itemId;
-                // get equipped weapon's associated HUD model animator
-                newWepAnim = AssetRefMethods.LoadBundleAssetHudWeaponModelAnimator(
-                    /*equippedWep.itemInfo.itemId*/wepId);
-            }
 
-            // turn ON image comp if got valid animator and turn OFF if got null animator
-            wepImage.enabled = newWepAnim != null;
+                // get equipped weapon's associated 1st person model animator
+                AnimatorOverrideController newWepAnim = AssetRefMethods.
+                    LoadBundleAssetFirstPersonWeaponModelAnimator(equippedWep.weaponType, wepId);
 
-            // if got valid aniamtor
-            if (newWepAnim != null)
-            {
-                // set aniamtor's controller to the one retrieved
-                wepAnimator.runtimeAnimatorController = newWepAnim;
+                // if animator found
+                if (newWepAnim != null)
+                {
+                    // turn ON 1st person weapon object
+                    wepHeadAnim.gameObject.SetActive(true);
+
+                    // set weapon model animator to retreived weapon animator
+                    wepModelAnim.runtimeAnimatorController = newWepAnim;
+
+                    // DONT continue code
+                    return;
+                }
             }
         }
-        // else NO player char retrieved
-        else
-        {
-            // turn OFF weapon image
-            wepImage.enabled = false;
-        }
+
+        // if got here then, turn OFF 1st person weapon object
+        wepHeadAnim.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -116,7 +117,19 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
     private void PlayAttackAnimation()
     {
         // trigger animator to play attack animation
-        wepAnimator.SetTrigger("Attack");
+        wepModelAnim.SetTrigger("Attack");
+    }
+
+    /// <summary>
+    /// Sets the condition for playing weapon moving animation.
+    /// </summary>
+    private void RefreshWeaponMovingAnimation()
+    {
+        // get whether char is moving
+        bool charMoving = _uiManager.UiPlayerCharacter.CharMovement.IsMoving;
+
+        // set weapon head animation based on char movement
+        wepHeadAnim.SetBool("IsMoving", charMoving);
     }
 
     #endregion
@@ -153,6 +166,8 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
         playerCharArg.OnCharDataChangedAction += RefreshWeaponModel;
         playerCharArg.OnEquippedWeaponSlotNumChangedAction += RefreshWeaponModel;
 
+        playerCharArg.CharMovement.OnIsMovingChangedAction += RefreshWeaponMovingAnimation;
+
         // find the char's action attack component
         CharacterActionAttackController charActionAttack = playerCharArg.
             GetComponent<CharacterActionAttackController>();
@@ -168,7 +183,7 @@ public class HudWeaponModelController : MonoBehaviour, MMEventListener<UiPlayerC
         // add functions to be called for event player's action events
         AddPlayerEventListening(eventType.playerChar);
 
-        // setup image comp and sets the image's animator based on the equipped weapon
+        // setup weapon model animator based on the equipped weapon
         RefreshWeaponModel();
     }
 

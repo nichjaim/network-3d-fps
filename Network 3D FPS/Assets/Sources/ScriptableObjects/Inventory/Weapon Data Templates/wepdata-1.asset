@@ -12,7 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de0acb0a762e87c49ae4faecc03661ce, type: 3}
   m_Name: wepdata-1
   m_EditorClassIdentifier: 
+  potentialPrefixNames: []
   template:
-    weaponId: 1
-    weaponName: Simple Pistol
+    itemInfo:
+      itemId: 1
+      itemName: Peashooter
+      itemDescription: DESCRIPTION
+      itemPrefixName: PREFIX-NAME
+      itemRarity:
+        rarityId: 0
+        rarityName: NAME
+        rarityDescription: DESCRIPTION
+        statMultiplierBoundaryLow: 1
+        statMultiplierBoundaryHigh: 1
+        rarityHexColorCode: FFFFFF
+        contentPrefixName: RARITY-PREFIX-NAME
     weaponType: 2
+    weaponStats:
+      damageBoundaryLowBase: 1
+      damageBoundaryHighBase: 1
+      damageBoundaryLowRarityModified: 1
+      damageBoundaryHighRarityModified: 1
+      attackRateBase: 1
+      attackRateRarityModified: 1
+      ammoPerUse: 1
+      projectileSpeed: 15

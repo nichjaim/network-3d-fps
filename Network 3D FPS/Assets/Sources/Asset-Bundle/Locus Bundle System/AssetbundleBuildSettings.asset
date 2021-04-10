@@ -37,11 +37,11 @@ MonoBehaviour:
       guid: 98e373793afed244baad548aaddffeb4
     IncludeSubfolder: 0
     CompressBundle: 1
-  - BundleName: HudWepModelAnim
+  - BundleName: FirstPersWepModelAnim
     IncludedInPlayer: 1
     Folder:
       guid: 1cb3098019dd3834da2cfbbffe073aff
-    IncludeSubfolder: 0
+    IncludeSubfolder: 1
     CompressBundle: 1
   - BundleName: WepTypeSets
     IncludedInPlayer: 1

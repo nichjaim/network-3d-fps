@@ -8,6 +8,7 @@ public class GameSaveData
     #region Class Variables
 
     public List<CharacterData> playableCharacterData;
+    public PartyInventory partyInventory;
 
     #endregion
 
@@ -31,6 +32,7 @@ public class GameSaveData
     public void Setup()
     {
         playableCharacterData = new List<CharacterData>();
+        partyInventory = new PartyInventory();
     }
 
     #endregion

@@ -8,6 +8,42 @@ public class CharacterMasterController : NetworkBehaviour
 {
     #region Class Variables
 
+    /*protected NetworkIdentity _netIdentity;
+    public NetworkIdentity NetIdentity
+    {
+        get { return _netIdentity; }
+    }*/
+
+    [Header("Component References")]
+
+    [SerializeField]
+    private CharacterHealthController _charHealth = null;
+    public CharacterHealthController CharHealth
+    {
+        get { return _charHealth; }
+    }
+
+    [SerializeField]
+    private CharacterModelController _charModel = null;
+    public CharacterModelController CharModel
+    {
+        get { return _charModel; }
+    }
+
+    [SerializeField]
+    private CharacterStatusEffectsController _charStatus = null;
+    public CharacterStatusEffectsController CharStatus
+    {
+        get { return _charStatus; }
+    }
+
+    [SerializeField]
+    private CharacterMovementController _charMovement = null;
+    public CharacterMovementController CharMovement
+    {
+        get { return _charMovement; }
+    }
+
     [SyncVar(hook = nameof(OnCharDataChanged))]
     private CharacterData charData = null;
     public Action OnCharDataChangedAction;
@@ -21,6 +57,35 @@ public class CharacterMasterController : NetworkBehaviour
     public Action OnEquippedWeaponSlotNumChangedAction;
 
     #endregion
+
+
+
+
+    /*#region MonoBehaviour Functions
+
+    protected virtual void Awake()
+    {
+        // setup all vars that reference relevant components
+        InitializeComponentReferences();
+    }
+
+    #endregion*/
+
+
+
+
+    /*#region Initialization Functions
+
+    /// <summary>
+    /// Sets up all vars that reference relevant components. 
+    /// Call in Awake().
+    /// </summary>
+    protected virtual void InitializeComponentReferences()
+    {
+        _netIdentity = GetComponent<NetworkIdentity>();
+    }
+
+    #endregion*/
 
 
 

@@ -181,7 +181,7 @@ public class ItemPickupController : NetworkBehaviour
         }
 
         // unspawn object
-        GetComponent<PooledObjectController>().UnspawnObject();
+        GetComponent<NetworkPooledObjectController>().UnspawnObject();
     }
 
     [Command(ignoreAuthority = true)]

@@ -4,17 +4,17 @@ using UnityEngine;
 using Mirror;
 using Mirror.Experimental;
 
-[RequireComponent(typeof(PooledObjectController), typeof(Rigidbody), 
+[RequireComponent(typeof(NetworkPooledObjectController), typeof(Rigidbody), 
     typeof(NetworkRigidbody))]
 public abstract class ProjectileController : NetworkBehaviour
 {
     #region Class Variables
 
-    protected PooledObjectController _pooledObject = null;
+    protected NetworkPooledObjectController _pooledObject = null;
     protected Rigidbody _rigBody = null;
 
-    private CharacterMasterController charOwner = null;
-    private CharacterData charOwnerData = null;
+    protected CharacterMasterController charOwner = null;
+    protected CharacterData charOwnerData = null;
     public CharacterData CharOwnerData
     {
         get { return charOwnerData; }
@@ -26,6 +26,15 @@ public abstract class ProjectileController : NetworkBehaviour
     protected float projectileSpeed = 1f;
     [SerializeField]
     protected float projectileLifetime = 5f;
+
+    protected int targetPenetrationCurrent = 0;
+    [Tooltip("How many contacts this projectile can pass through before it is done.")]
+    [SerializeField]
+    protected int targetPenetrationMax = 1;
+    public int TargetPenetrationMax
+    {
+        set { targetPenetrationMax = value; }
+    }
 
     #endregion
 
@@ -50,6 +59,9 @@ public abstract class ProjectileController : NetworkBehaviour
     {
         // turn off this object after lifetime is over
         DespawnAfterLifetime();
+
+        // resets the number of targets that this projectile has passed through
+        ResetCurrentTargetPenetration();
     }
 
     protected virtual void OnTriggerEnter(Collider other)
@@ -61,8 +73,8 @@ public abstract class ProjectileController : NetworkBehaviour
         if (collidingHitbox != null)
         {
             // if CAN harm hitbox target
-            if (collidingHitbox.CharHealth.CanAttackerCauseHarmBasedOnReputation(
-                charOwnerData.factionReputation))
+            if (collidingHitbox.CharMaster.CharHealth.
+                CanAttackerCauseHarmBasedOnReputation(charOwnerData.factionReputation))
             {
                 // call to denote that made contact with an opposing character
                 OnContactWithEnemy(collidingHitbox);
@@ -84,7 +96,7 @@ public abstract class ProjectileController : NetworkBehaviour
     protected virtual void InitializeComponentReferences()
     {
         _rigBody = GetComponent<Rigidbody>();
-        _pooledObject = GetComponent<PooledObjectController>();
+        _pooledObject = GetComponent<NetworkPooledObjectController>();
     }
 
     #endregion
@@ -107,7 +119,7 @@ public abstract class ProjectileController : NetworkBehaviour
     /// </summary>
     private void MoveProjectile()
     {
-        _rigBody.velocity = transform.forward * projectileSpeed * Time.deltaTime;
+        _rigBody.velocity = transform.forward * GetTrueMoveSpeed() * Time.deltaTime;
     }
 
     /// <summary>
@@ -117,6 +129,45 @@ public abstract class ProjectileController : NetworkBehaviour
     protected virtual void OnContactWithEnemy(HitboxController enemyHitboxArg)
     {
         // IMPL in child class
+    }
+
+    /// <summary>
+    /// Resets the number of targets that this projectile has passed through. 
+    /// Call in OnEnable().
+    /// </summary>
+    protected virtual void ResetCurrentTargetPenetration()
+    {
+        targetPenetrationCurrent = 0;
+    }
+
+    /// <summary>
+    /// Increments number of targets penetrated and despawns if reached penetration limit. 
+    /// Call at end of OnContactWithEnemy() in child class if deemed appropriate.
+    /// </summary>
+    protected virtual void ProcessTargetPenetration()
+    {
+        // increment number of targets penetrated
+        targetPenetrationCurrent++;
+
+        // if penetrated maxed number of targets
+        if (targetPenetrationCurrent >= targetPenetrationMax)
+        {
+            // despawns this pooled object
+            DespawnObject();
+        }
+    }
+
+    /// <summary>
+    /// Returns the actual speed value for physics movement.
+    /// </summary>
+    /// <returns></returns>
+    private float GetTrueMoveSpeed()
+    {
+        // initialize the projectile speed multiplier
+        float SPEED_MULTIPLER = 100f;
+
+        // return speed with multiplier
+        return projectileSpeed * SPEED_MULTIPLER;
     }
 
     #endregion

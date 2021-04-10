@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-[RequireComponent(typeof(PooledObjectController))]
+[RequireComponent(typeof(NetworkPooledObjectController))]
 public abstract class ActiveAbilityController : NetworkBehaviour
 {
     #region Character Functions
 
-    protected PooledObjectController _pooledObject = null;
+    protected NetworkPooledObjectController _pooledObject = null;
 
     protected ActiveAbility _castedAbility = null;
     protected CharacterMasterController _casterCharMaster = null;
@@ -64,7 +64,7 @@ public abstract class ActiveAbilityController : NetworkBehaviour
     /// </summary>
     protected virtual void InitializeComponentReferences()
     {
-        _pooledObject = GetComponent<PooledObjectController>();
+        _pooledObject = GetComponent<NetworkPooledObjectController>();
     }
 
     #endregion

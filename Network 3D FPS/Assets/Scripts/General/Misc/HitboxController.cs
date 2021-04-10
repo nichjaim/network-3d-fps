@@ -5,10 +5,10 @@ using UnityEngine;
 public class HitboxController : MonoBehaviour
 {
     [SerializeField]
-    private CharacterHealthController charHealth = null;
-    public CharacterHealthController CharHealth
+    private CharacterMasterController _charMaster = null;
+    public CharacterMasterController CharMaster
     {
-        get { return charHealth; }
+        get { return _charMaster; }
     }
 
 

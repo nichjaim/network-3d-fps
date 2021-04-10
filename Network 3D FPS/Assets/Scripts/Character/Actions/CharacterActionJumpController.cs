@@ -11,6 +11,11 @@ public class CharacterActionJumpController : MonoBehaviour
 
     [SerializeField]
     private NetworkIdentity _networkIdentity = null;
+
+    [SerializeField]
+    private CharacterMasterController _charMaster = null;
+    private PlayerCharacterMasterController _playerMaster = null;
+
     [SerializeField]
     private CharacterGravityController _characterGravityController = null;
     [SerializeField]
@@ -27,12 +32,32 @@ public class CharacterActionJumpController : MonoBehaviour
     private int consecutiveJumpsTotal = 1;
     private int consecutiveJumpsCurrent = 0;
 
+    /// bool that determines if jumps are stopped from being reset. 
+    /// This is needed so that the consecutive jump count won't immediately be reset at 
+    /// start of jump when still so close to ground.
+    private bool onJumpResetCooldown = false;
+
     #endregion
 
 
 
 
     #region MonoBehaviour Functions
+
+    private void Awake()
+    {
+        // setup all the relevent component references
+        InitializeComponentReferences();
+
+        // starts persistent listening for all relevant events
+        StartAllEventPersistentListening();
+    }
+
+    private void OnEnable()
+    {
+        // ensure jump resetting is OFF cooldown
+        onJumpResetCooldown = false;
+    }
 
     private void Update()
     {
@@ -50,8 +75,24 @@ public class CharacterActionJumpController : MonoBehaviour
             ResetConsecutiveJumpsCurrent();
         }
 
-        //performs the jump action if the appropriate player input was made
+        // performs the jump action if the appropriate player input was made
         JumpIfPlayerInputted();
+    }
+
+    #endregion
+
+
+
+
+    #region Initialization Functions
+
+    /// <summary>
+    /// Sets up all the relevent component references.
+    /// Call in Awake().
+    /// </summary>
+    private void InitializeComponentReferences()
+    {
+        _playerMaster = _charMaster as PlayerCharacterMasterController;
     }
 
     #endregion
@@ -76,6 +117,13 @@ public class CharacterActionJumpController : MonoBehaviour
     /// </summary>
     private void ResetConsecutiveJumpsCurrent()
     {
+        // if jump count resetting is currently on cooldown
+        if (onJumpResetCooldown)
+        {
+            // DONT continue code
+            return;
+        }
+
         consecutiveJumpsCurrent = 0;
     }
 
@@ -91,10 +139,77 @@ public class CharacterActionJumpController : MonoBehaviour
             return;
         }
 
-        //perform a jump
+        // perform a jump
         _characterGravityController.Jump(jumpHeigth);
+
         // increment current number of consecutive jumps made
         consecutiveJumpsCurrent++;
+
+        /// put the ability for your consecutive jumps to be reset on cooldown for 
+        /// a short time
+        JumpResetCooldown();
+    }
+
+    /// <summary>
+    /// Sets jump properties based on current character data.
+    /// </summary>
+    private void RefreshJumpProperties()
+    {
+        // get current surface-level character data
+        CharacterData frontFacingCharData = GeneralMethods.
+            GetFrontFacingCharacterDataFromCharMaster(_charMaster);
+        // if char data found
+        if (frontFacingCharData != null)
+        {
+            // set jump property values based on char data
+            jumpHeigth = frontFacingCharData.characterStats.statJumpHeight;
+            consecutiveJumpsTotal = frontFacingCharData.characterStats.statConsecutiveJumps;
+        }
+        // else no data found
+        else
+        {
+            // set jump properties to some default values
+            jumpHeigth = 1f;
+            consecutiveJumpsTotal = 1;
+        }
+    }
+
+    /// <summary>
+    /// Puts the ability for your consecutive jumps to be reset on cooldown for a short time. 
+    /// This is so won't immediately be reset at start of jump when still so close to ground.
+    /// </summary>
+    private void JumpResetCooldown()
+    {
+        // call internal function as coroutine
+        StartCoroutine(JumpResetCooldownInternal());
+    }
+
+    private IEnumerator JumpResetCooldownInternal()
+    {
+        // put jump resetting ON cooldown
+        onJumpResetCooldown = true;
+
+        // wait enough time for player to be far enough from ground
+        yield return new WaitForSeconds(0.65f);
+
+        // take jump resetting OFF cooldown
+        onJumpResetCooldown = false;
+    }
+
+    #endregion
+
+
+
+
+    #region Character Functions
+
+    /// <summary>
+    /// Returns bool that denotes if asscoaited character is a player character.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsPlayer()
+    {
+        return _playerMaster != null;
     }
 
     #endregion
@@ -115,6 +230,28 @@ public class CharacterActionJumpController : MonoBehaviour
         {
             // performs the act of jumping
             JumpAction();
+        }
+    }
+
+    #endregion
+
+
+
+
+    #region Event Functions
+
+    /// <summary>
+    /// Starts persistent listening for all relevant events. 
+    /// Call in Awake().
+    /// </summary>
+    private void StartAllEventPersistentListening()
+    {
+        _charMaster.OnCharDataChangedAction += RefreshJumpProperties;
+
+        // if char is a player
+        if (IsPlayer())
+        {
+            _playerMaster.OnCharDataSecondaryChangedAction += RefreshJumpProperties;
         }
     }
 

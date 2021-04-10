@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PooledObjectController : NetworkBehaviour
+public class NetworkPooledObjectController : NetworkBehaviour
 {
     #region Class Variables
 

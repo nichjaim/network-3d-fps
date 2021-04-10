@@ -7,7 +7,12 @@ public class SpawnManager : MonoBehaviour
 {
     #region Class Variables
 
-    [Header("Object Poolers")]
+    [Header("Local Object Poolers")]
+
+    [SerializeField]
+    private ObjectPooler localObjectPoolers = null;
+
+    [Header("Network Object Poolers")]
 
     [SerializeField]
     private NetworkObjectPooler bulletPooler = null;
@@ -43,7 +48,12 @@ public class SpawnManager : MonoBehaviour
 
 
 
-    #region Pooler Functions
+    #region Network Pooler Functions
+
+    public void GetWew()
+    {
+
+    }
 
     /// <summary>
     /// Returns network pooler associated with given active ability.
@@ -69,6 +79,30 @@ public class SpawnManager : MonoBehaviour
             // return a null pooler object reference
             return null;
         }
+    }
+
+    #endregion
+
+
+
+
+    #region Local Pooler Functions
+
+    /// <summary>
+    /// Returns a pooled object from the local object poolers.
+    /// </summary>
+    /// <param name="poolTagArg"></param>
+    /// <param name="posArg"></param>
+    /// <param name="rotArg"></param>
+    /// <returns></returns>
+    private GameObject GetLocalPooledObject(string poolTagArg, Vector3 posArg, Quaternion rotArg)
+    {
+        return localObjectPoolers.SpawnFromPool(poolTagArg, posArg, rotArg);
+    }
+
+    public GameObject GetPooledActionTextPopup(Vector3 posArg, Quaternion rotArg)
+    {
+        return GetLocalPooledObject("actiontextpopup", posArg, rotArg);
     }
 
     #endregion

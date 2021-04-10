@@ -9,6 +9,11 @@ public class WeakenAbilityController : ActiveAbilityController
 
     private NetworkObjectPooler _weakenProjectilePooler = null;
 
+    private float damageTakenIncreasePercentage = 0f;
+    private float effectDuration = 1f;
+
+    private int targetPenetration = 1;
+
     #endregion
 
 
@@ -24,10 +29,7 @@ public class WeakenAbilityController : ActiveAbilityController
 
     #endregion
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
+
 
 
     #region Initialization Functions
@@ -53,8 +55,77 @@ public class WeakenAbilityController : ActiveAbilityController
     {
         base.SetupActiveAbility(castedActiveAbilityArg, casterCharacterArg, casterCharacterDataArg);
 
+        // setup ability proeprties
+        SetupAbilityDamageTakenIncreasePercentage(_castedAbility.abilityRank);
+        SetupAbilityEffectDuration(_castedAbility.abilityRank);
+        SetupAbilityTargetPenetration(_castedAbility.abilityRank);
+
         // fires off the appropriate amount of weakening projectiles
         FireWeakeningProjectiles();
+    }
+
+    #endregion
+
+
+
+
+    #region Setup Functions
+
+    /// <summary>
+    /// Adjusts the ability's damage taken increase based on the given ability rank argument.
+    /// </summary>
+    /// <param name="abilityRankArg"></param>
+    private void SetupAbilityDamageTakenIncreasePercentage(int abilityRankArg)
+    {
+        // initialize ability damage taken property values
+        float dmgTakeBase = 0.5f;
+        float dmgTakeRankAddition = 0.25f;
+        float dmgTakeMax = 10f;
+
+        // get calculated damage percentage value
+        float newDmgTake = Mathf.Clamp(dmgTakeBase + (dmgTakeRankAddition *
+            (abilityRankArg - 1)), dmgTakeBase, dmgTakeMax);
+
+        // set damage taken increase to calcualted damage percentage value
+        damageTakenIncreasePercentage = newDmgTake;
+    }
+
+    /// <summary>
+    /// Adjusts the ability's status effect duration based on the given ability rank argument.
+    /// </summary>
+    /// <param name="abilityRankArg"></param>
+    private void SetupAbilityEffectDuration(int abilityRankArg)
+    {
+        // initialize ability effect duration property values
+        float effectDurBase = 15f;
+        float effectDurRankAddition = 5f;
+        float effectDurMax = 300f;
+
+        // get calculated damage percentage value
+        float newEffectDur = Mathf.Clamp(effectDurBase + (effectDurRankAddition *
+            (abilityRankArg - 1)), effectDurBase, effectDurMax);
+
+        // set status effect duration to calcualted effect duration value
+        effectDuration = newEffectDur;
+    }
+
+    /// <summary>
+    /// Adjusts the ability's max target penetration based on the given ability rank argument.
+    /// </summary>
+    /// <param name="abilityRankArg"></param>
+    private void SetupAbilityTargetPenetration(int abilityRankArg)
+    {
+        // initialize relevant ability property values
+        int valueBase = 5;
+        int valueRankAddition = 2;
+        int valueMax = 50;
+
+        // get calculated value
+        int newValue = Mathf.Clamp(valueBase + (valueRankAddition *
+            (abilityRankArg - 1)), valueBase, valueMax);
+
+        // set target penetration to calculated value
+        targetPenetration = newValue;
     }
 
     #endregion
@@ -186,6 +257,8 @@ public class WeakenAbilityController : ActiveAbilityController
 
         // setup projectile data
         projectile.SetupProjectile(_casterCharMaster);
+        projectile.TargetPenetrationMax = targetPenetration;
+        projectile.SetupWeakeningProjectile(damageTakenIncreasePercentage, effectDuration);
     }
 
     #endregion

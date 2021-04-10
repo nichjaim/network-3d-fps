@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class CharacterMovementController : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class CharacterMovementController : MonoBehaviour
     private NetworkManagerCustom _networkManagerCustom;
 
     [Header("Component References")]
+
+    [SerializeField]
+    private CharacterMasterController _charMaster = null;
+    private PlayerCharacterMasterController _playerMaster = null;
 
     [SerializeField]
     private CharacterController _characterController;
@@ -23,15 +28,27 @@ public class CharacterMovementController : MonoBehaviour
 
     [Header("Move Properties")]
 
-    [SerializeField]
+    // initialize the minimum amount of movement input needed to be considered moving
     [Range(0, 1)]
-    //initialize the minimum amount of movement input needed to be considered moving
+    [SerializeField]
     private float moveInputMinimum = 0.4f;
+
     [SerializeField]
     private float moveSpeed = 5f;
 
     private float moveInputX = 0f;
     private float moveInputZ = 0f;
+
+    private bool isMoving = false;
+    public bool IsMoving
+    {
+        get { return isMoving; }
+    }
+    public Action OnIsMovingChangedAction;
+
+    /// positive for increased movement, negative for decreased movement. 
+    /// Used for status effects.
+    private float temporaryMovementChangePercentage = 0f;
 
     #endregion
 
@@ -39,6 +56,15 @@ public class CharacterMovementController : MonoBehaviour
 
 
     #region MonoBehaviour Functions
+
+    private void Awake()
+    {
+        // setup all the relevent component references
+        InitializeComponentReferences();
+
+        // starts persistent listening for all relevant events
+        StartAllEventPersistentListening();
+    }
 
     private void Start()
     {
@@ -48,6 +74,13 @@ public class CharacterMovementController : MonoBehaviour
 
     private void Update()
     {
+        // if NOT a player
+        if (!IsPlayer())
+        {
+            // DONT continue code
+            return;
+        }
+
         // if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
         {
@@ -68,6 +101,13 @@ public class CharacterMovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // if NOT a player
+        if (!IsPlayer())
+        {
+            // DONT continue code
+            return;
+        }
+
         // if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
         {
@@ -94,6 +134,15 @@ public class CharacterMovementController : MonoBehaviour
     #region Initialization Functions
 
     /// <summary>
+    /// Sets up all the relevent component references.
+    /// Call in Awake().
+    /// </summary>
+    private void InitializeComponentReferences()
+    {
+        _playerMaster = _charMaster as PlayerCharacterMasterController;
+    }
+
+    /// <summary>
     /// Setup all variables that reference singleton instance related components. 
     /// Call in Start(), needs to be start to give the instances time to be created.
     /// </summary>
@@ -116,13 +165,91 @@ public class CharacterMovementController : MonoBehaviour
     /// </summary>
     private void ProcessCharacterMovement()
     {
-        //get the unprocessed move motion from the move input
+        // get the unprocessed move motion from the move input
         Vector3 moveMotionUnprocessed = (transform.right * moveInputX) + (transform.forward * moveInputZ);
-        //get processed version the move motion
-        Vector3 moveMotionProcessed = moveMotionUnprocessed.normalized * moveSpeed * Time.fixedDeltaTime;
+        // get processed version the move motion
+        Vector3 moveMotionProcessed = moveMotionUnprocessed.normalized * GetTrueMovementSpeed() * Time.fixedDeltaTime;
 
-        //move the character based on the retrieved move motion
+        // move the character based on the retrieved move motion
         _characterController.Move(moveMotionProcessed);
+
+        // changes the current state that denotes if moving based on current movement motion
+        ProcessMovementChangeAction(moveMotionProcessed);
+    }
+
+    /// <summary>
+    /// Gets movement speed with all movement factors accounted for.
+    /// </summary>
+    /// <returns></returns>
+    private float GetTrueMovementSpeed()
+    {
+        // get move speed change value
+        float moveSpeedChange = moveSpeed * temporaryMovementChangePercentage;
+
+        // return move speed with change added
+        return moveSpeed + moveSpeedChange;
+    }
+
+    /// <summary>
+    /// Sets move speed based on current character data.
+    /// </summary>
+    private void RefreshMoveSpeed()
+    {
+        // get current surface-level character data
+        CharacterData frontFacingCharData = GeneralMethods.
+            GetFrontFacingCharacterDataFromCharMaster(_charMaster);
+        // if char data found
+        if (frontFacingCharData != null)
+        {
+            // set move speed to the char's movement stat
+            moveSpeed = frontFacingCharData.characterStats.statMovementSpeed;
+        }
+        // else no data found
+        else
+        {
+            // set move speed to some default value
+            moveSpeed = 1f;
+        }
+    }
+
+    /// <summary>
+    /// Changes the current state that denotes if moving based on given movement motion.
+    /// </summary>
+    /// <param name="moveMotionArg"></param>
+    private void ProcessMovementChangeAction(Vector3 moveMotionArg)
+    {
+        // get the minimum value needed to denote movement
+        float minimumMovement = 0.1f;
+
+        // get current move state from given movement
+        bool doesInputDenoteMoving = (Mathf.Abs(moveMotionArg.x) > minimumMovement) || 
+            (Mathf.Abs(moveMotionArg.z) > minimumMovement);
+
+        // if started to move or stopped from moving
+        if (isMoving != doesInputDenoteMoving)
+        {
+            // set move state to the new move state
+            isMoving = doesInputDenoteMoving;
+
+            // call is moving change actions if NOT null
+            OnIsMovingChangedAction?.Invoke();
+        }
+    }
+
+    #endregion
+
+
+
+
+    #region Character Functions
+
+    /// <summary>
+    /// Returns bool that denotes if asscoaited character is a player character.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsPlayer()
+    {
+        return _playerMaster != null;
     }
 
     #endregion
@@ -178,6 +305,45 @@ public class CharacterMovementController : MonoBehaviour
         }*/
         moveInputX = Input.GetAxisRaw("Horizontal");
         moveInputZ = Input.GetAxisRaw("Vertical");
+    }
+
+    #endregion
+
+
+
+
+    #region Status Effect Functions
+
+    /// <summary>
+    /// Adds given percent value to the movement speed chance percentage. 
+    /// Positive value means faster speed, negative means slower speed.
+    /// </summary>
+    /// <param name="percentValueArg"></param>
+    public void AddTemporaryMovementChangePercentage(float percentValueArg)
+    {
+        temporaryMovementChangePercentage += percentValueArg;
+    }
+
+    #endregion
+
+
+
+
+    #region Event Functions
+
+    /// <summary>
+    /// Starts persistent listening for all relevant events. 
+    /// Call in Awake().
+    /// </summary>
+    private void StartAllEventPersistentListening()
+    {
+        _charMaster.OnCharDataChangedAction += RefreshMoveSpeed;
+
+        // if char is a player
+        if (IsPlayer())
+        {
+            _playerMaster.OnCharDataSecondaryChangedAction += RefreshMoveSpeed;
+        }
     }
 
     #endregion

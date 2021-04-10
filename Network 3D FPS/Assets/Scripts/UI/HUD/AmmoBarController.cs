@@ -83,26 +83,33 @@ public class AmmoBarController : ValueBarController, MMEventListener<UiPlayerCha
             // if weapon slot found
             if (equippedWepSlot != null)
             {
-                // if wep slot's wep type set DOES need ammo to be used (i.e. NOT infinite ammo)
-                if (equippedWepSlot.requiredWeaponTypeSet.doesNeedAmmo)
+                // get currently equipped weapon
+                WeaponData equippedWep = playerChar.GetEquippedWeapon();
+
+                // if a weapon IS equipped
+                if (equippedWep != null)
                 {
-                    // get currently equipped ammo pouch
-                    AmmoPouch equippedAmmoPouch = playerChar.GetEquippedAmmoPouch();
-
-                    // if pouch found
-                    if (equippedAmmoPouch != null)
+                    // if wep slot's wep type set DOES need ammo to be used (i.e. NOT infinite ammo)
+                    if (equippedWepSlot.requiredWeaponTypeSet.doesNeedAmmo)
                     {
-                        // turn ON the ammo bar
-                        SetBarActivation(true);
+                        // get currently equipped ammo pouch
+                        AmmoPouch equippedAmmoPouch = playerChar.GetEquippedAmmoPouch();
 
-                        // refresh ammo bar based on ammo pouch
-                        RefreshBarDimensions(equippedAmmoPouch.currentAmmo, equippedAmmoPouch.maxAmmo);
+                        // if pouch found
+                        if (equippedAmmoPouch != null)
+                        {
+                            // turn ON the ammo bar
+                            SetBarActivation(true);
 
-                        // setup the ammo type image based on ammo being used
-                        RefreshAmmoTypeImage();
+                            // refresh ammo bar based on ammo pouch
+                            RefreshBarDimensions(equippedAmmoPouch.currentAmmo, equippedAmmoPouch.maxAmmo);
 
-                        // DONT continue code
-                        return;
+                            // setup the ammo type image based on ammo being used
+                            RefreshAmmoTypeImage();
+
+                            // DONT continue code
+                            return;
+                        }
                     }
                 }
             }

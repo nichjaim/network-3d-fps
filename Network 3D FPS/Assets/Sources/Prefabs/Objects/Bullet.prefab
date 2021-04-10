@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4116624247161750992
 Transform:
   m_ObjectHideFlags: 0
@@ -213,6 +213,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e7bbf9ad296e44f845fb12b5d4e0fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  projectileSpeed: 1
+  projectileLifetime: 5
+  targetPenetrationMax: 1
 --- !u!1001 &4528375296531704049
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -267,6 +272,22 @@ PrefabInstance:
     - target: {fileID: 438534, guid: bb934242782d6774f8c7336baa63d131, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19872520, guid: bb934242782d6774f8c7336baa63d131, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19872520, guid: bb934242782d6774f8c7336baa63d131, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19898402, guid: bb934242782d6774f8c7336baa63d131, type: 3}
+      propertyPath: InitialModule.startRotationX.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19898402, guid: bb934242782d6774f8c7336baa63d131, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19924450, guid: bb934242782d6774f8c7336baa63d131, type: 3}
       propertyPath: m_Materials.Array.size

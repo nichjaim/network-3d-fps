@@ -11,6 +11,11 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
 {
     #region Class Variables
 
+    [Header("Game References")]
+
+    [SerializeField]
+    private PartyInventoryTemplate startingPartyInventory = null;
+
     [Header("Performance Properties")]
 
     [SerializeField]
@@ -329,6 +334,9 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         }
         // set the new save file's char data to starting data
         newSaveData.playableCharacterData = startingPlayableCharData;
+
+        // set party inventory to starter party ivnentory
+        newSaveData.partyInventory = new PartyInventory(startingPartyInventory);
 
         // save the new save file
         //SaveLoadSystem.Save(newSaveData, newSaveFile); // TEMP COMMENT OUT FOR TESTING PURPOSES!!!

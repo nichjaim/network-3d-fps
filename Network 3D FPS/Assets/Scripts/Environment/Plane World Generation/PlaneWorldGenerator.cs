@@ -72,6 +72,12 @@ public class PlaneWorldGenerator : MonoBehaviour
         worldBoundaryDown.gameObject.name = "World Boundary Down";
         worldBoundaryLeft.gameObject.name = "World Boundary Left";
         worldBoundaryRight.gameObject.name = "World Boundary Right";
+
+        // turn off boundary object
+        worldBoundaryUp.SetActive(false);
+        worldBoundaryDown.SetActive(false);
+        worldBoundaryLeft.SetActive(false);
+        worldBoundaryRight.SetActive(false);
     }
 
     #endregion
@@ -417,8 +423,20 @@ public class PlaneWorldGenerator : MonoBehaviour
     /// <param name="worldDimensionsZArg"></param>
     private void RefreshWorldBoundary(int worldDimensionsXArg, int worldDimensionsZArg)
     {
+        ActivateWorldBoundaries();
         RefreshWorldBoundaryPositions(worldDimensionsXArg, worldDimensionsZArg);
         RefreshWorldBoundaryScales(worldDimensionsXArg, worldDimensionsZArg);
+    }
+
+    /// <summary>
+    /// Turns ON all world boundary objects.
+    /// </summary>
+    private void ActivateWorldBoundaries()
+    {
+        worldBoundaryUp.SetActive(true);
+        worldBoundaryDown.SetActive(true);
+        worldBoundaryLeft.SetActive(true);
+        worldBoundaryRight.SetActive(true);
     }
 
     /// <summary>

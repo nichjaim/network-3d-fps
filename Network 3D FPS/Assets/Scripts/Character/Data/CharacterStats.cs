@@ -244,13 +244,19 @@ public class CharacterStats
     /// Decreases health based on given damage.
     /// </summary>
     /// <param name="damageArg"></param>
-    public void TakeDamage(int damageArg)
+    public int TakeDamage(int damageArg)
     {
-        // decrease current health by damage, potentially down to the health floor boundary
-        healthCurrent = Mathf.Max(healthCurrent - damageArg, 0);
+        // calcualte the actual damage inflicted
+        int trueDamage = Mathf.Max(damageArg - statDefense, 0);
+
+        // decrease current health by actual damage, potentially down to the health floor boundary
+        healthCurrent = Mathf.Max(healthCurrent - trueDamage, 0);
 
         // builds up fatigue in health if apporpriate
         BuildFatigueHealth(damageArg);
+
+        // return amount of actual damage taken
+        return trueDamage;
     }
 
     /// <summary>

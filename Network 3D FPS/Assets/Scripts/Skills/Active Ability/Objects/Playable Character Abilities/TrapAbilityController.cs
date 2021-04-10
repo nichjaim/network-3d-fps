@@ -42,6 +42,11 @@ public class TrapAbilityController : ActiveAbilityController
     [SerializeField]
     private Sprite abilitySpriteUnsprung = null;
 
+    private float movementDecreasePercentage = 0f;
+    private TrapStatusEffect abilityStatusEffect = null;
+
+    private float effectDuration = 1f;
+
     #endregion
 
 
@@ -71,14 +76,14 @@ public class TrapAbilityController : ActiveAbilityController
         if (collidingHitbox != null)
         {
             // if target CAN hurt caster
-            if (collidingHitbox.CharHealth.CanAttackerCauseHarmBasedOnReputation(
-                _casterCharData.factionReputation))
+            if (collidingHitbox.CharMaster.CharHealth.
+                CanAttackerCauseHarmBasedOnReputation(_casterCharData.factionReputation))
             {
                 // if trap has already been sprung
                 if (isTrapSprung)
                 {
-                    // apply slow debuff to collding enemy
-                    Debug.Log("NEED IMPL: apply slow debuff to collding enemy"); // NEED IMPL
+                    // apply trap debuff to colliding enemy
+                    collidingHitbox.CharMaster.CharStatus.AddStatusEffect(abilityStatusEffect, abilityDuration);
                 }
                 // else trap has NOT been sprung yet
                 else
@@ -111,6 +116,8 @@ public class TrapAbilityController : ActiveAbilityController
             casterCharacterDataArg);
 
         SetupAbilitySize(castedActiveAbilityArg.abilityRank);
+        SetupAbilityMovementDecreasePercentageAndStatusEffect(castedActiveAbilityArg.abilityRank);
+        SetupAbilityEffectDuration(castedActiveAbilityArg.abilityRank);
     }
 
     #endregion
@@ -152,6 +159,47 @@ public class TrapAbilityController : ActiveAbilityController
         abilityModel.transform.localScale = new Vector3(newAbilityModelSize, newAbilityModelSize, 1f);
 
         Debug.Log("NEED IMPL: set ability sprung particle visuals area size"); // NEED IMPL
+    }
+
+    /// <summary>
+    /// Adjusts the ability's damage taken increase based on the given ability rank argument.
+    /// </summary>
+    /// <param name="abilityRankArg"></param>
+    private void SetupAbilityMovementDecreasePercentageAndStatusEffect(int abilityRankArg)
+    {
+        // initialize value property values
+        float moveReducBase = 0.75f;
+        float moveReducRankAddition = 0.05f;
+        float moveReducMax = 1f;
+
+        // get calculated damage percentage value
+        float newMoveReduc = Mathf.Clamp(moveReducBase + (moveReducRankAddition *
+            (abilityRankArg - 1)), moveReducBase, moveReducMax);
+
+        // set move reduction to calcualted new percentage value
+        movementDecreasePercentage = newMoveReduc;
+
+        // set status effect to new status effect with the calcualted value
+        abilityStatusEffect = new TrapStatusEffect(movementDecreasePercentage);
+    }
+
+    /// <summary>
+    /// Adjusts the ability's status effect duration based on the given ability rank argument.
+    /// </summary>
+    /// <param name="abilityRankArg"></param>
+    private void SetupAbilityEffectDuration(int abilityRankArg)
+    {
+        // initialize ability effect duration property values
+        float effectDurBase = 15f;
+        float effectDurRankAddition = 5f;
+        float effectDurMax = 300f;
+
+        // get calculated damage percentage value
+        float newEffectDur = Mathf.Clamp(effectDurBase + (effectDurRankAddition *
+            (abilityRankArg - 1)), effectDurBase, effectDurMax);
+
+        // set status effect duration to calcualted effect duration value
+        effectDuration = newEffectDur;
     }
 
     #endregion

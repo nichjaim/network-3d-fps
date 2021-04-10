@@ -12,6 +12,15 @@ public class CharacterModelController : MonoBehaviour
     private CharacterMasterController _characterMasterController = null;
     private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
+    [SerializeField]
+    private SpriteRenderer _spriteRenderer = null;
+    [SerializeField]
+    private Animator _animator = null;
+
+    /// list of colors that the character model will temporarily be changed to. 
+    /// Used for status effects.
+    private List<Color> temporaryModelColors = new List<Color>();
+
     #endregion
 
 
@@ -32,6 +41,9 @@ public class CharacterModelController : MonoBehaviour
 
         // set associated animator's controller to the anim apporpriate for this char object
         RefreshCharacterAnimator();
+
+        // sets the model color based on current temporary model colors
+        RefreshModelColor();
     }
 
     private void OnDisable()
@@ -68,7 +80,7 @@ public class CharacterModelController : MonoBehaviour
     /// </summary>
     private void RefreshCharacterAnimator()
     {
-        GetComponent<Animator>().runtimeAnimatorController = AssetRefMethods.
+        _animator.runtimeAnimatorController = AssetRefMethods.
             LoadBundleAssetCharacterAnimator(GetAppropriateCharId());
     }
 
@@ -111,6 +123,57 @@ public class CharacterModelController : MonoBehaviour
             // return some default ID
             return string.Empty;
         }
+    }
+
+    #endregion
+
+
+
+
+    #region Status Effects Functions
+
+    /// <summary>
+    /// Returns a mix of all the temporary model colors. 
+    /// Returns the default model color if there are NO temporary colors.
+    /// </summary>
+    /// <returns></returns>
+    private Color GetTemporaryModelColorsMix()
+    {
+        return GeneralMethods.GetColorsMix(temporaryModelColors, Color.white);
+    }
+
+    /// <summary>
+    /// Sets the model color based on current temporary model colors.
+    /// </summary>
+    private void RefreshModelColor()
+    {
+        _spriteRenderer.color = GetTemporaryModelColorsMix();
+    }
+
+    /// <summary>
+    /// Adds color to temporary model colors.
+    /// </summary>
+    /// <param name="colorArg"></param>
+    public void AddTemporaryModelColor(Color colorArg)
+    {
+        // add given color to temporary model colors
+        temporaryModelColors.Add(colorArg);
+
+        // sets the model color based on current temporary model colors
+        RefreshModelColor();
+    }
+
+    /// <summary>
+    /// Removes color to temporary model colors.
+    /// </summary>
+    /// <param name="colorArg"></param>
+    public void RemoveTemporaryModelColor(Color colorArg)
+    {
+        // remove given color to temporary model colors
+        temporaryModelColors.Remove(colorArg);
+
+        // sets the model color based on current temporary model colors
+        RefreshModelColor();
     }
 
     #endregion

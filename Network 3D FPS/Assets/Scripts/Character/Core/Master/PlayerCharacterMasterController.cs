@@ -10,12 +10,10 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
 {
     #region Class Variables
 
-    [Header("Component References")]
+    [Header("Player Component References")]
 
     [SerializeField]
     private ObjectActivationController _objectActivationController = null;
-
-    private NetworkIdentity _networkIdentity;
 
     [SyncVar(hook = nameof(OnPlayerNumberChange))]
     private int playerNumber = 1;
@@ -37,15 +35,10 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
 
     #region MonoBehaviour Functions
 
-    private void Awake()
-    {
-        _networkIdentity = GetComponent<NetworkIdentity>();
-    }
-
     private void Update()
     {
         // if player is online but NOT associated with the machine running this
-        if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        if (GeneralMethods.IsNetworkConnectedButNotLocalClient(netIdentity))
         {
             // DONT continue code
             return;

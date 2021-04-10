@@ -119,8 +119,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  projectileSpeed: 100
+  projectileSpeed: 10
   projectileLifetime: 10
+  targetPenetrationMax: 1
 --- !u!135 &1960580867842902946
 SphereCollider:
   m_ObjectHideFlags: 0

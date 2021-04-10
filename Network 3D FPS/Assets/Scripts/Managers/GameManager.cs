@@ -34,6 +34,10 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private CharacterData defaultPartyCharacter = null;
     public Action OnDefaultPartyCharacterChangedAction;
 
+    [SyncVar(hook = nameof(OnPartyInvChanged))]
+    private PartyInventory partyInv = null;
+    public Action OnPartyInvChangedAction;
+
     [SyncVar(hook = nameof(OnGameSeedChanged))]
     private int gameSeed = 0;
     public Action OnGameSeedChangedAction;
@@ -423,6 +427,13 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         OnDefaultPartyCharacterChangedAction?.Invoke();
     }
 
+    public void OnPartyInvChanged(PartyInventory oldArg,
+        PartyInventory newArg)
+    {
+        // call party inv change actions if NOT null
+        OnPartyInvChangedAction?.Invoke();
+    }
+
     public void OnGameSeedChanged(int oldArg, int newArg)
     {
         // call game seed change actions if NOT null
@@ -474,6 +485,9 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         //SetPartyCharacters(new SyncList<CharacterData>(eventType.saveData.playableCharacterData));
         // setup player char order list to the default order
         SetPartyOrderToDefault();
+
+        // setup party inventory to save data's party inv
+        SetPartyInv(eventType.saveData.partyInventory);
     }
 
     public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)
@@ -620,6 +634,35 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void SetDefaultPartyCharacterInternal(CharacterData charArg)
     {
         defaultPartyCharacter = charArg;
+    }
+
+    #endregion
+
+
+
+    #region PartyInv Setter Functions
+
+    public void SetPartyInv(PartyInventory invArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSetPartyInv(invArg);
+        }
+        else
+        {
+            SetPartyInvInternal(invArg);
+        }
+    }
+
+    [Command]
+    public void CmdSetPartyInv(PartyInventory invArg)
+    {
+        SetPartyInvInternal(invArg);
+    }
+
+    public void SetPartyInvInternal(PartyInventory invArg)
+    {
+        partyInv = invArg;
     }
 
     #endregion

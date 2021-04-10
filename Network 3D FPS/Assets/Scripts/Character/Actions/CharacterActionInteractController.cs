@@ -126,8 +126,8 @@ public class CharacterActionInteractController : MonoBehaviour
         InteractableController hitInteractable;
 
         // if a fired raycast hit an interactable object
-        if (Physics.Raycast(_sightPoint.transform.position, _sightPoint.transform.forward, out raycastHit,
-            detectRange, interactableLayerMask))
+        if (Physics.Raycast(_sightPoint.FirePoint.transform.position, 
+            _sightPoint.FirePoint.transform.forward, out raycastHit, detectRange, interactableLayerMask))
         {
             // get interactable component from hit interactable object
             hitInteractable = raycastHit.transform.GetComponent<InteractableController>();

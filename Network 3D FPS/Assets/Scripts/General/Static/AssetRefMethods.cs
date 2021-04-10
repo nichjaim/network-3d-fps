@@ -286,14 +286,15 @@ public static class AssetRefMethods
 
     #region Asset Bundle Inventory Functions
 
-    public static AnimatorOverrideController LoadBundleAssetHudWeaponModelAnimator(string weaponIdArg)
+    public static AnimatorOverrideController LoadBundleAssetFirstPersonWeaponModelAnimator(
+        WeaponType wepTypeArg, string wepIdArg)
     {
         // initialize bundle properties
-        string BUNDLE_NAME = "HudWepModelAnim";
-        string ASSET_NAME_PREFIX = "wepanim-";
+        string BUNDLE_NAME = "FirstPersWepModelAnim";
+        string ASSET_NAME_PREFIX = $"{wepTypeArg.ToString()}/wepanim-";
 
         // get name of asset to load
-        string loadAssetName = ASSET_NAME_PREFIX + weaponIdArg;
+        string loadAssetName = ASSET_NAME_PREFIX + wepIdArg;
 
         // load and return asset
         return LoadBundleAsset<AnimatorOverrideController>(BUNDLE_NAME, loadAssetName);

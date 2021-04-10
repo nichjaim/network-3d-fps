@@ -13,8 +13,6 @@ public class CharacterGravityController : MonoBehaviour
     private CharacterController _characterController;
     [SerializeField]
     private GroundCheckController _groundCheckController = null;
-    /*[SerializeField]
-    private CharacterMasterController _characterMasterController;*/
     [SerializeField]
     private NetworkIdentity _networkIdentity = null;
 
@@ -49,12 +47,6 @@ public class CharacterGravityController : MonoBehaviour
 
 
     #region MonoBehaviour Functions
-
-    /*private void Awake()
-    {
-        // starts persistent listening for all relevant events
-        //InitializeAllPersistentEventListening();
-    }*/
 
     private void FixedUpdate()
     {
@@ -122,13 +114,6 @@ public class CharacterGravityController : MonoBehaviour
     /// <param name="jumpHeigthArg"></param>
     public void Jump(float jumpHeigthArg)
     {
-        //if the character is NOT on the ground (i.e. is still in the air)
-        if (!_groundCheckController.IsGrounded())
-        {
-            //DONT continue code
-            return;
-        }
-
         // if char contr's slope limit is dynamic AND is NOT set for being airborne
         if (changeSlopeLimitWhenAirborne && _characterController.slopeLimit != slopeLimitAirborne)
         {
@@ -150,22 +135,6 @@ public class CharacterGravityController : MonoBehaviour
         // resets the speed at which the character falls
         ResetFallVelocity();
     }
-
-    #endregion
-
-
-
-
-    #region Event Functions
-
-    /*/// <summary>
-    /// Starts persistent listening for all relevant events. 
-    /// Call in Awake().
-    /// </summary>
-    private void InitializeAllPersistentEventListening()
-    {
-        _characterMasterController.OnMasterReset += ResetCharacterGravity;
-    }*/
 
     #endregion
 

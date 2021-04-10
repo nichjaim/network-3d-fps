@@ -308,4 +308,37 @@ public static class GeneralMethods
             return charMasterArg.CharData;
         }
     }
+
+    /// <summary>
+    /// Returns a mix of all given colors. 
+    /// Returns the given default color if there are NO colors in list.
+    /// </summary>
+    /// <param name="colorsArg"></param>
+    /// <param name="defaultColorArg"></param>
+    /// <returns></returns>
+    public static Color GetColorsMix(List<Color> colorsArg, Color defaultColorArg)
+    {
+        // if there are NO colors in list
+        if (colorsArg.Count == 0)
+        {
+            // return the given default color
+            return defaultColorArg;
+        }
+        // else there ARE some colors in list
+        else
+        {
+            // initialize return color as first color in list
+            Color returnColor = colorsArg[0];
+
+            // loop through all remaining list colors after the first one
+            for (int i = 1; i < colorsArg.Count; i++)
+            {
+                // mix return color with iterating color
+                returnColor = Color.Lerp(returnColor, colorsArg[i], 0.5f);
+            }
+
+            // return the mixed color
+            return returnColor;
+        }
+    }
 }

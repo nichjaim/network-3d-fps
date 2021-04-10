@@ -39,8 +39,8 @@ MonoBehaviour:
       statIntelligence: 1
       statStrength: 1
       statDexterity: 1
-      statMovementSpeed: 1
-      statJumpHeight: 1
+      statMovementSpeed: 5
+      statJumpHeight: 3
       statConsecutiveJumps: 1
       statDefense: 0
       statHealing: 0

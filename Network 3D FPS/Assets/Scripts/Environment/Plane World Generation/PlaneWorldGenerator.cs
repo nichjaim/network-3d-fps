@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Mirror;
 
 public class PlaneWorldGenerator : MonoBehaviour
 {
     #region Class Variables
+
+    //private NetworkManagerCustom _netManager = null;
 
     private static int WORLD_CHUNK_SIZE = 64;
 
@@ -16,7 +19,6 @@ public class PlaneWorldGenerator : MonoBehaviour
     {
         get { return generatedWorld; }
     }
-
 
     [SerializeField]
     private GameObject worldBoundaryPrefab = null;
@@ -38,6 +40,9 @@ public class PlaneWorldGenerator : MonoBehaviour
 
     private void Start()
     {
+        // setup all variables that reference singleton instance related components
+        //InitializeSingletonReferences();
+
         // setup all the world boundary objects
         InitializeWorldBoundaries();
     }
@@ -79,6 +84,15 @@ public class PlaneWorldGenerator : MonoBehaviour
         worldBoundaryLeft.SetActive(false);
         worldBoundaryRight.SetActive(false);
     }
+
+    /*/// <summary>
+    /// Setup all variables that reference singleton instance related components. 
+    /// Call in Start(), needs to be start to give the instances time to be created.
+    /// </summary>
+    private void InitializeSingletonReferences()
+    {
+        _netManager = (NetworkManagerCustom)NetworkManager.singleton;
+    }*/
 
     #endregion
 
@@ -482,6 +496,71 @@ public class PlaneWorldGenerator : MonoBehaviour
     }
 
     #endregion
+
+
+
+
+    /*#region InitializeWorldBoundaries Functions
+
+    /// <summary>
+    /// Sets up all the world boundary objects. 
+    /// Call in Start().
+    /// </summary>
+    private void InitializeWorldBoundaries()
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdInitializeWorldBoundaries();
+        }
+        else
+        {
+            InitializeWorldBoundariesInternal();
+        }
+    }
+
+    [Command]
+    private void CmdInitializeWorldBoundaries()
+    {
+        InitializeWorldBoundariesInternal();
+    }
+
+    private void InitializeWorldBoundariesInternal()
+    {
+        // get the world boudnary network prefab object
+        GameObject worldBoundaryPrefab = _netManager.GetSpawnPrefabWorldBoundary();
+
+        // instantiate all world boundary objects
+        worldBoundaryUp = Instantiate(worldBoundaryPrefab, Vector3.zero, Quaternion.identity, transform);
+        worldBoundaryDown = Instantiate(worldBoundaryPrefab, Vector3.zero, Quaternion.identity, transform);
+        worldBoundaryLeft = Instantiate(worldBoundaryPrefab, Vector3.zero, Quaternion.identity, transform);
+        worldBoundaryRight = Instantiate(worldBoundaryPrefab, Vector3.zero, Quaternion.identity, transform);
+
+        // set boundary roatations
+        worldBoundaryUp.transform.eulerAngles = new Vector3(-90f, 0f, 0f);
+        worldBoundaryDown.transform.eulerAngles = new Vector3(-90f, 0f, 180f);
+        worldBoundaryLeft.transform.eulerAngles = new Vector3(-90f, 0f, -90f);
+        worldBoundaryRight.transform.eulerAngles = new Vector3(-90f, 0f, 90f);
+
+        // name the world boundary objects accordingly
+        worldBoundaryUp.gameObject.name = "World Boundary Up";
+        worldBoundaryDown.gameObject.name = "World Boundary Down";
+        worldBoundaryLeft.gameObject.name = "World Boundary Left";
+        worldBoundaryRight.gameObject.name = "World Boundary Right";
+
+        // turn off boundary object
+        worldBoundaryUp.SetActive(false);
+        worldBoundaryDown.SetActive(false);
+        worldBoundaryLeft.SetActive(false);
+        worldBoundaryRight.SetActive(false);
+
+        // spawn all world boundary objects on network
+        NetworkServer.Spawn(worldBoundaryUp);
+        NetworkServer.Spawn(worldBoundaryDown);
+        NetworkServer.Spawn(worldBoundaryLeft);
+        NetworkServer.Spawn(worldBoundaryRight);
+    }
+
+    #endregion*/
 
 
 }

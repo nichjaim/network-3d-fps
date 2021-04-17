@@ -10,6 +10,8 @@ public class GameSaveData
     public List<CharacterData> playableCharacterData;
     public PartyInventory partyInventory;
 
+    public HavenData havenData;
+
     #endregion
 
 
@@ -33,6 +35,8 @@ public class GameSaveData
     {
         playableCharacterData = new List<CharacterData>();
         partyInventory = new PartyInventory();
+
+        havenData = new HavenData();
     }
 
     #endregion

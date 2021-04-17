@@ -338,6 +338,9 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // set party inventory to starter party ivnentory
         newSaveData.partyInventory = new PartyInventory(startingPartyInventory);
 
+        // set haven data to a new haven data
+        newSaveData.havenData = new HavenData();
+
         // save the new save file
         //SaveLoadSystem.Save(newSaveData, newSaveFile); // TEMP COMMENT OUT FOR TESTING PURPOSES!!!
 
@@ -392,17 +395,17 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
 
     #region Spawn Functions
 
-    /*/// <summary>
+    /// <summary>
     /// Returns the spawn prefab based on given name.
     /// </summary>
     /// <param name="prefabNameArg"></param>
     /// <returns></returns>
-    public GameObject GetSpawnPrefabFromName(string prefabNameArg)
+    private GameObject GetSpawnPrefabFromName(string prefabNameArg)
     {
         return spawnPrefabs.Find(prefab => prefab.name == prefabNameArg);
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Returns zombie spawn prefab.
     /// </summary>
     /// <returns></returns>
@@ -410,6 +413,15 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     {
         return GetSpawnPrefabFromName("Zombie");
     }*/
+
+    /// <summary>
+    /// Returns zombie spawn prefab.
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetSpawnPrefabWorldBoundary()
+    {
+        return GetSpawnPrefabFromName("WorldBoundary");
+    }
 
     #endregion
 

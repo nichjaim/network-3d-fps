@@ -16,6 +16,13 @@ public class UIManager : MonoBehaviour
         get { return uiPlayerCharacter; }
     }
 
+    [SerializeField]
+    private DialogueGameCoordinator dialgGameCoordr = null;
+    public DialogueGameCoordinator DialgGameCoordr
+    {
+        get { return dialgGameCoordr; }
+    }
+
     #endregion
 
 

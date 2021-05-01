@@ -37,6 +37,11 @@ public class HavenActivityData
         Setup(templateArg);
     }
 
+    public HavenActivityData(HavenActivityDataTemplate templateArg)
+    {
+        Setup(templateArg.template);
+    }
+
     #endregion
 
 

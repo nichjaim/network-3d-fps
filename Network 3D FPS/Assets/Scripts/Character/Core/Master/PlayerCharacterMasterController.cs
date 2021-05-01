@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCharacterMasterController : CharacterMasterController, MMEventListener<ExitGameSessionEvent>,
-    MMEventListener<NetworkServerStartEvent>, MMEventListener<StartHavenGameStateEvent>
+    MMEventListener<NetworkServerStartEvent>, MMEventListener<GameStateModeTransitionEvent>
 {
     #region Class Variables
 
@@ -46,7 +46,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
 
         if (Input.GetKeyDown(KeyCode.H))
         {
-            StartHavenGameStateEvent.Trigger();
+            GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
         }
 
         if (Input.GetKeyDown(KeyCode.N))
@@ -194,7 +194,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         this.MMEventStartListening<ExitGameSessionEvent>();
         this.MMEventStartListening<NetworkServerStartEvent>();
-        this.MMEventStartListening<StartHavenGameStateEvent>();
+        this.MMEventStartListening<GameStateModeTransitionEvent>();
 
         //GameManager.Instance.OnPartyCharactersChangedAction += RefreshPlayerCharData;
         //GameManager.Instance.OnPartyOrderChangedAction += RefreshPlayerCharData;
@@ -208,7 +208,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
     {
         this.MMEventStopListening<ExitGameSessionEvent>();
         this.MMEventStopListening<NetworkServerStartEvent>();
-        this.MMEventStopListening<StartHavenGameStateEvent>();
+        this.MMEventStopListening<GameStateModeTransitionEvent>();
 
         //GameManager.Instance.OnPartyCharactersChangedAction -= RefreshPlayerCharData;
         //GameManager.Instance.OnPartyOrderChangedAction -= RefreshPlayerCharData;
@@ -226,9 +226,26 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         DestroyIfNotConnectedToNetwork();
     }
 
-    public void OnMMEvent(StartHavenGameStateEvent eventType)
+    public void OnMMEvent(GameStateModeTransitionEvent eventType)
     {
-        _objectActivationController.SetObjectActivation(false);
+        switch (eventType.gameMode)
+        {
+            case GameStateMode.Shooter:
+                switch (eventType.transitionProgress)
+                {
+                    case ActionProgressType.Started:
+                    case ActionProgressType.InProgress:
+                        _objectActivationController.SetObjectActivation(true);
+                        break;
+                    case ActionProgressType.Finished:
+                        _objectActivationController.SetObjectActivation(false);
+                        break;
+                }
+                break;
+            case GameStateMode.VisualNovel:
+                _objectActivationController.SetObjectActivation(false);
+                break;
+        }
     }
 
     #endregion

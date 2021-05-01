@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dbbc84c70300ba489dc1fe1961516ec, type: 3}
+  m_Name: Custom Lua Function Info Activity Partner
+  m_EditorClassIdentifier: 
+  conditionFunctions:
+  - functionName: Activity/CanActivityPartner/CanActivityPartnerWaifu1
+    parameters: 
+    returnValue: 1
+  - functionName: Activity/CanActivityPartner/CanActivityPartnerWaifu2
+    parameters: 
+    returnValue: 1
+  - functionName: Activity/CanActivityPartner/CanActivityPartnerWaifu3
+    parameters: 
+    returnValue: 1
+  - functionName: Activity/IsActivityPartner/IsActivityPartnerWaifu1
+    parameters: 
+    returnValue: 1
+  - functionName: Activity/IsActivityPartner/IsActivityPartnerWaifu2
+    parameters: 
+    returnValue: 1
+  - functionName: Activity/IsActivityPartner/IsActivityPartnerWaifu3
+    parameters: 
+    returnValue: 1
+  scriptFunctions:
+  - functionName: Activity/SetActivityPartner/SetActivityPartnerWaifu1
+    parameters: 
+    returnValue: 0
+  - functionName: Activity/SetActivityPartner/SetActivityPartnerWaifu2
+    parameters: 
+    returnValue: 0
+  - functionName: Activity/SetActivityPartner/SetActivityPartnerWaifu3
+    parameters: 
+    returnValue: 0

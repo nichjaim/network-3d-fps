@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<StartHavenGameStateEvent>, 
+public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<GameStateModeTransitionEvent>, 
     MMEventListener<NetworkGameLocalJoinedEvent>
 {
     #region Class Variables
@@ -102,7 +102,7 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<S
     /// </summary>
     private void StartAllEventListening()
     {
-        this.MMEventStartListening<StartHavenGameStateEvent>();
+        this.MMEventStartListening<GameStateModeTransitionEvent>();
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
     }
 
@@ -112,14 +112,22 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<S
     /// </summary>
     private void StopAllEventListening()
     {
-        this.MMEventStopListening<StartHavenGameStateEvent>();
+        this.MMEventStopListening<GameStateModeTransitionEvent>();
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
     }
 
-    public void OnMMEvent(StartHavenGameStateEvent eventType)
+    public void OnMMEvent(GameStateModeTransitionEvent eventType)
     {
-        // switch to haven menu's main menu
-        SwitchToMainMenu();
+        if (eventType.gameMode == GameStateMode.VisualNovel)
+        {
+            // switch to haven menu's main menu
+            SwitchToMainMenu();
+        }
+        else
+        {
+            // turn off haven menu
+            DeactivateMenu();
+        }
     }
 
     public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)

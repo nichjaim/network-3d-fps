@@ -7,6 +7,8 @@ public class GameSaveData
 {
     #region Class Variables
 
+    public GameFlags gameFlags;
+
     public List<CharacterData> playableCharacterData;
     public PartyInventory partyInventory;
 
@@ -33,6 +35,8 @@ public class GameSaveData
 
     public void Setup()
     {
+        gameFlags = new GameFlags();
+
         playableCharacterData = new List<CharacterData>();
         partyInventory = new PartyInventory();
 

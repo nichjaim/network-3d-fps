@@ -4,10 +4,11 @@ using UnityEngine;
 using Mirror;
 using MoreMountains.Tools;
 using BundleSystem;
+using PixelCrushers.DialogueSystem;
 
 public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSessionEvent>, 
     MMEventListener<StartNewGameEvent>, MMEventListener<BundleSystemSetupEvent>,
-    MMEventListener<MenuActivationEvent>
+    MMEventListener<MenuActivationEvent>, MMEventListener<DialogueActivationEvent>
 {
     #region Class Variables
 
@@ -38,6 +39,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     private bool shouldAlterCursorFreedom = false;
 
     private List<MasterMenuControllerCustom> openMenus = new List<MasterMenuControllerCustom>();
+    private List<StandardDialogueUI> openDialogues = new List<StandardDialogueUI>();
 
     #endregion
 
@@ -320,6 +322,9 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         // get the next available save file number
         int newSaveFile = SaveLoadSystem.GetNumberOfSaveFiles() + 1;
 
+        // set game flag data to a new game flags data
+        newSaveData.gameFlags = new GameFlags();
+
         // load all starting playable character data
         CharacterDataTemplate[] playableCharDataTemplates = AssetRefMethods.
             LoadAllBundleAssetPlayableCharacterDataTemplate();
@@ -456,12 +461,37 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     }
 
     /// <summary>
+    /// Sets up list of dialogue that denote what menus is open.
+    /// </summary>
+    /// <param name="dialogueArg"></param>
+    /// <param name="isOpeningArg"></param>
+    private void RefreshOpenDialogues(StandardDialogueUI dialogueArg, bool isOpeningArg)
+    {
+        // if given dialogue is considered open when it is closing OR closed when it is opening
+        if (openDialogues.Exists(iterDialg => iterDialg == dialogueArg) != isOpeningArg)
+        {
+            // if dialogue opening
+            if (isOpeningArg)
+            {
+                // add dialogue to list of open menus
+                openDialogues.Add(dialogueArg);
+            }
+            // else dialogue closing
+            else
+            {
+                // remove dialogue from list of open menus
+                openDialogues.Remove(dialogueArg);
+            }
+        }
+    }
+
+    /// <summary>
     /// Returns bool that denotes if any menu is open.
     /// </summary>
     /// <returns></returns>
     public bool IsAnyMenuOpen()
     {
-        return openMenus.Count > 0;
+        return (openMenus.Count > 0) && (openDialogues.Count > 0);
     }
 
     /// <summary>
@@ -500,6 +530,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         this.MMEventStartListening<StartNewGameEvent>();
         this.MMEventStartListening<BundleSystemSetupEvent>();
         this.MMEventStartListening<MenuActivationEvent>();
+        this.MMEventStartListening<DialogueActivationEvent>();
     }
 
     /// <summary>
@@ -512,6 +543,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         this.MMEventStopListening<StartNewGameEvent>();
         this.MMEventStopListening<BundleSystemSetupEvent>();
         this.MMEventStopListening<MenuActivationEvent>();
+        this.MMEventStopListening<DialogueActivationEvent>();
     }
 
     public void OnMMEvent(ExitGameSessionEvent eventType)
@@ -545,6 +577,16 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     {
         // setup list of menus that denote what menus is open
         RefreshOpenMenus(eventType.menu, eventType.isOpening);
+
+        // sets cursor's lock and visible status based on menu activation
+        SetCursorFreedom(IsAnyMenuOpen());
+    }
+
+    public void OnMMEvent(DialogueActivationEvent eventType)
+    {
+        // setup list of dialogue that denote what dialogues is open
+        RefreshOpenDialogues(eventType.dialogue, eventType.isOpening);
+
         // sets cursor's lock and visible status based on menu activation
         SetCursorFreedom(IsAnyMenuOpen());
     }

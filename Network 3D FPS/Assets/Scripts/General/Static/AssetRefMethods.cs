@@ -381,4 +381,33 @@ public static class AssetRefMethods
     #endregion
 
 
+
+
+    #region Asset Bundle Haven Functions
+
+    public static HavenActivityDataTemplate[] LoadAllBundleAssetHavenActivityTemplates()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenActivity";
+
+        // load and return asset
+        return LoadAllBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME);
+    }
+
+    public static HavenActivityDataTemplate LoadBundleAssetUniqueHavenActivityTemplate(string activityIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "UniqueHavenActivity";
+        string ASSET_NAME_PREFIX = "activity-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + activityIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
+    #endregion
+
+
 }

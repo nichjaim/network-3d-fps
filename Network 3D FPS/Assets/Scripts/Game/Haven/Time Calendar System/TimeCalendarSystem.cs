@@ -63,7 +63,7 @@ public class TimeCalendarSystem
     /// Sets the current time slot to the next time slot. 
     /// Returns whether next time slot is in a new day.
     /// </summary>
-    public bool ApplyTimeSlotPassage()
+    public bool GoToNextTimeSlot()
     {
         switch (currentTimeSlot)
         {
@@ -75,9 +75,6 @@ public class TimeCalendarSystem
                 break;
             case TimeSlotType.Evening:
                 currentTimeSlot = TimeSlotType.Morning;
-
-                // advances the current date by one day
-                AdvanceCalendarDays(1);
 
                 // return fact that next time slot is in a new day
                 return true;

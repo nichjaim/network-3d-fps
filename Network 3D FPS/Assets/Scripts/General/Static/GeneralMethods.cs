@@ -341,4 +341,19 @@ public static class GeneralMethods
             return returnColor;
         }
     }
+
+    public static List<T> Shuffle<T>(this List<T> original)
+    {
+        System.Random rand = new System.Random();
+
+        List<T> lst = new List<T>(original);
+        for (int i = lst.Count - 1; i >= 1; i--)
+        {
+            int j = rand.Next(0, i + 1);
+            T tmp = lst[j];
+            lst[j] = lst[i];
+            lst[i] = tmp;
+        }
+        return lst;
+    }
 }

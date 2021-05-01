@@ -6,7 +6,7 @@ using Nichjaim.MasterSubMenu;
 public class HavenMenuMainMenuController : SubMenuController
 {
     [SerializeField]
-    private DialogueCoordinator dialgCoordr = null; // TESTING VAR!!!
+    private DialogueGameCoordinator dialgGameCoordr = null; // TESTING VAR!!!
 
     #region Button Press Functions
 
@@ -18,7 +18,7 @@ public class HavenMenuMainMenuController : SubMenuController
 
     public void ButtonPressGoToRooftops()
     {
-        dialgCoordr.PlayDialogueTestingConversation(); // TEST LINE!!!
+        dialgGameCoordr.PlayDialogueTestingConversation(); // TEST LINE!!!
     }
 
     #endregion

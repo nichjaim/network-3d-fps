@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using PixelCrushers.DialogueSystem;
 
 /// <summary>
 /// An event fired when starting a fresh new game.
@@ -147,12 +148,67 @@ public struct LoadSlotPressedEvent
 	}
 }
 
-/// <summary>
+/*/// <summary>
 /// An event fired when entering the haven game state.
 /// </summary>
 public struct StartHavenGameStateEvent
 {
 	static StartHavenGameStateEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}*/
+
+/// <summary>
+/// An event fired when the game state mode is being changed.
+/// </summary>
+public struct GameStateModeTransitionEvent
+{
+	public GameStateMode gameMode;
+	public ActionProgressType transitionProgress;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="gameModeArg"></param>
+	/// <param name="transitionProgressArg"></param>
+	public GameStateModeTransitionEvent(GameStateMode gameModeArg, 
+		ActionProgressType transitionProgressArg)
+	{
+		gameMode = gameModeArg;
+		transitionProgress = transitionProgressArg;
+	}
+
+	static GameStateModeTransitionEvent e;
+	public static void Trigger(GameStateMode gameModeArg,
+		ActionProgressType transitionProgressArg)
+	{
+		e.gameMode = gameModeArg;
+		e.transitionProgress = transitionProgressArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when all players have been defeated.
+/// </summary>
+public struct PartyWipeEvent
+{
+	static PartyWipeEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when a calendar date advances by one day.
+/// </summary>
+public struct DayAdvanceEvent
+{
+	static DayAdvanceEvent e;
 	public static void Trigger()
 	{
 		MMEventManager.TriggerEvent(e);
@@ -232,6 +288,35 @@ public struct MenuActivationEvent
 	public static void Trigger(MasterMenuControllerCustom menuArg, bool isOpeningArg)
 	{
 		e.menu = menuArg;
+		e.isOpening = isOpeningArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when a dialogue UI is opened/closed.
+/// </summary>
+public struct DialogueActivationEvent
+{
+	public StandardDialogueUI dialogue;
+	public bool isOpening;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="dialogueArg"></param>
+	/// <param name="isOpeningArg"></param>
+	public DialogueActivationEvent(StandardDialogueUI dialogueArg, bool isOpeningArg)
+	{
+		dialogue = dialogueArg;
+		isOpening = isOpeningArg;
+	}
+
+	static DialogueActivationEvent e;
+	public static void Trigger(StandardDialogueUI dialogueArg, bool isOpeningArg)
+	{
+		e.dialogue = dialogueArg;
 		e.isOpening = isOpeningArg;
 
 		MMEventManager.TriggerEvent(e);

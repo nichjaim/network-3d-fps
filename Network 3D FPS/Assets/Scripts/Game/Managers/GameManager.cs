@@ -7,11 +7,27 @@ using BundleSystem;
 using System;
 
 public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEvent>, 
-    MMEventListener<NewSaveCreatedEvent>, MMEventListener<NetworkGameLocalJoinedEvent>
+    MMEventListener<NewSaveCreatedEvent>, MMEventListener<NetworkGameLocalJoinedEvent>,
+    MMEventListener<PartyWipeEvent>, MMEventListener<DayAdvanceEvent>
 {
     #region Class Variables
 
     public static GameManager Instance;
+
+    // the current save file number being used
+    private int saveFileNumber = 0;
+
+    [SyncVar(hook = nameof(OnGameStateModeChanged))]
+    private GameStateMode gameStateMode = GameStateMode.VisualNovel;
+    public Action OnGameStateModeChangedAction;
+
+    [SyncVar(hook = nameof(OnGameFlagsChanged))]
+    private GameFlags gameFlags = null;
+    public Action OnGameFlagsChangedAction;
+    public GameFlags GameFlags
+    {
+        get { return gameFlags; }
+    }
 
     [SyncVar(hook = nameof(OnPartyCharactersChanged))]
     private List<CharacterData> partyCharacters = new List<CharacterData>();
@@ -37,6 +53,14 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     [SyncVar(hook = nameof(OnPartyInvChanged))]
     private PartyInventory partyInv = null;
     public Action OnPartyInvChangedAction;
+
+    [SyncVar(hook = nameof(OnHavenDataChanged))]
+    private HavenData havenData = null;
+    public Action OnHavenDataChangedAction;
+    public HavenData HavenData
+    {
+        get { return havenData; }
+    }
 
     [SyncVar(hook = nameof(OnGameSeedChanged))]
     private int gameSeed = 0;
@@ -285,11 +309,50 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     }
 
     /// <summary>
+    /// Sets game properties based on given save data.
+    /// </summary>
+    /// <param name="saveFileNumArg"></param>
+    /// <param name="gameSaveArg"></param>
+    private void SetupGameInfoFromSave(int saveFileNumArg, GameSaveData gameSaveArg)
+    {
+        saveFileNumber = saveFileNumArg;
+
+        SetGameFlags(gameSaveArg.gameFlags);
+
+        SetPartyCharacters(gameSaveArg.playableCharacterData);
+        //SetPartyCharacters(new SyncList<CharacterData>(eventType.saveData.playableCharacterData));
+
+        // setup party inventory to save data's party inv
+        SetPartyInv(gameSaveArg.partyInventory);
+
+        SetHavenData(gameSaveArg.havenData);
+    }
+
+    #endregion
+
+
+
+
+    #region Seed Functions
+
+    /// <summary>
     /// Set game seed to current synced seed.
     /// </summary>
     private void SetupGameSeed()
     {
         GameSeedManager.SetupSeed(gameSeed);
+    }
+
+    /// <summary>
+    /// Randomizes the current game seed.
+    /// </summary>
+    private void RandomizeGameSeed()
+    {
+        // randomize the game seed
+        GameSeedManager.RandomizeSeed();
+
+        // set seed to use to the current seed
+        SetGameSeed(GameSeedManager.Seed);
     }
 
     #endregion
@@ -377,6 +440,20 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
     #region Sync Functions
 
+    public void OnGameStateModeChanged(GameStateMode oldArg,
+        GameStateMode newArg)
+    {
+        // call game state mode change actions if NOT null
+        OnGameStateModeChangedAction?.Invoke();
+    }
+
+    public void OnGameFlagsChanged(GameFlags oldArg,
+        GameFlags newArg)
+    {
+        // call game flags change actions if NOT null
+        OnGameFlagsChangedAction?.Invoke();
+    }
+
     public void OnPartyCharactersChanged(List<CharacterData> oldListArg, 
         List<CharacterData> newListArg)
     {
@@ -434,6 +511,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         OnPartyInvChangedAction?.Invoke();
     }
 
+    public void OnHavenDataChanged(HavenData oldArg, HavenData newArg)
+    {
+        // call haven data change actions if NOT null
+        OnHavenDataChangedAction?.Invoke();
+    }
+
     public void OnGameSeedChanged(int oldArg, int newArg)
     {
         // call game seed change actions if NOT null
@@ -456,6 +539,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStartListening<GamePausingActionEvent>();
         this.MMEventStartListening<NewSaveCreatedEvent>();
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
+        this.MMEventStartListening<PartyWipeEvent>();
+        this.MMEventStartListening<DayAdvanceEvent>();
 
         //partyCharacters.Callback += OnPartyCharactersChanged;
     }
@@ -469,6 +554,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStopListening<GamePausingActionEvent>();
         this.MMEventStopListening<NewSaveCreatedEvent>();
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
+        this.MMEventStopListening<PartyWipeEvent>();
+        this.MMEventStopListening<DayAdvanceEvent>();
 
         //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
@@ -481,19 +568,34 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
     public void OnMMEvent(NewSaveCreatedEvent eventType)
     {
-        SetPartyCharacters(eventType.saveData.playableCharacterData);
-        //SetPartyCharacters(new SyncList<CharacterData>(eventType.saveData.playableCharacterData));
+        // set game properties based on event's save data
+        SetupGameInfoFromSave(eventType.saveFileNumber, eventType.saveData);
+
         // setup player char order list to the default order
         SetPartyOrderToDefault();
-
-        // setup party inventory to save data's party inv
-        SetPartyInv(eventType.saveData.partyInventory);
     }
 
     public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)
     {
         // set game seed to current synced seed
         SetupGameSeed();
+    }
+
+    public void OnMMEvent(PartyWipeEvent eventType)
+    {
+        // reduces current amount of external resources by the party wipe penalty.
+        havenData.havenProgression.InflictPartyWipePenalty();
+    }
+
+    public void OnMMEvent(DayAdvanceEvent eventType)
+    {
+        // advance calendar date by one day
+        havenData.AdvanceOneDay();
+
+        // refreshes week's activity planning factors
+        havenData.ResetAllPlanning();
+        
+        Debug.Log("NEED IMPL: ensure switched to visualnovel game mode"); // NEED IMPL!!!
     }
 
     #endregion
@@ -518,6 +620,68 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         return returnList;
         return partyCharacters;
     }*/
+
+    #endregion
+
+
+
+
+    #region gameStateMode Setter Functions
+
+    public void SetGameStateMode(GameStateMode modeArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSetGameStateMode(modeArg);
+        }
+        else
+        {
+            SetGameStateModeInternal(modeArg);
+            OnGameStateModeChanged(modeArg, modeArg);
+        }
+    }
+
+    [Command]
+    public void CmdSetGameStateMode(GameStateMode modeArg)
+    {
+        SetGameStateModeInternal(modeArg);
+    }
+
+    public void SetGameStateModeInternal(GameStateMode modeArg)
+    {
+        gameStateMode = modeArg;
+    }
+
+    #endregion
+
+
+
+
+    #region gameFlags Setter Functions
+
+    public void SetGameFlags(GameFlags flagsArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSetGameFlags(flagsArg);
+        }
+        else
+        {
+            SetGameFlagsInternal(flagsArg);
+            OnGameFlagsChanged(flagsArg, flagsArg);
+        }
+    }
+
+    [Command]
+    public void CmdSetGameFlags(GameFlags flagsArg)
+    {
+        SetGameFlagsInternal(flagsArg);
+    }
+
+    public void SetGameFlagsInternal(GameFlags flagsArg)
+    {
+        gameFlags = flagsArg;
+    }
 
     #endregion
 
@@ -640,6 +804,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
 
 
+
     #region PartyInv Setter Functions
 
     public void SetPartyInv(PartyInventory invArg)
@@ -663,6 +828,68 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void SetPartyInvInternal(PartyInventory invArg)
     {
         partyInv = invArg;
+    }
+
+    #endregion
+
+
+
+
+    #region havenData Setter Functions
+
+    public void SetHavenData(HavenData dataArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSetHavenData(dataArg);
+        }
+        else
+        {
+            SetHavenDataInternal(dataArg);
+            OnHavenDataChanged(dataArg, dataArg);
+        }
+    }
+
+    [Command]
+    public void CmdSetHavenData(HavenData dataArg)
+    {
+        SetHavenDataInternal(dataArg);
+    }
+
+    public void SetHavenDataInternal(HavenData dataArg)
+    {
+        havenData = dataArg;
+    }
+
+    #endregion
+
+
+
+
+    #region gameSeed Setter Functions
+
+    public void SetGameSeed(int seedArg)
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdSetGameSeed(seedArg);
+        }
+        else
+        {
+            SetGameSeedInternal(seedArg);
+            OnGameSeedChanged(seedArg, seedArg);
+        }
+    }
+
+    [Command]
+    public void CmdSetGameSeed(int seedArg)
+    {
+        SetGameSeedInternal(seedArg);
+    }
+
+    public void SetGameSeedInternal(int seedArg)
+    {
+        gameSeed = seedArg;
     }
 
     #endregion

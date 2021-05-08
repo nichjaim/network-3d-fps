@@ -46,10 +46,16 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
 
         if (Input.GetKeyDown(KeyCode.H))
         {
-            GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+            //GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+            ReturnToHavenEvent.Trigger();
         }
 
-        if (Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PartyWipeEvent.Trigger();
+        }
+
+        /*if (Input.GetKeyDown(KeyCode.N))
         {
             Debug.Log("((NetworkManagerCustom)NetworkManager.singleton).numPlayers = " +
                 ((NetworkManagerCustom)NetworkManager.singleton).numPlayers);
@@ -58,7 +64,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
         {
             Debug.Log("((NetworkManagerCustom)NetworkManager.singleton).connectedPlayers.Count = " +
                 ((NetworkManagerCustom)NetworkManager.singleton).connectedPlayers.Count);
-        }
+        }*/
     }
 
     private void OnEnable()

@@ -7,6 +7,8 @@ public class CharacterActionJumpController : MonoBehaviour
 {
     #region Class Variables
 
+    private NetworkManagerCustom _networkManagerCustom = null;
+
     [Header("Component References")]
 
     [SerializeField]
@@ -53,6 +55,12 @@ public class CharacterActionJumpController : MonoBehaviour
         StartAllEventPersistentListening();
     }
 
+    private void Start()
+    {
+        // setup all variables that reference singleton instance related components
+        InitializeSingletonReferences();
+    }
+
     private void OnEnable()
     {
         // ensure jump resetting is OFF cooldown
@@ -63,6 +71,13 @@ public class CharacterActionJumpController : MonoBehaviour
     {
         // if player is online but NOT associated with the machine running this
         if (GeneralMethods.IsNetworkConnectedButNotLocalClient(_networkIdentity))
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if the current state of menus does NOT allow the player chars to perform actions
+        if (!_networkManagerCustom.DoesMenusStateAllowPlayerCharacterAction())
         {
             // DONT continue code
             return;
@@ -93,6 +108,15 @@ public class CharacterActionJumpController : MonoBehaviour
     private void InitializeComponentReferences()
     {
         _playerMaster = _charMaster as PlayerCharacterMasterController;
+    }
+
+    /// <summary>
+    /// Setup all variables that reference singleton instance related components. 
+    /// Call in Start(), needs to be start to give the instances time to be created.
+    /// </summary>
+    private void InitializeSingletonReferences()
+    {
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
     }
 
     #endregion

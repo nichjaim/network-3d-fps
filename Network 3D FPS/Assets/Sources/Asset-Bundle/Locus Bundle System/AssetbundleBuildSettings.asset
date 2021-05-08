@@ -61,6 +61,30 @@ MonoBehaviour:
       guid: 60abf6f2c55cf3748a898cfce75b0f91
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: HavenActivity
+    IncludedInPlayer: 1
+    Folder:
+      guid: d65cada62e819864e8ae283774fb075a
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: UniqueHavenActivity
+    IncludedInPlayer: 1
+    Folder:
+      guid: b7d392f0514d7344dbb19c218d60bf9b
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: ArenaSet
+    IncludedInPlayer: 1
+    Folder:
+      guid: 8fa5dec33f68bf043bce25deb8a4da3d
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: LevelArena-1
+    IncludedInPlayer: 1
+    Folder:
+      guid: 2fb9a6784c9dbaf459873b088cdeec13
+    IncludeSubfolder: 0
+    CompressBundle: 1
   AutoCreateSharedBundles: 1
   m_RemoteOutputFolder: RemoteBundles
   m_LocalOutputFolder: LocalBundles

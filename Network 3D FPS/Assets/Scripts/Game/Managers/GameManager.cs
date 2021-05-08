@@ -89,6 +89,13 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         get { return gameSeedManager; }
     }
 
+    [Header("Dialogue References")]
+
+    [SerializeField]
+    private DialogueEventDatabase dialogueEventDatabaseStory = null;
+    [SerializeField]
+    private DialogueEventDatabase dialogueEventDatabaseSocial = null;
+
     #endregion
 
 
@@ -431,6 +438,84 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         GameObject enemyObj = SpawnManager.EnemyPooler.GetFromPool(posArg, rotArg);
         // spawn pooled object on network
         NetworkServer.Spawn(enemyObj);
+    }
+
+    #endregion
+
+
+
+
+    #region Dialogue Functions
+
+    /// <summary>
+    /// Returns the next available story dialogue events.
+    /// </summary>
+    /// <returns></returns>
+    public List<DialogueEventData> GetNextAvailableStoryDialogueEvents()
+    {
+        // get all STORY dialogue events that can potentially be accessed by player
+        List<DialogueEventData> potentialStoryDialogues = 
+            GetPotentialDialogueEvents(dialogueEventDatabaseStory);
+
+        // initialize total number of events that can be returned
+        int MAX_RETURN_COUNT = 3;
+
+        // get next dialogue events
+        List<DialogueEventData> nextStoryDialogues = havenData.havenDialogue.
+            GetNextAvailableDialogueEvents(potentialStoryDialogues, 
+            havenData.havenProgression.GetAverageForAllCumulativeStatPoints(), 
+            gameFlags.setFlags, MAX_RETURN_COUNT);
+
+        // return dialogue events
+        return nextStoryDialogues;
+    }
+
+    /// <summary>
+    /// Sets up the week's planned social dialogue events.
+    /// </summary>
+    private void PlanWeekSocialDialogueEvents()
+    {
+        // get all SOCIAL dialogue events that can potentially be accessed by player
+        List<DialogueEventData> potentialSocialDialogues =
+            GetPotentialDialogueEvents(dialogueEventDatabaseSocial);
+
+        // setup the week's social dialogue events
+        havenData.PlanWeekSocialDialogueEvents(potentialSocialDialogues, gameFlags.setFlags);
+    }
+
+    /// <summary>
+    /// Returns all dialogue events from given database that can potentially be accessed by player.
+    /// </summary>
+    /// <param name="dialgDatabaseArg"></param>
+    /// <returns></returns>
+    private List<DialogueEventData> GetPotentialDialogueEvents(DialogueEventDatabase dialgDatabaseArg)
+    {
+        // initialize return list as empty list
+        List<DialogueEventData> potentialDialogueEvents = new List<DialogueEventData>();
+
+        // loop through all given database's sets
+        foreach (DialogueEventSet iterSet in dialgDatabaseArg.dialogueSets)
+        {
+            // if iterating set DOES require a flag to access AND player does NOT have that flag
+            if (iterSet.DoesRequireFlag() && !gameFlags.IsFlagSet(iterSet.requiredFlag))
+            {
+                // DONT continue this loop
+                break;
+            }
+            // else no problem accessing iterating set
+            else
+            {
+                // loop through set's dialogue events
+                foreach (DialogueEventData iterData in iterSet.dialogueEvents)
+                {
+                    // add iterating data to return list
+                    potentialDialogueEvents.Add(new DialogueEventData(iterData));
+                }
+            }
+        }
+
+        // return populated list
+        return potentialDialogueEvents;
     }
 
     #endregion

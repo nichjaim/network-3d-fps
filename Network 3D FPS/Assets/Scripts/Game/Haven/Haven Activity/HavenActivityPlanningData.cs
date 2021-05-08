@@ -178,9 +178,6 @@ public class HavenActivityPlanningData
         // if today is when the shooter game state mode is supposed to take place
         if (timeCalendarArg.GetCurrentDayOfWeek() == GetShooterGameplayDayOfWeek())
         {
-            // add shooter transition acivity??
-            //availableActivities.Add();
-
             // stop code early, return populated activity list
             return dayActivities;
         }
@@ -190,6 +187,7 @@ public class HavenActivityPlanningData
 
         // get remaining activites needed for the given day
         int remainingActivitiesNeeded = GetNumberOfActivityOptionsPerDay() - dayActivities.Count;
+
         // if still need some activites for day
         if (remainingActivitiesNeeded > 0)
         {
@@ -254,7 +252,8 @@ public class HavenActivityPlanningData
         if (numOfActivitiesArg > loadedActivityTemplates.Length)
         {
             // print warning to console
-            Debug.LogWarning("Not enough loaded activites to return!");
+            Debug.LogWarning("Not enough loaded activites to return! " +
+                $"Only found {loadedActivityTemplates.Length} potential activites.");
 
             // return some default value
             return null;
@@ -290,7 +289,7 @@ public class HavenActivityPlanningData
     /// Returns the day of week where the shooter game state mode is supposed to take place.
     /// </summary>
     /// <returns></returns>
-    private DayOfWeek GetShooterGameplayDayOfWeek()
+    public DayOfWeek GetShooterGameplayDayOfWeek()
     {
         return DayOfWeek.Saturday;
     }

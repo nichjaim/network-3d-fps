@@ -204,6 +204,19 @@ public struct PartyWipeEvent
 }
 
 /// <summary>
+/// An event fired when the players successfully make it back to the 
+/// haven while all still alive.
+/// </summary>
+public struct ReturnToHavenEvent
+{
+	static ReturnToHavenEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
 /// An event fired when a calendar date advances by one day.
 /// </summary>
 public struct DayAdvanceEvent
@@ -354,7 +367,7 @@ public struct TeleportingEvent
 	}
 }
 
-/// <summary>
+/*/// <summary>
 /// An event fired for the various stages of world level generation.
 /// </summary>
 public struct GenerateWorldLevelEvent
@@ -383,7 +396,7 @@ public struct GenerateWorldLevelEvent
 
 		MMEventManager.TriggerEvent(e);
 	}
-}
+}*/
 
 /// <summary>
 /// An event fired when the player char associated with the UI has been changed.

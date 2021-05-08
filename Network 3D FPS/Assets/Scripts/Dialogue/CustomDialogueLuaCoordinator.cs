@@ -137,6 +137,8 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // general:
         Lua.RegisterFunction("HaveFlag", this, SymbolExtensions.GetMethodInfo(() => HaveFlag(string.Empty)));
 
+        Lua.RegisterFunction("CanStartShooterStateMode", this, SymbolExtensions.GetMethodInfo(() => CanStartShooterStateMode()));
+
         // activity partner:
         Lua.RegisterFunction("CanActivityPartnerWaifu1", this, SymbolExtensions.GetMethodInfo(() => CanActivityPartnerWaifu1()));
         Lua.RegisterFunction("CanActivityPartnerWaifu2", this, SymbolExtensions.GetMethodInfo(() => CanActivityPartnerWaifu2()));
@@ -167,6 +169,9 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // general:
         Lua.RegisterFunction("SetFlag", this, SymbolExtensions.GetMethodInfo(() => SetFlag(string.Empty)));
         Lua.RegisterFunction("AddExp", this, SymbolExtensions.GetMethodInfo(() => AddExp((double)0)));
+
+        Lua.RegisterFunction("StartShooterStateMode", this, SymbolExtensions.GetMethodInfo(() => StartShooterStateMode()));
+        Lua.RegisterFunction("StartVisualNovelStateMode", this, SymbolExtensions.GetMethodInfo(() => StartVisualNovelStateMode()));
 
         // activity partner:
         Lua.RegisterFunction("SetActivityPartnerWaifu1", this, SymbolExtensions.GetMethodInfo(() => SetActivityPartnerWaifu1()));
@@ -223,6 +228,23 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private void AddExp(double expArg)
     {
         Debug.Log("NEED IMPL: AddExp()"); // NEED IMPL
+    }
+
+    private bool CanStartShooterStateMode()
+    {
+        return _gameManager.HavenData.IsTodayShooterSectionDay();
+    }
+
+    private void StartShooterStateMode()
+    {
+        // trigger event to start shooter state mode
+        GameStateModeTransitionEvent.Trigger(GameStateMode.Shooter, ActionProgressType.Started);
+    }
+
+    private void StartVisualNovelStateMode()
+    {
+        // trigger event to start shooter state mode
+        GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
     }
 
     #endregion

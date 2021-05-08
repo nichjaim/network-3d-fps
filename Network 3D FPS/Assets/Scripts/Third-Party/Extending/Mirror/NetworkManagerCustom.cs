@@ -491,7 +491,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     /// <returns></returns>
     public bool IsAnyMenuOpen()
     {
-        return (openMenus.Count > 0) && (openDialogues.Count > 0);
+        return (openMenus.Count > 0) || (openDialogues.Count > 0);
     }
 
     /// <summary>

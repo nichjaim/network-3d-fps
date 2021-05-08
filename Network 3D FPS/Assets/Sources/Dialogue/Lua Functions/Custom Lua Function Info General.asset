@@ -16,10 +16,19 @@ MonoBehaviour:
   - functionName: General/HaveFlag
     parameters: 02000000
     returnValue: 0
+  - functionName: General/CanStartShooterStateMode
+    parameters: 
+    returnValue: 1
   scriptFunctions:
   - functionName: General/SetFlag
     parameters: 02000000
     returnValue: 0
   - functionName: General/GiveExp
     parameters: 01000000
+    returnValue: 0
+  - functionName: General/StartShooterStateMode
+    parameters: 
+    returnValue: 0
+  - functionName: General/StartVisualNovelStateMode
+    parameters: 
     returnValue: 0

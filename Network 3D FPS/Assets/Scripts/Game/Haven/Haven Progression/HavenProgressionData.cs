@@ -259,10 +259,10 @@ public class HavenProgressionData
     }
 
     /// <summary>
-    /// Returns total stat points for all stat types.
+    /// Returns average total stat points for all stat types.
     /// </summary>
     /// <returns></returns>
-    public int GetAllCumulativeStatPoints()
+    public int GetAverageForAllCumulativeStatPoints()
     {
         // initialize total points
         int totalPts = 0;
@@ -274,8 +274,21 @@ public class HavenProgressionData
             totalPts += iterData.value2.GetCumulativeStatPoints();
         }
 
-        // return calcualted number of points
-        return totalPts;
+        // initialize vars for upcoming conditional
+        int averagePts = 0;
+        int numOfProgChars = charIdToProgressionStats.Count;
+
+        // if there are some progression characters
+        if (numOfProgChars > 0)
+        {
+            // get the average number of points, as a float
+            float averagePtsUnrounded = ((float)totalPts) / ((float)numOfProgChars);
+            // round average points
+            averagePts = Mathf.RoundToInt(averagePtsUnrounded);
+        }
+
+        // return calcualted average number of points
+        return averagePts;
     }
 
     #endregion

@@ -314,7 +314,7 @@ public static class AssetRefMethods
 
 
 
-    #region Asset Bundle Environment Functions
+    /*#region Asset Bundle Environment Functions
 
     public static GameObject LoadBundleAssetWorldChunk(bool isUniqueChunkArg, WorldBiomeType worldBiomeTypeArg, string chunkIdArg)
     {
@@ -352,14 +352,55 @@ public static class AssetRefMethods
 
     public static GameObject[] LoadAllBundleAssetStructureInterior(StructureType structureTypeArg)
     {
-        // initialize bundle properties
+        //initialize bundle properties
         string BUNDLE_NAME_PREFIX = "StructureInterior-";
 
-        // get name of asset to load and bundle to load from
+        //get name of asset to load and bundle to load from
         string loadBundleName = BUNDLE_NAME_PREFIX + structureTypeArg.ToString();
 
         //load and return asset
         return LoadAllBundleAsset<GameObject>(loadBundleName);
+    }
+
+    #endregion*/
+
+
+
+
+    #region Asset Bundle Level Arena Functions
+
+    public static GameObject[] LoadAllBundleAssetLevelArenaPrefab(int arenaSetArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME_PREFIX = "LevelArena-";
+
+        // get name of asset to load and bundle to load from
+        string loadBundleName = BUNDLE_NAME_PREFIX + arenaSetArg.ToString();
+
+        // load and return asset
+        return LoadAllBundleAsset<GameObject>(loadBundleName);
+    }
+
+    public static LevelArenaSetDataTemplate[] LoadAllBundleAssetLevelArenaSetDataTemplate()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "ArenaSet";
+
+        // load and return asset
+        return LoadAllBundleAsset<LevelArenaSetDataTemplate>(BUNDLE_NAME);
+    }
+
+    public static LevelArenaSetDataTemplate LoadBundleAssetLevelArenaSetDataTemplate(int arenaSetArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "ArenaSet";
+        string ASSET_NAME_PREFIX = "arenaset-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + arenaSetArg.ToString();
+
+        // load and return asset
+        return LoadBundleAsset<LevelArenaSetDataTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
     #endregion

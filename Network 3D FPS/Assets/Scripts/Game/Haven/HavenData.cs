@@ -92,6 +92,16 @@ public class HavenData
         calendarSystem.currentTimeSlot = TimeSlotType.Morning;
     }
 
+    /// <summary>
+    /// Returns whether today is day where shooter state takes place.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsTodayShooterSectionDay()
+    {
+        return calendarSystem.GetCurrentDayOfWeek() == activityPlanning.
+            GetShooterGameplayDayOfWeek();
+    }
+
     #endregion
 
 
@@ -117,7 +127,7 @@ public class HavenData
         /// player's current progression state
         List<DialogueEventData> nextDialogueEvents = havenDialogue.
             GetNextAvailableDialogueEvents(allSocialDialogueEventsArg, 
-            havenProgression.GetAllCumulativeStatPoints(), setFlagsArg, 
+            havenProgression.GetAverageForAllCumulativeStatPoints(), setFlagsArg, 
             MAX_SOCIAL_DIALOGUE_EVENTS_PER_WEEK);
 
         // get weekdays in a random order

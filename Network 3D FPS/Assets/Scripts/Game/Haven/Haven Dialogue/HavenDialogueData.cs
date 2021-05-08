@@ -121,6 +121,20 @@ public class HavenDialogueData
         return nextDialgEvents;
     }
 
+    /// <summary>
+    /// Adds given dialogue to list of completed dialogue to denote it's completion.
+    /// </summary>
+    /// <param name="dialogueArg"></param>
+    public void AddDialogueToCompletedDialogues(string dialogueArg)
+    {
+        // if given dialogue NOT already considered completed
+        if (!completedDialogues.Contains(dialogueArg))
+        {
+            // add given dialogue to list to denote it's completion
+            completedDialogues.Add(dialogueArg);
+        }
+    }
+
     #endregion
 
 

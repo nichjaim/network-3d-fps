@@ -7,6 +7,8 @@ public class CharacterActionWeaponSwitchController : MonoBehaviour
 {
     #region Class Variables
 
+    private NetworkManagerCustom _networkManagerCustom = null;
+
     [Header("Component References")]
 
     [SerializeField]
@@ -27,6 +29,12 @@ public class CharacterActionWeaponSwitchController : MonoBehaviour
 
     #region MonoBehaviour Functions
 
+    private void Start()
+    {
+        // setup all variables that reference singleton instance related components
+        InitializeSingletonReferences();
+    }
+
     private void Update()
     {
         // if player is online but NOT associated with the machine running this
@@ -46,6 +54,22 @@ public class CharacterActionWeaponSwitchController : MonoBehaviour
     {
         // take weapon scroll OFF cooldown
         onCooldownWeaponScroll = false;
+    }
+
+    #endregion
+
+
+
+
+    #region Initialization Functions
+
+    /// <summary>
+    /// Setup all variables that reference singleton instance related components. 
+    /// Call in Start(), needs to be start to give the instances time to be created.
+    /// </summary>
+    private void InitializeSingletonReferences()
+    {
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
     }
 
     #endregion

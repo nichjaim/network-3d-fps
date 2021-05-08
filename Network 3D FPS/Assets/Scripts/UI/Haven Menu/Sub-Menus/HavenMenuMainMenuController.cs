@@ -18,7 +18,7 @@ public class HavenMenuMainMenuController : SubMenuController
 
     public void ButtonPressGoToRooftops()
     {
-        dialgGameCoordr.PlayDialogueTestingConversation(); // TEST LINE!!!
+        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Rooftops);
     }
 
     #endregion

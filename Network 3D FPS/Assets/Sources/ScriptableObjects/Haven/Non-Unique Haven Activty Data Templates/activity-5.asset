@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a7dc3b36d9d7a44d8a5683b1d9af06a, type: 3}
+  m_Name: activity-5
+  m_EditorClassIdentifier: 
+  template:
+    activityId: 5
+    activityName: Tend Garden
+    activityDescription: Tends the vegetable garden.
+    trait1ActivityPoints: 1
+    trait2ActivityPoints: 0
+    trait3ActivityPoints: 0
+    trait4ActivityPoints: 1

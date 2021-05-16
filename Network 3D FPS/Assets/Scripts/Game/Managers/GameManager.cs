@@ -7,7 +7,8 @@ using BundleSystem;
 using System;
 
 public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEvent>, 
-    MMEventListener<NewSaveCreatedEvent>, MMEventListener<NetworkGameLocalJoinedEvent>,
+    MMEventListener<NewSaveCreatedEvent>, MMEventListener<LoadSaveEvent>,
+    MMEventListener<SaveGameProgressEvent>, MMEventListener<NetworkGameLocalJoinedEvent>, 
     MMEventListener<PartyWipeEvent>, MMEventListener<DayAdvanceEvent>
 {
     #region Class Variables
@@ -95,6 +96,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private DialogueEventDatabase dialogueEventDatabaseStory = null;
     [SerializeField]
     private DialogueEventDatabase dialogueEventDatabaseSocial = null;
+
+    private string FLAG_TUTORIAL_COMPLETE = "tutorial_done";
 
     #endregion
 
@@ -315,6 +318,30 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         SetPartyOrder(partyOrder);
     }
 
+    #endregion
+
+
+
+
+    #region Saving Functions
+
+    /// <summary>
+    /// Prepares game for upcoming game session using the given save data.
+    /// </summary>
+    /// <param name="saveFileNumArg"></param>
+    /// <param name="gameSaveArg"></param>
+    private void SetupGameSession(int saveFileNumArg, GameSaveData gameSaveArg)
+    {
+        // set game properties based on event's save data
+        SetupGameInfoFromSave(saveFileNumArg, gameSaveArg);
+
+        // setup player char order list to the default order
+        SetPartyOrderToDefault();
+
+        // trigger event to enter a game session
+        EnterGameSessionEvent.Trigger(gameSaveArg);
+    }
+
     /// <summary>
     /// Sets game properties based on given save data.
     /// </summary>
@@ -333,6 +360,24 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         SetPartyInv(gameSaveArg.partyInventory);
 
         SetHavenData(gameSaveArg.havenData);
+    }
+
+    /// <summary>
+    /// Saves the current game's progress.
+    /// </summary>
+    private void SaveGameProgress()
+    {
+        // create new save data
+        GameSaveData targetSaveData = new GameSaveData();
+
+        // populate save data with current game progress
+        targetSaveData.gameFlags = gameFlags;
+        targetSaveData.playableCharacterData = partyCharacters;
+        targetSaveData.partyInventory = partyInv;
+        targetSaveData.havenData = havenData;
+
+        // save the new save file
+        SaveLoadSystem.Save(targetSaveData, saveFileNumber);
     }
 
     #endregion
@@ -435,7 +480,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private void SpawnEnemyMain(Vector3 posArg, Quaternion rotArg)
     {
         // get pooled enemy object
-        GameObject enemyObj = SpawnManager.EnemyPooler.GetFromPool(posArg, rotArg);
+        GameObject enemyObj = SpawnManager.GetNetworkObjectPooler(
+            ObjectPoolerContentType.EnemyStandard).GetFromPool(posArg, rotArg);
         // spawn pooled object on network
         NetworkServer.Spawn(enemyObj);
     }
@@ -516,6 +562,30 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
         // return populated list
         return potentialDialogueEvents;
+    }
+
+    #endregion
+
+
+
+
+    #region Flag Functions
+
+    /// <summary>
+    /// Returns whether the game's tutorial has been completed.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsTutorialComplete()
+    {
+        return gameFlags.IsFlagSet(FLAG_TUTORIAL_COMPLETE);
+    }
+
+    /// <summary>
+    /// Marks the game's tutorial as compelted.
+    /// </summary>
+    private void SetTutorialAsComplete()
+    {
+        gameFlags.SetFlag(FLAG_TUTORIAL_COMPLETE);
     }
 
     #endregion
@@ -623,6 +693,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStartListening<GamePausingActionEvent>();
         this.MMEventStartListening<NewSaveCreatedEvent>();
+        this.MMEventStartListening<LoadSaveEvent>();
+        this.MMEventStartListening<SaveGameProgressEvent>();
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStartListening<PartyWipeEvent>();
         this.MMEventStartListening<DayAdvanceEvent>();
@@ -638,6 +710,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     {
         this.MMEventStopListening<GamePausingActionEvent>();
         this.MMEventStopListening<NewSaveCreatedEvent>();
+        this.MMEventStopListening<LoadSaveEvent>();
+        this.MMEventStopListening<SaveGameProgressEvent>();
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStopListening<PartyWipeEvent>();
         this.MMEventStopListening<DayAdvanceEvent>();
@@ -653,11 +727,19 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
     public void OnMMEvent(NewSaveCreatedEvent eventType)
     {
-        // set game properties based on event's save data
-        SetupGameInfoFromSave(eventType.saveFileNumber, eventType.saveData);
+        LoadSaveEvent.Trigger(eventType.saveData, eventType.saveFileNumber);
+    }
 
-        // setup player char order list to the default order
-        SetPartyOrderToDefault();
+    public void OnMMEvent(LoadSaveEvent eventType)
+    {
+        // prepare game for upcoming game session using the given save data
+        SetupGameSession(eventType.saveFileNumber, eventType.saveData);
+    }
+
+    public void OnMMEvent(SaveGameProgressEvent eventType)
+    {
+        // saves the current game's progress
+        SaveGameProgress();
     }
 
     public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)

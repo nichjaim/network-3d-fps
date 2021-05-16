@@ -15,6 +15,11 @@ public class SpawnManager : MonoBehaviour
     [Header("Network Object Poolers")]
 
     [SerializeField]
+    private List<SerializableDataObjectPoolerContentTypeAndNetworkObjectPooler> 
+        netObjectPoolers = new 
+        List<SerializableDataObjectPoolerContentTypeAndNetworkObjectPooler>();
+
+    /*[SerializeField]
     private NetworkObjectPooler bulletPooler = null;
     public NetworkObjectPooler BulletPooler
     {
@@ -36,7 +41,7 @@ public class SpawnManager : MonoBehaviour
     }
 
     [SerializeField]
-    private NetworkObjectPooler pickupAmmoPooler = null;
+    private NetworkObjectPooler pickupAmmoPooler = null;*/
 
     [SerializeField]
     private List<SerializableDataActiveAbilityTemplateAndNetworkObjectPooler> 
@@ -50,9 +55,20 @@ public class SpawnManager : MonoBehaviour
 
     #region Network Pooler Functions
 
-    public void GetWew()
+    public NetworkObjectPooler GetNetworkObjectPooler(ObjectPoolerContentType 
+        poolerContentArg)
     {
+        SerializableDataObjectPoolerContentTypeAndNetworkObjectPooler match = 
+            netObjectPoolers.FirstOrDefault(iterData => iterData.value1 == poolerContentArg);
 
+        if (match != null)
+        {
+            return match.value2;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /// <summary>

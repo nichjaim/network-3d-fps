@@ -11,6 +11,8 @@ public class WeaponData
 
     public WeaponType weaponType;
 
+    public ProjectileFireMethodType fireMethod;
+
     public WeaponStats weaponStats;
 
     #endregion
@@ -50,6 +52,8 @@ public class WeaponData
 
         weaponType = WeaponType.None;
 
+        fireMethod = ProjectileFireMethodType.None;
+
         weaponStats = new WeaponStats();
     }
 
@@ -58,6 +62,8 @@ public class WeaponData
         itemInfo = new InventoryItemInfo(templateArg.itemInfo);
 
         weaponType = templateArg.weaponType;
+
+        fireMethod = templateArg.fireMethod;
 
         weaponStats = new WeaponStats(templateArg.weaponStats);
     }

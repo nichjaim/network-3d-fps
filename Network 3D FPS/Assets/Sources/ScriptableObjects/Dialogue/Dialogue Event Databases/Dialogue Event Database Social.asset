@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cf6522b08a6d048bedfee4ee0a9ed0, type: 3}
   m_Name: Dialogue Event Database Social
   m_EditorClassIdentifier: 
-  dialogueSets: []
+  dialogueSets:
+    array: []

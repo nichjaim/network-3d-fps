@@ -28,6 +28,7 @@ MonoBehaviour:
         rarityHexColorCode: FFFFFF
         contentPrefixName: RARITY-PREFIX-NAME
     weaponType: 2
+    fireMethod: 2
     weaponStats:
       damageBoundaryLowBase: 1
       damageBoundaryHighBase: 1

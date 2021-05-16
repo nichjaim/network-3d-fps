@@ -81,7 +81,8 @@ public class CharacterActionAttackController : NetworkBehaviour
     private void InitializeSingletonReferences()
     {
         _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
-        _bulletPooler = GameManager.Instance.SpawnManager.BulletPooler;
+        _bulletPooler = GameManager.Instance.SpawnManager.
+            GetNetworkObjectPooler(ObjectPoolerContentType.ProjectileBullet);
     }
 
     #endregion
@@ -128,8 +129,8 @@ public class CharacterActionAttackController : NetworkBehaviour
         // call attack actions if NOT null
         OnCharacterAttackAction?.Invoke();
 
-        // spawns and fires a projectile
-        SpawnProjectile();
+        // fires a projectile based on the current weapon's fire method.
+        FireProjectile();
     }
 
     /// <summary>
@@ -152,6 +153,24 @@ public class CharacterActionAttackController : NetworkBehaviour
 
         // take attack OFF cooldown
         attackOnCooldown = false;
+    }
+
+    /// <summary>
+    /// Fires a projectile based on the current weapon's fire method.
+    /// </summary>
+    private void FireProjectile()
+    {
+        // check cases based on equipped weapon's firing method
+        switch (_characterMasterController.GetEquippedWeapon().fireMethod)
+        {
+            case ProjectileFireMethodType.Raycast:
+                FireProjectileRaycast();
+                break;
+
+            case ProjectileFireMethodType.Object:
+                SpawnProjectileObject();
+                break;
+        }
     }
 
     #endregion
@@ -180,30 +199,30 @@ public class CharacterActionAttackController : NetworkBehaviour
 
 
 
-    #region Spawn Projectile Functions
+    #region SpawnProjectileObject Functions
 
     /// <summary>
-    /// Spawns and fires a projectile.
+    /// Spawns and fires a projectile object.
     /// </summary>
-    private void SpawnProjectile()
+    private void SpawnProjectileObject()
     {
         if (NetworkClient.isConnected)
         {
-            CmdSpawnProjectile();
+            CmdSpawnProjectileObject();
         }
         else
         {
-            SpawnProjectileInternal();
+            SpawnProjectileObjectInternal();
         }
     }
 
     [Command]
-    private void CmdSpawnProjectile()
+    private void CmdSpawnProjectileObject()
     {
-        SpawnProjectileInternal();
+        SpawnProjectileObjectInternal();
     }
 
-    private void SpawnProjectileInternal()
+    private void SpawnProjectileObjectInternal()
     {
         // get object from given pooler
         GameObject projectileObj = _bulletPooler.GetFromPool(firePoint.position,
@@ -227,6 +246,39 @@ public class CharacterActionAttackController : NetworkBehaviour
 
         // setup projectile data
         projectile.SetupProjectile(_characterMasterController);
+    }
+
+    #endregion
+
+
+
+
+    #region FireProjectileRaycast Functions
+
+    /// <summary>
+    /// Fires a raycast for the projectile.
+    /// </summary>
+    private void FireProjectileRaycast()
+    {
+        if (NetworkClient.isConnected)
+        {
+            CmdFireProjectileRaycast();
+        }
+        else
+        {
+            FireProjectileRaycastInternal();
+        }
+    }
+
+    [Command]
+    private void CmdFireProjectileRaycast()
+    {
+        FireProjectileRaycastInternal();
+    }
+
+    private void FireProjectileRaycastInternal()
+    {
+        Debug.Log("NEED IMPL: FireProjectileRaycastInternal()"); // NEED IMPL!!!
     }
 
     #endregion

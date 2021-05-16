@@ -69,16 +69,11 @@ public abstract class ProjectileController : NetworkBehaviour
         // get collididng object's hitbox component
         HitboxController collidingHitbox = other.GetComponent<HitboxController>();
 
-        // if comp found
-        if (collidingHitbox != null)
+        // if can harm the hitbox target
+        if (GeneralMethods.CanHarmHitboxTarget(charOwnerData, collidingHitbox))
         {
-            // if CAN harm hitbox target
-            if (collidingHitbox.CharMaster.CharHealth.
-                CanAttackerCauseHarmBasedOnReputation(charOwnerData.factionReputation))
-            {
-                // call to denote that made contact with an opposing character
-                OnContactWithEnemy(collidingHitbox);
-            }
+            // call to denote that made contact with an opposing character
+            OnContactWithEnemy(collidingHitbox);
         }
     }
 

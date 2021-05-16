@@ -356,4 +356,53 @@ public static class GeneralMethods
         }
         return lst;
     }
+
+    /// <summary>
+    /// Returns whether aggressor can harm the target based on reputation.
+    /// </summary>
+    /// <param name="aggressorArg"></param>
+    /// <param name="targetArg"></param>
+    /// <returns></returns>
+    public static bool CanHarmHitboxTarget(CharacterData aggressorArg, HitboxController targetArg)
+    {
+        // if given valid hitbox
+        if (targetArg != null)
+        {
+            // get target's health component
+            CharacterHealthController targetHealth = targetArg.CharMaster.CharHealth;
+
+            // return whether target can be hurt by aggressor based on reputation
+            return targetHealth.CanAttackerCauseHarmBasedOnReputation(aggressorArg.factionReputation);
+        }
+
+        // if get here then just return default negative bool
+        return false;
+    }
+
+    /// <summary>
+    /// Returns whether the given hitbox belongs to a player.
+    /// </summary>
+    /// <param name="hitboxArg"></param>
+    /// <returns></returns>
+    public static bool IsPlayerHitbox(HitboxController hitboxArg)
+    {
+        // if given valid hitbox
+        if (hitboxArg != null)
+        {
+            // get collider's faction data
+            FactionData colliderFaction = hitboxArg.CharMaster.CharData.
+                factionReputation.homeFaction;
+
+            // return whether colliding object is a player
+            return IsPlayerFaction(colliderFaction);
+        }
+
+        // if get here then just return default negative bool
+        return false;
+    }
+
+    private static bool IsPlayerFaction(FactionData factionArg)
+    {
+        return factionArg.factionId == "1";
+    }
 }

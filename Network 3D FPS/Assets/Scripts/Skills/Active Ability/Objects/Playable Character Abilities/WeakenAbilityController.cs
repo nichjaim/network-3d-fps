@@ -40,7 +40,8 @@ public class WeakenAbilityController : ActiveAbilityController
     /// </summary>
     private void InitializeSingletonReferences()
     {
-        _weakenProjectilePooler = GameManager.Instance.SpawnManager.WeakeningProjectilePooler;
+        _weakenProjectilePooler = GameManager.Instance.SpawnManager.
+            GetNetworkObjectPooler(ObjectPoolerContentType.ProjectileWeakener);
     }
 
     #endregion

@@ -6,9 +6,10 @@ using MoreMountains.Tools;
 using BundleSystem;
 using PixelCrushers.DialogueSystem;
 
-public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSessionEvent>, 
-    MMEventListener<StartNewGameEvent>, MMEventListener<BundleSystemSetupEvent>,
-    MMEventListener<MenuActivationEvent>, MMEventListener<DialogueActivationEvent>
+public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSessionEvent>, 
+    MMEventListener<ExitGameSessionEvent>, MMEventListener<StartNewGameEvent>, 
+    MMEventListener<BundleSystemSetupEvent>, MMEventListener<MenuActivationEvent>, 
+    MMEventListener<DialogueActivationEvent>
 {
     #region Class Variables
 
@@ -526,6 +527,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     /// </summary>
     private void StartAllEventListening()
     {
+        this.MMEventStartListening<EnterGameSessionEvent>();
         this.MMEventStartListening<ExitGameSessionEvent>();
         this.MMEventStartListening<StartNewGameEvent>();
         this.MMEventStartListening<BundleSystemSetupEvent>();
@@ -539,11 +541,18 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
     /// </summary>
     private void StopAllEventListening()
     {
+        this.MMEventStopListening<EnterGameSessionEvent>();
         this.MMEventStopListening<ExitGameSessionEvent>();
         this.MMEventStopListening<StartNewGameEvent>();
         this.MMEventStopListening<BundleSystemSetupEvent>();
         this.MMEventStopListening<MenuActivationEvent>();
         this.MMEventStopListening<DialogueActivationEvent>();
+    }
+
+    public void OnMMEvent(EnterGameSessionEvent eventType)
+    {
+        // create a player (with no parent as network objects should be on root??)
+        GameObject createdPlayer = Instantiate(playerPrefab);
     }
 
     public void OnMMEvent(ExitGameSessionEvent eventType)
@@ -563,7 +572,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<ExitGameSess
         NewSaveCreatedEvent.Trigger(newGameSave.Item1, newGameSave.Item2);
 
         // create a player (with no parent as network objects should be on root??)
-        GameObject createdPlayer = Instantiate(playerPrefab);
+        //GameObject createdPlayer = Instantiate(playerPrefab);
         //createdPlayer.GetComponent<PlayerNetworkCoordinator>();
     }
 

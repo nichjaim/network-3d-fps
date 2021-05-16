@@ -254,6 +254,13 @@ public class CharacterHealthController : MonoBehaviour
     private void SetupActionTextPopupIfAppropriate(CharacterMasterController changeInflicterArg,
         bool isIncreasingArg, int changeValueArg)
     {
+        // if NO inflicter
+        if (changeInflicterArg == null)
+        {
+            // DONT continue code
+            return;
+        }
+
         // if inflicter is NOT a player
         if ((changeInflicterArg as PlayerCharacterMasterController) == null)
         {

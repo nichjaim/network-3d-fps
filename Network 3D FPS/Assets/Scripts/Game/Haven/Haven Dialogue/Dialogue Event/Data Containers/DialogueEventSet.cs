@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Tools;
 
 [CreateAssetMenu(fileName = "New Dialogue Event Set", menuName = "Scriptable Objects/Dialogue/Dialogue Event Set")]
 public class DialogueEventSet : ScriptableObject
@@ -11,9 +12,11 @@ public class DialogueEventSet : ScriptableObject
         "Leave empty if no such flag needed")]
     public string requiredFlag;
 
-    [Header("Dialogue Event Proeprties")]
+    [Header("Dialogue Event Properties")]
 
-    public List<DialogueEventData> dialogueEvents;
+    //public List<DialogueEventData> dialogueEvents;
+    [MMReorderableAttribute(null, "Data", null)]
+    public ReorderableListDialogueEventData dialogueEvents;
 
     #endregion
 

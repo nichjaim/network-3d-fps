@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using MoreMountains.Tools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelArenaController : MonoBehaviour
+public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharacterDeathEvent>
 {
     #region Class Variables
 
@@ -15,6 +16,8 @@ public class LevelArenaController : MonoBehaviour
     private Transform spawnPointMasterParent = null;
 
     private List<GameObject> spawnedObjects = new List<GameObject>();
+    // the enemy characters that were spawned that are still alive
+    private List<CharacterMasterController> aliveSpawnedCharacters = new List<CharacterMasterController>();
 
     #endregion
 
@@ -27,6 +30,18 @@ public class LevelArenaController : MonoBehaviour
     {
         // setup vars that hold reference to singletons
         InitializeSingletonReferences();
+    }
+
+    private void OnEnable()
+    {
+        // starts listening for all relevant events
+        StartAllEventListening();
+    }
+
+    private void OnDisable()
+    {
+        // stops listening for all relevant events
+        StopAllEventListening();
     }
 
     #endregion
@@ -71,6 +86,9 @@ public class LevelArenaController : MonoBehaviour
             // process all spawning on iterating spawn point parent
             SpawnToSpawnPoints(iterSpawnParent);
         }
+
+        // setup the arena exit based on current arena conditions
+        RefreshArenaExitStatus();
     }
 
     /// <summary>
@@ -89,8 +107,9 @@ public class LevelArenaController : MonoBehaviour
             }
         }
 
-        // set spawn objects list to fresh emlty list
+        // set spawn object lists to fresh empty lists
         spawnedObjects = new List<GameObject>();
+        aliveSpawnedCharacters = new List<CharacterMasterController>();
     }
 
     /// <summary>
@@ -118,8 +137,8 @@ public class LevelArenaController : MonoBehaviour
                 // spawn an object from the pooler at the iterating spawn point's position
                 iterSpawnedObj = iterObjPooler.GetFromPool(iterPoint.position, iterPoint.rotation);
 
-                // add spawned object to spawned list for easy cleanup later
-                spawnedObjects.Add(iterSpawnedObj);
+                // add the object to the relevant spawn lists
+                AddObjectToSpawnsList(iterSpawnedObj);
             }
         }
     }
@@ -130,21 +149,31 @@ public class LevelArenaController : MonoBehaviour
     /// <param name="potentialSpawnsDataArg"></param>
     /// <returns></returns>
     private NetworkObjectPooler GetRandomObjectPooler(
-        List<SerializableDataFloatAndNetworkObjectPooler> potentialSpawnsDataArg)
+        List<SerializableDataFloatAndObjectPoolerContentType> potentialSpawnsDataArg)
     {
         // initialize tuple list as empty list
-        List<(float, NetworkObjectPooler)> tupleList = new List<(float, NetworkObjectPooler)>();
+        List<(float, ObjectPoolerContentType)> tupleList = new List<(float, ObjectPoolerContentType)>();
 
         // loop through all potential spawns
-        foreach (SerializableDataFloatAndNetworkObjectPooler iterData in potentialSpawnsDataArg)
+        foreach (SerializableDataFloatAndObjectPoolerContentType iterData in potentialSpawnsDataArg)
         {
             // add potential spawn data as tuple to tuple list
             tupleList.Add((iterData.value1, iterData.value2));
         }
 
         // get random object pooler based on spawn chance
-        NetworkObjectPooler objPooler = GeneralMethods.
+        ObjectPoolerContentType objPoolerContent = GeneralMethods.
             GetRandomEntryFromChanceToValueCouple(RollChancePickType.TargetRarest, tupleList);
+
+        // inittialize return pooler as NULL
+        NetworkObjectPooler objPooler = null;
+
+        // if actually got a non-default value from the random entries
+        if (objPoolerContent != ObjectPoolerContentType.None)
+        {
+            // set object pooler to associated pooler reference
+            objPooler = _gameManager.SpawnManager.GetNetworkObjectPooler(objPoolerContent);
+        }
 
         // return the retreived pooler
         return objPooler;
@@ -195,6 +224,94 @@ public class LevelArenaController : MonoBehaviour
 
         // return calculated number
         return numOfSpawnPointsToUse;
+    }
+
+    #endregion
+
+
+
+
+    #region Character Spawn Functions
+
+    /// <summary>
+    /// Adds the given objects to the relevant spawn lists.
+    /// </summary>
+    /// <param name="spawnedObjArg"></param>
+    private void AddObjectToSpawnsList(GameObject spawnedObjArg)
+    {
+        // add spawned object to spawned list for easy cleanup later
+        spawnedObjects.Add(spawnedObjArg);
+
+        // get the given spawned object's character component
+        CharacterMasterController spawnCharMaster = spawnedObjArg.GetComponent<CharacterMasterController>();
+        // if given object is a character
+        if (spawnCharMaster != null)
+        {
+            // heal char to full health
+            spawnCharMaster.CharHealth.HealHealth(null, 999999);
+
+            // add enemy to alive spawn chars
+            aliveSpawnedCharacters.Add(spawnCharMaster);
+        }
+    }
+
+    /// <summary>
+    /// Denotes that given spawned enemy is dead.
+    /// </summary>
+    /// <param name="charMasterArg"></param>
+    private void RemoveEnemyFromAliveSpawns(CharacterMasterController charMasterArg)
+    {
+        // if given  spawn character still considered alive
+        if (aliveSpawnedCharacters.Contains(charMasterArg))
+        {
+            // denote spawn char is dead
+            aliveSpawnedCharacters.Remove(charMasterArg);
+        }
+
+        // setup the arena exit based on current arena conditions
+        RefreshArenaExitStatus();
+    }
+
+    /// <summary>
+    /// Sets up the arena exit based on current arena conditions.
+    /// </summary>
+    private void RefreshArenaExitStatus()
+    {
+        // get whether any arena enemies are still alive
+        bool areEnemiesLeft = (aliveSpawnedCharacters.Count > 0);
+
+        Debug.Log("NEED IMPL: finish rest of RefreshArenaExitStatus()");
+    }
+
+    #endregion
+
+
+
+
+    #region Event Functions
+
+    /// <summary>
+    /// Starts listening for all relevant events. 
+    /// Call in OnEnable().
+    /// </summary>
+    private void StartAllEventListening()
+    {
+        this.MMEventStartListening<SpawnedCharacterDeathEvent>();
+    }
+
+    /// <summary>
+    /// Stops listening for all relevant events. 
+    /// Call in OnDisable().
+    /// </summary>
+    private void StopAllEventListening()
+    {
+        this.MMEventStopListening<SpawnedCharacterDeathEvent>();
+    }
+
+    public void OnMMEvent(SpawnedCharacterDeathEvent eventType)
+    {
+        // denotes that event's spawned enemy is dead
+        RemoveEnemyFromAliveSpawns(eventType.charMaster);
     }
 
     #endregion

@@ -5,10 +5,10 @@ using UnityEngine;
 public class SpawnPointsParentController : MonoBehaviour
 {
     [SerializeField]
-    private List<SerializableDataFloatAndNetworkObjectPooler> spawnChanceToPooler = new 
-        List<SerializableDataFloatAndNetworkObjectPooler>();
-    public List<SerializableDataFloatAndNetworkObjectPooler> SpawnChanceToPooler
+    private List<SerializableDataFloatAndObjectPoolerContentType> spawnChanceToPoolerContent = new 
+        List<SerializableDataFloatAndObjectPoolerContentType>();
+    public List<SerializableDataFloatAndObjectPoolerContentType> SpawnChanceToPooler
     {
-        get { return spawnChanceToPooler; }
+        get { return spawnChanceToPoolerContent; }
     }
 }

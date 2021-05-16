@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine.AI;
 
 public class CharacterMovementController : MonoBehaviour
 {
@@ -24,14 +25,20 @@ public class CharacterMovementController : MonoBehaviour
     private Joystick touchJoystickMove;*/
 
     [SerializeField]
+    private NavMeshAgent _navMeshAgent;
+
+    [SerializeField]
+    private Animator modelAnimator = null;
+
+    [SerializeField]
     private NetworkIdentity _networkIdentity = null;
 
     [Header("Move Properties")]
 
-    // initialize the minimum amount of movement input needed to be considered moving
+    /*// initialize the minimum amount of movement input needed to be considered moving
     [Range(0, 1)]
     [SerializeField]
-    private float moveInputMinimum = 0.4f;
+    private float moveInputMinimum = 0.4f;*/
 
     [SerializeField]
     private float moveSpeed = 5f;
@@ -45,6 +52,18 @@ public class CharacterMovementController : MonoBehaviour
         get { return isMoving; }
     }
     public Action OnIsMovingChangedAction;
+
+    [Header("AI Navigation Properties")]
+
+    [Tooltip("The time between re-calculation of the navigation destination.")]
+    [SerializeField]
+    private float navRefreshRate = 0.25f;
+
+    private Transform navTarget = null;
+    public Transform NavTarget
+    {
+        set { navTarget = value; }
+    }
 
     /// positive for increased movement, negative for decreased movement. 
     /// Used for status effects.
@@ -70,6 +89,12 @@ public class CharacterMovementController : MonoBehaviour
     {
         // setup all variables that reference singleton instance related components
         InitializeSingletonReferences();
+    }
+
+    private void OnEnable()
+    {
+        // start all the necessary AI navigation properties, if character requires it
+        SetupAllNavigationIfAppropriate();
     }
 
     private void Update()
@@ -122,7 +147,7 @@ public class CharacterMovementController : MonoBehaviour
             return;
         }
 
-        //performs the actions necessary to move the character based on move input
+        // performs the actions necessary to move the character based on move input
         ProcessCharacterMovement();
     }
 
@@ -174,7 +199,7 @@ public class CharacterMovementController : MonoBehaviour
         _characterController.Move(moveMotionProcessed);
 
         // changes the current state that denotes if moving based on current movement motion
-        ProcessMovementChangeAction(moveMotionProcessed);
+        ProcessIsMovingChangeFromMotion(moveMotionProcessed);
     }
 
     /// <summary>
@@ -210,26 +235,49 @@ public class CharacterMovementController : MonoBehaviour
             // set move speed to some default value
             moveSpeed = 1f;
         }
+
+        // set navigation speed based on current movement properties
+        RefreshNavigationSpeed();
     }
 
-    /// <summary>
-    /// Changes the current state that denotes if moving based on given movement motion.
-    /// </summary>
-    /// <param name="moveMotionArg"></param>
-    private void ProcessMovementChangeAction(Vector3 moveMotionArg)
+    #endregion
+
+
+
+
+    #region Is-Moving Functions
+
+    private void ProcessIsMovingChangeFromMotion(Vector3 moveMotionArg)
     {
         // get the minimum value needed to denote movement
         float minimumMovement = 0.1f;
 
         // get current move state from given movement
-        bool doesInputDenoteMoving = (Mathf.Abs(moveMotionArg.x) > minimumMovement) || 
+        bool doesInputDenoteMoving = (Mathf.Abs(moveMotionArg.x) > minimumMovement) ||
             (Mathf.Abs(moveMotionArg.z) > minimumMovement);
 
+        ProcessIsMovingChange(doesInputDenoteMoving);
+    }
+
+    private void ProcessIsMovingChangeFromNavTarget(Transform navTargetArg)
+    {
+        ProcessIsMovingChange(navTarget != null);
+    }
+
+    /// <summary>
+    /// Changes the current state that denotes if moving based on move bool.
+    /// </summary>
+    /// <param name="isMovingArg"></param>
+    private void ProcessIsMovingChange(bool isMovingArg)
+    {
         // if started to move or stopped from moving
-        if (isMoving != doesInputDenoteMoving)
+        if (isMoving != isMovingArg)
         {
             // set move state to the new move state
-            isMoving = doesInputDenoteMoving;
+            isMoving = isMovingArg;
+
+            // refreshes movement related animation condition values based on whether moving
+            RefreshMoveAnimation();
 
             // call is moving change actions if NOT null
             OnIsMovingChangedAction?.Invoke();
@@ -312,6 +360,112 @@ public class CharacterMovementController : MonoBehaviour
 
 
 
+    #region AI Navigation Functions
+
+    /// <summary>
+    /// Begins the cycle that continuously sets navigation to the target to follow 
+    /// between refresh rate delays.
+    /// Call in OnEnable().
+    /// </summary>
+    private void TargetNavigationCycle()
+    {
+        // call the internal function as a coroutine
+        StartCoroutine(TargetNavigationCycleInternal());
+    }
+
+    private IEnumerator TargetNavigationCycleInternal()
+    {
+        // infinietly loop
+        while (true)
+        {
+            // wait the refresh rate time
+            yield return new WaitForSeconds(navRefreshRate);
+
+            // if have a current target to follow
+            if (navTarget != null)
+            {
+                // set target position to navigate to
+                _navMeshAgent.SetDestination(navTarget.position);
+                // ensure mvement along path is NOT paused
+                _navMeshAgent.isStopped = false;
+
+                // plays the detection sound feedback if NOT on cooldown
+                //PlayDetectSoundIfAppropriate();
+            }
+
+            // changes the current state that denotes if moving based on current nav target
+            ProcessIsMovingChangeFromNavTarget(navTarget);
+        }
+    }
+
+    /// <summary>
+    /// Stops following any target.
+    /// </summary>
+    public void ResetNavigationTarget()
+    {
+        // clear following target
+        navTarget = null;
+
+        // if the nav mesh has a current path
+        if (_navMeshAgent.hasPath)
+        {
+            // stop moving along that path
+            _navMeshAgent.isStopped = true;
+        }
+    }
+
+    /// <summary>
+    /// Sets navigation speed based on current movement properties. 
+    /// Call in OnEnable().
+    /// </summary>
+    private void RefreshNavigationSpeed()
+    {
+        // set navigation speed to true movement value
+        _navMeshAgent.speed = GetTrueMovementSpeed();
+    }
+
+    /// <summary>
+    /// Starts all the necessary AI navigation properties, if character requires it. 
+    /// Call in OnEnable().
+    /// </summary>
+    private void SetupAllNavigationIfAppropriate()
+    {
+        /// if char is NOT a player (i.e. is an NPC). NOTE: have to write condition this way because 
+        /// IsPlayer() is setup in start, which is setup later in Start()
+        if (!(_charMaster as PlayerCharacterMasterController))
+        {
+            // set no target to follow
+            ResetNavigationTarget();
+
+            // set navigation speed based on current movement properties
+            RefreshNavigationSpeed();
+
+            /// begins the cycle that continuously sets navigation to the target to follow 
+            /// between refresh rate delays
+            TargetNavigationCycle();
+        }
+    }
+
+    #endregion
+
+
+
+
+    #region Animation Functions
+
+    /// <summary>
+    /// Refreshes movement related animation condition values based on whether moving. 
+    /// </summary>
+    private void RefreshMoveAnimation()
+    {
+        modelAnimator.SetBool("IsMoving", isMoving);
+    }
+
+    #endregion
+
+
+
+
     #region Status Effect Functions
 
     /// <summary>
@@ -322,6 +476,9 @@ public class CharacterMovementController : MonoBehaviour
     public void AddTemporaryMovementChangePercentage(float percentValueArg)
     {
         temporaryMovementChangePercentage += percentValueArg;
+
+        // set navigation speed based on current movement properties
+        RefreshNavigationSpeed();
     }
 
     #endregion

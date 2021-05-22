@@ -2,10 +2,13 @@
 using PixelCrushers.DialogueSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeEvent>,
-    MMEventListener<DialogueActivationEvent>, MMEventListener<ReturnToHavenEvent>
+    MMEventListener<DialogueActivationEvent>, MMEventListener<ReturnToHavenEvent>,
+    MMEventListener<ExitGameSessionEvent>, MMEventListener<GameStateModeTransitionEvent>,
+    MMEventListener<ArenaProgressionAdvancedEvent>
 {
     #region Class Variables
 
@@ -18,6 +21,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
     [SerializeField]
     private StandardDialogueUI dialogueUiHead = null;
+
 
     [Header("Dialogue Conversation References")]
 
@@ -37,6 +41,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     [SerializeField]
     private string restDayDialogueConvo = string.Empty;
 
+
     private string currentActivityPartnerCharId = string.Empty;
     public string CurrentActivityPartnerCharId
     {
@@ -55,6 +60,10 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     private bool inDialogueChainPhasePassTime = false;
 
     private bool inDialogueChainPhaseRestDay = false;
+    private bool inDialogueChainPhaseArena = false;
+
+    // the arena-related dialogues that have already been used in the current run
+    private List<string> arenaDialoguesUsed = new List<string>();
 
     #endregion
 
@@ -117,6 +126,93 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         dialogueTrigger.OnUse();
     }
 
+    /// <summary>
+    /// Returns a random arena dialogue that has NOT been used in the current run yet
+    /// </summary>
+    /// <returns></returns>
+    private string GetAppropriateRandomArenaDialogue()
+    {
+        // get all dialogue conversations that potentially play between arenas
+        List<Conversation> arenaConvos = GetAllArenaDialogueConversations();
+
+        // get all arena dialogue that has NOT been used in this run yet
+        //List<Conversation> unusedArenaConvos = arenaConvos.Where(iterConvo => arenaDialoguesUsed.All(iterUsedConvo => iterUsedConvo != iterConvo.Name)); // TEMP COMMENT
+        List<Conversation> unusedArenaConvos = new List<Conversation>(); // TEMP LINE
+
+        // get random entry from the unused conversation list
+        int randomIndex = Random.Range(0, unusedArenaConvos.Count);
+
+        // return random dialogue
+        return unusedArenaConvos[randomIndex].Name;
+    }
+
+    /// <summary>
+    /// Returns all dialogue conversations that potentially play between arenas.
+    /// </summary>
+    /// <returns></returns>
+    private List<Conversation> GetAllArenaDialogueConversations()
+    {
+        string convoCategoryPrefix = "Arena/Normal/";
+
+        return GeneralMethods.GetAllDialogueConversationsFromCategory(convoCategoryPrefix);
+    }
+
+    /// <summary>
+    /// Sets up and plays dialogue for a random unused arena-related dialogue.
+    /// </summary>
+    private void SetupRandomArenaDialogue()
+    {
+        // get random unused arena dialogue
+        string randomArenaDialogue = GetAppropriateRandomArenaDialogue();
+
+        // denote that arena dialogue has now been used
+        arenaDialoguesUsed.Add(randomArenaDialogue);
+
+        // play arena dialogue
+        PlayDialogue(randomArenaDialogue);
+    }
+
+    /// <summary>
+    /// Plays arena story dialogue associated with given arena set number.
+    /// </summary>
+    /// <param name="setNumArg"></param>
+    private void PlayArenaStoryDialogue(int setNumArg)
+    {
+        // initialize dialogue name prefix
+        string ARENA_STORY_DIALOGUE_PREFIX = "Arena/Story/Event-";
+
+        // get dialogue name from given arena set number
+        string arenaStoryDialogue = ARENA_STORY_DIALOGUE_PREFIX + setNumArg.ToString();
+
+        // play arena story dialogue
+        PlayDialogue(arenaStoryDialogue);
+    }
+
+    /// <summary>
+    /// Plays arena tutorial dialogue associated with the current arena number of set.
+    /// </summary>
+    private void PlayCurrentArenaTutorialDialogue()
+    {
+        PlayArenaTutorialDialogue(_gameManager.LevelManager.GetArenaNumInSet());
+    }
+
+    /// <summary>
+    /// Plays arena tutorial dialogue associated with given arena set number.
+    /// </summary>
+    /// <param name="arenaNumInSetArg"></param>
+    private void PlayArenaTutorialDialogue(int arenaNumInSetArg)
+    {
+        // initialize dialogue name prefix
+        string ARENA_TUTORIAL_DIALOGUE_PREFIX = "Arena/Tutorial/Event-";
+
+        // get dialogue name from given arena set number
+        string arenaTutorialDialogue = ARENA_TUTORIAL_DIALOGUE_PREFIX + 
+            arenaNumInSetArg.ToString();
+
+        // play arena tutorial dialogue
+        PlayDialogue(arenaTutorialDialogue);
+    }
+
     #endregion
 
 
@@ -145,6 +241,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // if while processing the rest day chain phase it's denoted that this phase is NOT done
         if (!ProcessDialogueChainPhaseRestDay())
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if while processing the arena chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhaseArena())
         {
             // DONT continue code
             return;
@@ -301,6 +404,38 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         return true;
     }
 
+    /// <summary>
+    /// Plays pass time event dialogue that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhaseArena()
+    {
+        // if player should be put in arena after dialogue is done
+        if (inDialogueChainPhaseArena)
+        {
+            // denote that done doing arena stuff for this chain
+            inDialogueChainPhaseArena = false;
+
+            // instantiates new arena
+            _gameManager.LevelManager.CreateArena();
+        }
+
+        // return that phase IS done
+        return true;
+    }
+
+    /// <summary>
+    /// Turns off all dialogue chain phases.
+    /// </summary>
+    private void DeactivateAllDialogueChainPhases()
+    {
+        inDialogueChainPhaseSocialEvents = false;
+        inDialogueChainPhasePassTime = false;
+        inDialogueChainPhaseRestDay = false;
+        inDialogueChainPhaseArena = false;
+    }
+
     #endregion
 
 
@@ -392,6 +527,21 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
 
 
+    #region Environment Functions
+
+    /// <summary>
+    /// Resets the list of used arena-related dialogues to a fresh empty list.
+    /// </summary>
+    private void ResetUsedArenaDialogues()
+    {
+        arenaDialoguesUsed = new List<string>();
+    }
+
+    #endregion
+
+
+
+
     #region Dialogue Event Functions
 
     /// <summary>
@@ -428,6 +578,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         this.MMEventStartListening<PartyWipeEvent>();
         this.MMEventStartListening<DialogueActivationEvent>();
         this.MMEventStartListening<ReturnToHavenEvent>();
+        this.MMEventStartListening<ExitGameSessionEvent>();
+        this.MMEventStartListening<GameStateModeTransitionEvent>();
+        this.MMEventStartListening<ArenaProgressionAdvancedEvent>();
     }
 
     /// <summary>
@@ -439,6 +592,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         this.MMEventStopListening<PartyWipeEvent>();
         this.MMEventStopListening<DialogueActivationEvent>();
         this.MMEventStopListening<ReturnToHavenEvent>();
+        this.MMEventStopListening<ExitGameSessionEvent>();
+        this.MMEventStopListening<GameStateModeTransitionEvent>();
+        this.MMEventStopListening<ArenaProgressionAdvancedEvent>();
     }
 
     public void OnMMEvent(PartyWipeEvent eventType)
@@ -459,8 +615,108 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
     public void OnMMEvent(ReturnToHavenEvent eventType)
     {
+        // resets the list of used arena-related dialogues to a fresh empty list
+        ResetUsedArenaDialogues();
+
         // starts process to return players to the haven
         HavenReturn();
+    }
+
+    public void OnMMEvent(ExitGameSessionEvent eventType)
+    {
+        // turns off all dialogue chain phases
+        DeactivateAllDialogueChainPhases();
+    }
+
+    public void OnMMEvent(GameStateModeTransitionEvent eventType)
+    {
+        // check cases based one event's game mode state
+        switch (eventType.gameMode)
+        {
+            // case where shooter mode is the focus of event
+            case GameStateMode.Shooter:
+
+                // check cases based one progress state of the event's game mode transition
+                switch (eventType.transitionProgress)
+                {
+                    // case where just started shooter game mode
+                    case ActionProgressType.Started:
+
+                        // activate the arena dialogue chain
+                        inDialogueChainPhaseArena = true;
+
+                        // resets the list of used arena-related dialogues to a fresh empty list
+                        ResetUsedArenaDialogues();
+
+                        // reset arena coord progress to fresh run
+                        _gameManager.LevelManager.ResetArenaProgress();
+
+                        // if the tutorial HAS been completed
+                        if (_gameManager.IsTutorialComplete())
+                        {
+                            Debug.Log("NEED IMPL: play dialogue associated with starting a new run."); // NEED IMPL
+                        }
+                        // else still need to do tutorial
+                        else
+                        {
+                            // sets the arena data to the tutorial start
+                            _gameManager.LevelManager.SetupTutorialArenaData();
+
+                            // plays arena tutorial dialogue associated with the current arena number of set
+                            PlayCurrentArenaTutorialDialogue();
+                        }
+
+                        break;
+                }
+
+                break;
+        }
+    }
+
+    public void OnMMEvent(ArenaProgressionAdvancedEvent eventType)
+    {
+        // activate the arena dialogue chain
+        inDialogueChainPhaseArena = true;
+
+        // if tutorial has NOT been completed yet
+        if (!_gameManager.IsTutorialComplete())
+        {
+            // plays arena tutorial dialogue associated with the current arena number of set
+            PlayCurrentArenaTutorialDialogue();
+        }
+        // else if all arenas have been completed
+        else if (eventType.arenaCoordr.AreAllArenasCompleted())
+        {
+            Debug.Log("NEED IMPL: Play game ending dialogue."); // NEED IMPL
+        }
+        // else if player starting a new set
+        else if (eventType.arenaCoordr.AreStartingNewSet())
+        {
+            // get current arena's set number
+            int currentArenaSetNum = eventType.arenaCoordr.ArenaSetData.setNum;
+
+            // if player has already seen this new set's arena dialogue
+            if (_gameManager.IsArenaStoryFlagSet(currentArenaSetNum))
+            {
+                // setup and play dialogue for a random unused arena-related dialogue
+                SetupRandomArenaDialogue();
+            }
+            // else this is first time player has reached this arena set
+            else
+            {
+                // set flag to denote that this arena story dialogue has now been seen
+                _gameManager.SetArenaStoryFlag(currentArenaSetNum);
+
+                // plays arena story dialogue associated with given arena set number
+                PlayArenaStoryDialogue(currentArenaSetNum);
+            }
+        }
+        // else player just simply progressed in the same set
+        else
+        {
+            // setup and play dialogue for a random unused arena-related dialogue
+            SetupRandomArenaDialogue();
+        }
     }
 
     #endregion

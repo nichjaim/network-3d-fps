@@ -5,11 +5,13 @@ using UnityEngine;
 using Mirror;
 using BundleSystem;
 using System;
+using System.Linq;
 
 public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEvent>, 
     MMEventListener<NewSaveCreatedEvent>, MMEventListener<LoadSaveEvent>,
     MMEventListener<SaveGameProgressEvent>, MMEventListener<NetworkGameLocalJoinedEvent>, 
-    MMEventListener<PartyWipeEvent>, MMEventListener<DayAdvanceEvent>
+    MMEventListener<PartyWipeEvent>, MMEventListener<DayAdvanceEvent>, 
+    MMEventListener<EnterGameSessionEvent>
 {
     #region Class Variables
 
@@ -323,6 +325,105 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
 
 
+    #region Party Addition Functions
+
+    /// <summary>
+    /// Adds character to party who matches given ID.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    public void AddCharacterToParty(string charIdArg)
+    {
+        // if char is already in party
+        if (DoesCharacterExistInParty(charIdArg))
+        {
+            // DONT continue code
+            return;
+        }
+
+        // get all playable character data templates
+        CharacterDataTemplate[] charDataTemps = AssetRefMethods.
+            LoadAllBundleAssetPlayableCharacterDataTemplate();
+
+        // get char template whose ID matches given char ID
+        CharacterDataTemplate matchingTemplate = charDataTemps.
+            FirstOrDefault(iterTemp => iterTemp.template.characterInfo.characterId == charIdArg);
+
+        // if match found
+        if (matchingTemplate != null)
+        {
+            // add amtching character to party
+            partyCharacters.Add(new CharacterData(matchingTemplate));
+        }
+        // else no match exists
+        else
+        {
+            // if gotten here then print warning to console
+            Debug.LogWarning($"No playable character asscoaited with ID: {charIdArg}");
+        }
+    }
+
+    /// <summary>
+    /// Returns whether a character is in party who matches given ID.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <returns></returns>
+    private bool DoesCharacterExistInParty(string charIdArg)
+    {
+        return partyCharacters.Exists(iterChar => iterChar.characterInfo.characterId == charIdArg);
+    }
+
+    /// <summary>
+    /// Adds associated active ability to associated character.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="abilityIdArg"></param>
+    public void AddAbilityToCharacter(string charIdArg, string abilityIdArg)
+    {
+        // get party char who matches given ID
+        CharacterData matchingPartyChar = GetPartyCharacter(charIdArg);
+
+        // if WAS party char found
+        if (matchingPartyChar != null)
+        {
+            // get active ability template assoicated with given ability ID
+            ActiveAbilityTemplate abilityTemp = AssetRefMethods.LoadBundleAssetActiveAbilityTemplate(abilityIdArg);
+
+            // if found ability template
+            if (abilityTemp != null)
+            {
+                // add ability to party char
+                matchingPartyChar.activeAbilityLoadout.AddActiveAbility(new ActiveAbility(abilityTemp));
+            }
+            // else NO such ability template found
+            else
+            {
+                // print warning to console
+                Debug.LogWarning($"Ability template not found. ID: {abilityIdArg}");
+            }
+        }
+        // else NO party char found
+        else
+        {
+            // print warniong to console
+            Debug.LogWarning($"character template not found. ID: {charIdArg}");
+        }
+    }
+
+    /// <summary>
+    /// Returns party character who matches the given ID.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <returns></returns>
+    private CharacterData GetPartyCharacter(string charIdArg)
+    {
+        return partyCharacters.FirstOrDefault(iterChar => iterChar.characterInfo.characterId == charIdArg);
+    }
+
+    #endregion
+
+
+
+
     #region Saving Functions
 
     /// <summary>
@@ -575,7 +676,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// Returns whether the game's tutorial has been completed.
     /// </summary>
     /// <returns></returns>
-    private bool IsTutorialComplete()
+    public bool IsTutorialComplete()
     {
         return gameFlags.IsFlagSet(FLAG_TUTORIAL_COMPLETE);
     }
@@ -586,6 +687,40 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private void SetTutorialAsComplete()
     {
         gameFlags.SetFlag(FLAG_TUTORIAL_COMPLETE);
+    }
+
+    /// <summary>
+    /// Returns whether the flag is set for the given arena set number. 
+    /// i.e. Has this arena set been reached by player before?
+    /// </summary>
+    /// <param name="arenaSetArg"></param>
+    /// <returns></returns>
+    public bool IsArenaStoryFlagSet(int arenaSetArg)
+    {
+        return gameFlags.IsFlagSet(GetArenaStoryFlag(arenaSetArg));
+    }
+
+    /// <summary>
+    /// Sets story arena story flag for given arena set.
+    /// i.e. Denotes player has reached this set and seen this dialogue already.
+    /// </summary>
+    /// <param name="arenaSetArg"></param>
+    public void SetArenaStoryFlag(int arenaSetArg)
+    {
+        gameFlags.SetFlag(GetArenaStoryFlag(arenaSetArg));
+    }
+
+    /// <summary>
+    /// Returns the arena story flag associated with the given arena set.
+    /// </summary>
+    /// <param name="arenaSetArg"></param>
+    /// <returns></returns>
+    private string GetArenaStoryFlag(int arenaSetArg)
+    {
+        // initialize flag prefix
+        string ARENA_STORY_FLAG_PREFIX = "arena_";
+
+        return ARENA_STORY_FLAG_PREFIX + arenaSetArg.ToString();
     }
 
     #endregion
@@ -698,6 +833,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStartListening<PartyWipeEvent>();
         this.MMEventStartListening<DayAdvanceEvent>();
+        //this.MMEventStartListening<EnterGameSessionEvent>();
 
         //partyCharacters.Callback += OnPartyCharactersChanged;
     }
@@ -715,6 +851,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStopListening<PartyWipeEvent>();
         this.MMEventStopListening<DayAdvanceEvent>();
+        //this.MMEventStopListening<EnterGameSessionEvent>();
 
         //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
@@ -763,6 +900,26 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         havenData.ResetAllPlanning();
         
         Debug.Log("NEED IMPL: ensure switched to visualnovel game mode"); // NEED IMPL!!!
+    }
+
+    public void OnMMEvent(EnterGameSessionEvent eventType)
+    {
+        // create a player (with no parent as network objects should be on root??)
+        //GameObject createdPlayer = Instantiate(playerPrefab);
+
+        // if tutorial is already complete
+        if (IsTutorialComplete())
+        {
+            // trigger event to start VN game mode state
+            GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, 
+                ActionProgressType.Started);
+        }
+        else
+        {
+            // trigger event to start shooter game mode state
+            GameStateModeTransitionEvent.Trigger(GameStateMode.Shooter,
+                ActionProgressType.Started);
+        }
     }
 
     #endregion

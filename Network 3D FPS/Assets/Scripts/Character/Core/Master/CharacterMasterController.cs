@@ -44,6 +44,13 @@ public class CharacterMasterController : NetworkBehaviour
         get { return _charMovement; }
     }
 
+    [SerializeField]
+    private SightPivotPointController _charSight = null;
+    public SightPivotPointController CharSight
+    {
+        get { return _charSight; }
+    }
+
     [SyncVar(hook = nameof(OnCharDataChanged))]
     private CharacterData charData = null;
     public Action OnCharDataChangedAction;

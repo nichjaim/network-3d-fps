@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.IO;
+using PixelCrushers.DialogueSystem;
 
 public static class GeneralMethods
 {
@@ -404,5 +405,49 @@ public static class GeneralMethods
     private static bool IsPlayerFaction(FactionData factionArg)
     {
         return factionArg.factionId == "1";
+    }
+
+    public static RaycastHit[] FireRaycast(bool willPenetrateArg, Vector3 originArg, 
+        Vector3 directionArg, float castRangeArg)
+    {
+        // initialize var for upcoming conditionals
+        RaycastHit[] raycastHits;
+
+        // if raycast will penetrate through all in it's path
+        if (willPenetrateArg)
+        {
+            // fire raycast and get ALL objects hit
+            raycastHits = Physics.RaycastAll(originArg, directionArg, castRangeArg);
+        }
+        // else attack will stop at first hit
+        else
+        {
+            // initialize the results of the raycast contact
+            RaycastHit raycastHit;
+
+            // if a fired raycast did NOT hit something
+            if (!Physics.Raycast(originArg, directionArg, out raycastHit, castRangeArg))
+            {
+                //DONT continue code
+                return null;
+            }
+
+            // initialize ray hit array with one entry
+            raycastHits = new RaycastHit[1];
+            // set array entry to the fired ray hit
+            raycastHits[0] = raycastHit;
+        }
+
+        return raycastHits;
+    }
+
+    /// <summary>
+    /// Returns all dialogue conversations within the given covnersation category.
+    /// </summary>
+    /// <param name="convoCategoryPrefixArg"></param>
+    public static List<Conversation> GetAllDialogueConversationsFromCategory(string convoCategoryPrefixArg)
+    {
+        return DialogueManager.masterDatabase.conversations.
+            FindAll(iterConversation => iterConversation.Title.StartsWith(convoCategoryPrefixArg));
     }
 }

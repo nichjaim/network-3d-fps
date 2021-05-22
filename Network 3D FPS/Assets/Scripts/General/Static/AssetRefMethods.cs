@@ -279,6 +279,19 @@ public static class AssetRefMethods
         return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
     }
 
+    public static ActiveAbilityTemplate LoadBundleAssetActiveAbilityTemplate(string abilityIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "ActiveAbilityTemplate";
+        string ASSET_NAME_PREFIX = "abilitytemp-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + abilityIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<ActiveAbilityTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
     #endregion
 
 

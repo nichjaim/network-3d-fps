@@ -49,7 +49,8 @@ public class LevelArenaExitController : MonoBehaviour
         // if the exit is active
         if (isExitActive)
         {
-            Debug.Log("NEED IMPL: Trigger event to denota that player has exited the arena."); // NEED IMPL!
+            // trigger event to denota that player has exited the arena
+            LevelArenaExitEvent.Trigger();
         }
     }
 

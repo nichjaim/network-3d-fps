@@ -8,11 +8,24 @@ public class LevelArenaCoordinator : MonoBehaviour
 
     // the data for the arena set the player is currently on
     private LevelArenaSetData arenaSetData = null;
+    public LevelArenaSetData ArenaSetData
+    {
+        get { return arenaSetData; }
+    }
+
+    [SerializeField]
+    private LevelArenaSetDataTemplate tutorialArenaSet = null;
+
     // the max number of arena sets that exist
     private int totalNumberOfArenaSets = 1;
 
     // the player's current arena within their current arena set
     private int arenaNumInSet = 1;
+    public int ArenaNumInSet
+    {
+        get { return arenaNumInSet; }
+    }
+
     /// the IDs od the arenas that have already been used in the current set. 
     /// This needs to be tracked so that the same room is not used in the same 
     /// set in current run.
@@ -83,22 +96,25 @@ public class LevelArenaCoordinator : MonoBehaviour
         return objArg.name.Substring(ARENA_OBJ_NAME_PREFIX.Length);
     }
 
-    /// <summary>
-    /// Instantiates a random arena into the game world.
-    /// </summary>
-    private void CreateArena()
+    public void CreateRandomArena()
     {
-        // destroys the currenly instantiated arena
+        CreateArena(GetAppropriateRandomArenaPrefab());
+    }
+
+    /// <summary>
+    /// Instantiates the given arena prefab into the game world.
+    /// </summary>
+    /// <param name="prefabArenaArg"></param>
+    public void CreateArena(LevelArenaController prefabArenaArg)
+    {
+        // destroys the currently instantiated arena
         DestoryArena();
 
-        // get a random arena prefab
-        LevelArenaController randomArenaPrefab = GetAppropriateRandomArenaPrefab();
-
         // denote that arena was used in this set
-        usedArenaIdsInSet.Add(GetArenaIdFromObject(randomArenaPrefab.gameObject));
+        usedArenaIdsInSet.Add(GetArenaIdFromObject(prefabArenaArg.gameObject));
 
         // create arena object from prefab
-        GameObject createdArenaObj = Instantiate(randomArenaPrefab.gameObject);
+        GameObject createdArenaObj = Instantiate(prefabArenaArg.gameObject);
         // save reference to created object's arena component
         createdArena = createdArenaObj.GetComponent<LevelArenaController>();
     }
@@ -116,25 +132,34 @@ public class LevelArenaCoordinator : MonoBehaviour
         }
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Begins a fresh new arena run.
     /// </summary>
-    public void StartNewRun()
+    private void StartNewRun()
+    {
+        // resets all arena run's progress data to new run
+        ResetRunProgress();
+
+        // instantiates a random arena into the game world
+        CreateArena();
+    }*/
+
+    /// <summary>
+    /// Resets all arena run's progress data to new run.
+    /// </summary>
+    public void ResetRunProgress()
     {
         // resets the arena set values that are related to starting a new run
         ResetArenaSetPropertiesNewRun();
 
         // resets the arena set values that are related to starting a new arena set
         ResetArenaSetPropertiesNewSet();
-
-        // instantiates a random arena into the game world
-        CreateArena();
     }
 
     /// <summary>
     /// Progresses to the next level arena based on where the player currenly is within the run.
     /// </summary>
-    private void ProgressToNextArena()
+    public void AdvanceArenaProgress()
     {
         // increment the arena num
         arenaNumInSet++;
@@ -145,29 +170,30 @@ public class LevelArenaCoordinator : MonoBehaviour
             // resets the arena set values that are related to starting a new arena set
             ResetArenaSetPropertiesNewSet();
 
-            Debug.Log("NEED IMPL: Trigger event to denote arena set completed."); // NEED IMPL!!!
-
             // get the next arena set number
             int nextSetNum = arenaSetData.setNum + 1;
 
-            // if all arena sets have been completed
-            if (nextSetNum > totalNumberOfArenaSets)
-            {
-                Debug.Log("NEED IMPL: Trigger event to denote all arena sets have been completed."); // NEED IMPL!!!
-
-                // DONT continue code
-                return;
-            }
-            // else still some arena sets left
-            else
-            {
-                // set arena set data to next arena set
-                SetupArenaSetData(nextSetNum);
-            }
+            // set arena set data to next arena set
+            SetupArenaSetData(nextSetNum);
         }
+    }
 
-        // instantiates a random arena into the game world
-        CreateArena();
+    /// <summary>
+    /// Returns whether all arenas have been completed.
+    /// </summary>
+    /// <returns></returns>
+    public bool AreAllArenasCompleted()
+    {
+        return arenaSetData.setNum == GetEndArenaSetData().setNum;
+    }
+
+    /// <summary>
+    /// Returns whether starting a new arena set.
+    /// </summary>
+    /// <returns></returns>
+    public bool AreStartingNewSet()
+    {
+        return arenaSetData.setNum == 1;
     }
 
     #endregion
@@ -183,12 +209,55 @@ public class LevelArenaCoordinator : MonoBehaviour
     /// <param name="arenaSetNumArg"></param>
     private void SetupArenaSetData(int arenaSetNumArg)
     {
-        // get set template related to given set number
-        LevelArenaSetDataTemplate startingSetTemp = AssetRefMethods.
-            LoadBundleAssetLevelArenaSetDataTemplate(arenaSetNumArg);
+        // else if all arena sets have been completed
+        if (arenaSetNumArg > totalNumberOfArenaSets)
+        {
+            // set arena set to an invalid arena set to denote that no next arena
+            arenaSetData = GetEndArenaSetData();
+        }
+        // else still some arena sets left
+        else
+        {
+            // get set template related to given set number
+            LevelArenaSetDataTemplate startingSetTemp = AssetRefMethods.
+                LoadBundleAssetLevelArenaSetDataTemplate(arenaSetNumArg);
 
-        // set the set data from the template
-        arenaSetData = new LevelArenaSetData(startingSetTemp);
+            // set the set data from the template
+            arenaSetData = new LevelArenaSetData(startingSetTemp);
+        }
+    }
+
+    /// <summary>
+    /// Sets the arena data to the tutorial start.
+    /// </summary>
+    public void SetupTutorialArenaData()
+    {
+        ResetRunProgress();
+
+        arenaSetData = GetTutorialArenaSetData();
+    }
+
+    /// <summary>
+    /// Returns arena set data associated to tutorial.
+    /// </summary>
+    /// <returns></returns>
+    private LevelArenaSetData GetTutorialArenaSetData()
+    {
+        return new LevelArenaSetData(tutorialArenaSet);
+    }
+
+    /// <summary>
+    /// Returns an invalid arena set. 
+    /// Used for denoting when there will be no next arena.
+    /// </summary>
+    /// <returns></returns>
+    private LevelArenaSetData GetEndArenaSetData()
+    {
+        LevelArenaSetData returnArenaSetData = new LevelArenaSetData();
+
+        returnArenaSetData.setNum = totalNumberOfArenaSets + 1;
+
+        return returnArenaSetData;
     }
 
     /// <summary>

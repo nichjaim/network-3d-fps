@@ -20,8 +20,17 @@ public class CharacterActionAttackController : NetworkBehaviour
 
     private NetworkObjectPooler _bulletPooler = null;
 
+    //[SerializeField]
+    //private Transform firePoint = null;
+
+    [Header("Detection Properties")]
+
+    [Tooltip("Determines if character will automatic attack enemies in sight.")]
     [SerializeField]
-    private Transform firePoint = null;
+    private bool isAttackingAutomatic = false;
+
+    [SerializeField]
+    private float detectRefreshRate = 0.1f;
 
     // denotes if attacking is on cooldown
     private bool attackOnCooldown = false;
@@ -45,6 +54,9 @@ public class CharacterActionAttackController : NetworkBehaviour
     {
         // ensure attacking is OFF cooldown
         attackOnCooldown = false;
+
+        // starts cycle to automatically attack if target in sights
+        AutoAttackCycle();
     }
 
     private void Update()
@@ -178,6 +190,166 @@ public class CharacterActionAttackController : NetworkBehaviour
 
 
 
+    #region Raycast Functions
+
+    /// <summary>
+    /// Continuously checks if enemy in sights between time delays and if so then 
+    /// fires weapon enemies.
+    /// Call in OnEnable().
+    /// </summary>
+    private void AutoAttackCycle()
+    {
+        // call internal function as coroutine
+        StartCoroutine(AttackEnemyIfInSightsCycleInternal());
+    }
+
+    private IEnumerator AttackEnemyIfInSightsCycleInternal()
+    {
+        // loop infinitely
+        while (true)
+        {
+            // wait refresh rate time
+            yield return new WaitForSeconds(detectRefreshRate);
+
+            // if should be attacking automatically AND enemy is within weapon sights
+            if (isAttackingAutomatic && IsEnemyInSights())
+            {
+                AttackAction();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Fires raycast whose properties are based on the currently equipped weapon.
+    /// </summary>
+    /// <returns></returns>
+    private RaycastHit[] FireWeaponRaycast()
+    {
+        // get equipped weapon's raycast range
+        float castRange = _characterMasterController.GetEquippedWeapon().weaponStats.
+            raycastRange;
+
+        // get character's fire point
+        Transform originTrans = _characterMasterController.CharSight.transform;
+
+        // cast raycast and get all hits
+        RaycastHit[] raycastHits = GeneralMethods.FireRaycast(true, originTrans.position,
+            originTrans.forward, castRange);
+
+        return raycastHits;
+    }
+
+    /// <summary>
+    /// Returns whether an enemy is currenly within weapon sights.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsEnemyInSights()
+    {
+        // fire a weapon based raycast and returns any hitboxes that were hit by it
+        List<HitboxController> hitHitboxes = FireWeaponRaycastAndGetHitHitboxes();
+
+        // if list retrieved
+        if (hitHitboxes != null)
+        {
+            // return whether list is empty or not
+            return hitHitboxes.Count > 0;
+        }
+        // else NULL value gotten back
+        else
+        {
+            // return default negative bool
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Fires a weapon based raycast and returns any hitboxes that were hit by it.
+    /// </summary>
+    /// <returns></returns>
+    private List<HitboxController> FireWeaponRaycastAndGetHitHitboxes()
+    {
+        // fire weapon raycast and get the hits
+        RaycastHit[] wepRaycastHits = FireWeaponRaycast();
+
+        // if nothing hit by raycast
+        if (wepRaycastHits == null)
+        {
+            // DONT continue code
+            return null;
+        }
+
+        // get all enemy hitboxes from the raycast
+        List<HitboxController> enemyHitboxes = GetAllEnemyHitboxesFromRaycastHits(wepRaycastHits);
+
+        return enemyHitboxes;
+    }
+
+    /// <summary>
+    /// Returns all enemy hitboxes from given raycast hits.
+    /// </summary>
+    /// <param name="raycastHitsArg"></param>
+    /// <returns></returns>
+    private List<HitboxController> GetAllEnemyHitboxesFromRaycastHits(RaycastHit[] raycastHitsArg)
+    {
+        // initialize return var as fresh empty list
+        List<HitboxController> enemyHitboxes = new List<HitboxController>();
+
+        // initialize var for upcoming loop
+        HitboxController iterHitbox;
+
+        // loop through all raycast hits
+        foreach (RaycastHit iterRayHit in raycastHitsArg)
+        {
+            // get hitbox component of enemy that was hit
+            iterHitbox = iterRayHit.transform.GetComponent<HitboxController>();
+
+            // if object hit was NOT an enemy hitbox
+            if (iterHitbox == null)
+            {
+                // skip to next loop iteration
+                continue;
+            }
+
+            // if hitbox can be harmed by this character
+            if (GeneralMethods.CanHarmHitboxTarget(_characterMasterController.CharData, iterHitbox))
+            {
+                // add the enemy's hitbox to list
+                enemyHitboxes.Add(iterHitbox);
+            }
+        }
+
+        // return populated list
+        return enemyHitboxes;
+    }
+
+    /// <summary>
+    /// Returns random damage within equipped weapon's boundaries.
+    /// </summary>
+    /// <returns></returns>
+    private int GetEquippedWeaponRandomDamage()
+    {
+        // get equipped weapon's stats
+        WeaponStats equipWepStats = _characterMasterController.GetEquippedWeapon().weaponStats;
+
+        // return random damage value
+        return UnityEngine.Random.Range(equipWepStats.damageBoundaryLowRarityModified,
+            equipWepStats.damageBoundaryHighRarityModified);
+    }
+
+    /// <summary>
+    /// Damage a hitbox based on equipped weapon.
+    /// </summary>
+    /// <param name="hitboxArg"></param>
+    private void DamageHitboxWithEquippedWeapon(HitboxController hitboxArg)
+    {
+        hitboxArg.CharMaster.CharHealth.TakeDamage(_characterMasterController, GetEquippedWeaponRandomDamage());
+    }
+
+    #endregion
+
+
+
+
     #region Input Functions
 
     /// <summary>
@@ -224,6 +396,9 @@ public class CharacterActionAttackController : NetworkBehaviour
 
     private void SpawnProjectileObjectInternal()
     {
+        // get the fire point
+        Transform firePoint = _characterMasterController.CharSight.FirePoint;
+
         // get object from given pooler
         GameObject projectileObj = _bulletPooler.GetFromPool(firePoint.position,
             firePoint.rotation);
@@ -278,7 +453,19 @@ public class CharacterActionAttackController : NetworkBehaviour
 
     private void FireProjectileRaycastInternal()
     {
-        Debug.Log("NEED IMPL: FireProjectileRaycastInternal()"); // NEED IMPL!!!
+        // fire a weapon based raycast and returns any hitboxes that were hit by it
+        List<HitboxController> hitHitboxes = FireWeaponRaycastAndGetHitHitboxes();
+
+        // if retreived actual hitbox list
+        if (hitHitboxes != null)
+        {
+            // if some hitboxes were hit
+            if (hitHitboxes.Count > 0)
+            {
+                // damage the front hitbox with equipped weapon
+                DamageHitboxWithEquippedWeapon(hitHitboxes[0]);
+            }
+        }
     }
 
     #endregion

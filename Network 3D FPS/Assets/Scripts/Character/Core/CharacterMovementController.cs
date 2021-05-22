@@ -403,6 +403,13 @@ public class CharacterMovementController : MonoBehaviour
     /// </summary>
     public void ResetNavigationTarget()
     {
+        // if NO nav agent reference
+        if (_navMeshAgent == null)
+        {
+            // DONT continue code
+            return;
+        }
+
         // clear following target
         navTarget = null;
 
@@ -420,6 +427,13 @@ public class CharacterMovementController : MonoBehaviour
     /// </summary>
     private void RefreshNavigationSpeed()
     {
+        // if NO nav agent reference
+        if (_navMeshAgent == null)
+        {
+            // DONT continue code
+            return;
+        }
+
         // set navigation speed to true movement value
         _navMeshAgent.speed = GetTrueMovementSpeed();
     }
@@ -458,6 +472,13 @@ public class CharacterMovementController : MonoBehaviour
     /// </summary>
     private void RefreshMoveAnimation()
     {
+        // if NO model animator reference
+        if (modelAnimator == null)
+        {
+            // DONT continue code
+            return;
+        }
+
         modelAnimator.SetBool("IsMoving", isMoving);
     }
 

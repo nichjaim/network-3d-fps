@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour, MMEventListener<GameStateModeTransitionEvent>
+public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransitionEvent>,*/
+    MMEventListener<LevelArenaExitEvent>
 {
     #region Class Variables
+
+    [Header("Component References")]
 
     [SerializeField]
     private LevelArenaCoordinator arenaCoordinator = null;
@@ -34,6 +37,40 @@ public class LevelManager : MonoBehaviour, MMEventListener<GameStateModeTransiti
 
 
 
+    #region Arena Functions
+
+    public void ResetArenaProgress()
+    {
+        arenaCoordinator.ResetRunProgress();
+    }
+
+    public void CreateArena()
+    {
+        /*if ()
+        {
+
+        }*/
+        arenaCoordinator.CreateRandomArena();
+    }
+
+    public int GetArenaNumInSet()
+    {
+        return arenaCoordinator.ArenaNumInSet;
+    }
+
+    /// <summary>
+    /// Sets the arena data to the tutorial start.
+    /// </summary>
+    public void SetupTutorialArenaData()
+    {
+        arenaCoordinator.SetupTutorialArenaData();
+    }
+
+    #endregion
+
+
+
+
     #region Event Functions
 
     /// <summary>
@@ -42,7 +79,8 @@ public class LevelManager : MonoBehaviour, MMEventListener<GameStateModeTransiti
     /// </summary>
     private void StartAllEventListening()
     {
-        this.MMEventStartListening<GameStateModeTransitionEvent>();
+        //this.MMEventStartListening<GameStateModeTransitionEvent>();
+        this.MMEventStartListening<LevelArenaExitEvent>();
     }
 
     /// <summary>
@@ -51,10 +89,11 @@ public class LevelManager : MonoBehaviour, MMEventListener<GameStateModeTransiti
     /// </summary>
     private void StopAllEventListening()
     {
-        this.MMEventStopListening<GameStateModeTransitionEvent>();
+        //this.MMEventStopListening<GameStateModeTransitionEvent>();
+        this.MMEventStopListening<LevelArenaExitEvent>();
     }
 
-    public void OnMMEvent(GameStateModeTransitionEvent eventType)
+    /*public void OnMMEvent(GameStateModeTransitionEvent eventType)
     {
         switch (eventType.gameMode)
         {
@@ -82,6 +121,18 @@ public class LevelManager : MonoBehaviour, MMEventListener<GameStateModeTransiti
 
                 break;
         }
+    }*/
+
+    public void OnMMEvent(LevelArenaExitEvent eventType)
+    {
+        // destroy the currenly instantiated level arena
+        arenaCoordinator.DestoryArena();
+
+        // increments arena progress to next step
+        arenaCoordinator.AdvanceArenaProgress();
+
+        // trigger event to denote that arena progress has been advanced
+        ArenaProgressionAdvancedEvent.Trigger(arenaCoordinator);
     }
 
     #endregion

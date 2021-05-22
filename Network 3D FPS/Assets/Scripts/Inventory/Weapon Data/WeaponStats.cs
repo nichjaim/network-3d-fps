@@ -22,6 +22,7 @@ public class WeaponStats
 
     public int ammoPerUse;
     public float projectileSpeed;
+    public float raycastRange;
 
     #endregion
 
@@ -61,6 +62,7 @@ public class WeaponStats
 
         ammoPerUse = 1;
         projectileSpeed = 10f;
+        raycastRange = 1f;
     }
 
     private void Setup(WeaponStats templateArg)
@@ -77,6 +79,7 @@ public class WeaponStats
 
         ammoPerUse = templateArg.ammoPerUse;
         projectileSpeed = templateArg.projectileSpeed;
+        raycastRange = templateArg.raycastRange;
     }
 
     /*public void SetupRarityModifiers(RarityTier rarityTierArg)

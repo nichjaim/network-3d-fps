@@ -73,6 +73,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private GameManager _gameManager = null;
     private UIManager _uiManager = null;
 
+    private string CHAR_ID_MC = "3";
     private string CHAR_ID_WAIFU_1 = "4";
     private string CHAR_ID_WAIFU_2 = "5";
     private string CHAR_ID_WAIFU_3 = "6";
@@ -181,6 +182,16 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // activity:
         Lua.RegisterFunction("SetActivity", this, SymbolExtensions.GetMethodInfo(() => SetActivity(string.Empty)));
         Lua.RegisterFunction("StartActivity", this, SymbolExtensions.GetMethodInfo(() => StartActivity()));
+
+        // character:
+        Lua.RegisterFunction("PartyAddWaifu1", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu1()));
+        Lua.RegisterFunction("PartyAddWaifu2", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu2()));
+        Lua.RegisterFunction("PartyAddWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu3()));
+
+        Lua.RegisterFunction("AddHealAbilityMC", this, SymbolExtensions.GetMethodInfo(() => AddHealAbilityToCharacterMC()));
+        Lua.RegisterFunction("AddShieldAbilityWaifu1", this, SymbolExtensions.GetMethodInfo(() => AddShieldAbilityToCharacterWaifu1()));
+        Lua.RegisterFunction("AddTrapAbilityWaifu2", this, SymbolExtensions.GetMethodInfo(() => AddTrapAbilityToCharacterWaifu2()));
+        Lua.RegisterFunction("AddWeakenAbilityWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddWeakenAbilityToCharacterWaifu3()));
     }
 
     /// <summary>
@@ -194,10 +205,30 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // general:
         Lua.UnregisterFunction("HaveFlag");
 
-        // activity:
+        Lua.UnregisterFunction("CanStartShooterStateMode");
+
+        // activity partner:
         Lua.UnregisterFunction("CanActivityPartnerWaifu1");
         Lua.UnregisterFunction("CanActivityPartnerWaifu2");
         Lua.UnregisterFunction("CanActivityPartnerWaifu3");
+
+        Lua.UnregisterFunction("IsActivityPartnerWaifu1");
+        Lua.UnregisterFunction("IsActivityPartnerWaifu2");
+        Lua.UnregisterFunction("IsActivityPartnerWaifu3");
+
+        // activity:
+        Lua.UnregisterFunction("CanDoActivity");
+
+        // sexual:
+        Lua.UnregisterFunction("CanShowHcontent");
+
+        Lua.UnregisterFunction("IsRomancedWaifu1");
+        Lua.UnregisterFunction("IsRomancedWaifu2");
+        Lua.UnregisterFunction("IsRomancedWaifu3");
+
+        Lua.UnregisterFunction("IsSexuallyComfortableWaifu1");
+        Lua.UnregisterFunction("IsSexuallyComfortableWaifu2");
+        Lua.UnregisterFunction("IsSexuallyComfortableWaifu3");
 
 
 
@@ -206,6 +237,28 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // general:
         Lua.UnregisterFunction("SetFlag");
         Lua.UnregisterFunction("AddExp");
+
+        Lua.UnregisterFunction("StartShooterStateMode");
+        Lua.UnregisterFunction("StartVisualNovelStateMode");
+
+        // activity partner:
+        Lua.UnregisterFunction("SetActivityPartnerWaifu1");
+        Lua.UnregisterFunction("SetActivityPartnerWaifu2");
+        Lua.UnregisterFunction("SetActivityPartnerWaifu3");
+
+        // activity:
+        Lua.UnregisterFunction("SetActivity");
+        Lua.UnregisterFunction("StartActivity");
+
+        // character:
+        Lua.UnregisterFunction("PartyAddWaifu1");
+        Lua.UnregisterFunction("PartyAddWaifu2");
+        Lua.UnregisterFunction("PartyAddWaifu3");
+
+        Lua.UnregisterFunction("AddHealAbilityMC");
+        Lua.UnregisterFunction("AddShieldAbilityWaifu1");
+        Lua.UnregisterFunction("AddTrapAbilityWaifu2");
+        Lua.UnregisterFunction("AddWeakenAbilityWaifu3");
     }
 
     #endregion
@@ -415,6 +468,85 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private bool IsSexuallyComfortableWaifu3()
     {
         return IsSexuallyComfortable(CHAR_ID_WAIFU_3);
+    }
+
+    #endregion
+
+
+
+
+    #region Character Party Functions
+
+    private void AddCharacterToParty(string charIdArg)
+    {
+        _gameManager.AddCharacterToParty(charIdArg);
+    }
+
+    private void AddCharacterToPartyWaifu1()
+    {
+        _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_1);
+    }
+
+    private void AddCharacterToPartyWaifu2()
+    {
+        _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_2);
+    }
+
+    private void AddCharacterToPartyWaifu3()
+    {
+        _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_3);
+    }
+
+    #endregion
+
+
+
+
+    #region Character Ability Functions
+
+    private void AddAbilityToCharacter(string charIdArg, string abilityIdArg)
+    {
+        _gameManager.AddAbilityToCharacter(charIdArg, abilityIdArg);
+    }
+
+    private void AddAbilityToCharacterMC(string abilityIdArg)
+    {
+        AddAbilityToCharacter(CHAR_ID_MC, abilityIdArg);
+    }
+
+    private void AddAbilityToCharacterWaifu1(string abilityIdArg)
+    {
+        AddAbilityToCharacter(CHAR_ID_WAIFU_1, abilityIdArg);
+    }
+
+    private void AddAbilityToCharacterWaifu2(string abilityIdArg)
+    {
+        AddAbilityToCharacter(CHAR_ID_WAIFU_2, abilityIdArg);
+    }
+
+    private void AddAbilityToCharacterWaifu3(string abilityIdArg)
+    {
+        AddAbilityToCharacter(CHAR_ID_WAIFU_3, abilityIdArg);
+    }
+
+    private void AddHealAbilityToCharacterMC()
+    {
+        AddAbilityToCharacterMC("1");
+    }
+
+    private void AddShieldAbilityToCharacterWaifu1()
+    {
+        AddAbilityToCharacterWaifu1("2");
+    }
+
+    private void AddTrapAbilityToCharacterWaifu2()
+    {
+        AddAbilityToCharacterWaifu2("3");
+    }
+
+    private void AddWeakenAbilityToCharacterWaifu3()
+    {
+        AddAbilityToCharacterWaifu3("4");
     }
 
     #endregion

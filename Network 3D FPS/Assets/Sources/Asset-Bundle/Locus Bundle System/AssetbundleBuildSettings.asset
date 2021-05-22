@@ -61,6 +61,12 @@ MonoBehaviour:
       guid: 60abf6f2c55cf3748a898cfce75b0f91
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: ActiveAbilityTemplate
+    IncludedInPlayer: 1
+    Folder:
+      guid: 50f38c26ff548d14aaa51b5b3101083b
+    IncludeSubfolder: 0
+    CompressBundle: 1
   - BundleName: HavenActivity
     IncludedInPlayer: 1
     Folder:

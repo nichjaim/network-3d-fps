@@ -19,10 +19,10 @@ MonoBehaviour:
       guid: bd743b995f79c324598c4e7c5dc9e828
     IncludeSubfolder: 1
     CompressBundle: 1
-  - BundleName: PlayCharDataTemp
+  - BundleName: CharData
     IncludedInPlayer: 1
     Folder:
-      guid: 3b1cd5feff158744aa6abaa600d21c26
+      guid: dde096cece68a814ea55cb4992086516
     IncludeSubfolder: 0
     CompressBundle: 1
   - BundleName: CharAnim
@@ -67,6 +67,12 @@ MonoBehaviour:
       guid: 50f38c26ff548d14aaa51b5b3101083b
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: CharOutfit
+    IncludedInPlayer: 1
+    Folder:
+      guid: 76e047d199bd7c1419177c09c935fbac
+    IncludeSubfolder: 0
+    CompressBundle: 1
   - BundleName: HavenActivity
     IncludedInPlayer: 1
     Folder:
@@ -79,10 +85,22 @@ MonoBehaviour:
       guid: b7d392f0514d7344dbb19c218d60bf9b
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: PortraitSet
+    IncludedInPlayer: 1
+    Folder:
+      guid: 353a69c231b5c7c42b763252aafaee40
+    IncludeSubfolder: 1
+    CompressBundle: 1
   - BundleName: ArenaSet
     IncludedInPlayer: 1
     Folder:
       guid: 8fa5dec33f68bf043bce25deb8a4da3d
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: LevelArenaTutorial
+    IncludedInPlayer: 1
+    Folder:
+      guid: b86aacc4a3258d34b95ac396d2d2e7df
     IncludeSubfolder: 0
     CompressBundle: 1
   - BundleName: LevelArena-1

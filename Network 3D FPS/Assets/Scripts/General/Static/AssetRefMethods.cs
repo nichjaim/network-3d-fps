@@ -36,7 +36,7 @@ public static class AssetRefMethods
 
 
 
-    #region H Content Functions
+    #region H Content Core Functions
 
     /// <summary>
     /// Returns bool that denotes if ero content is in game files.
@@ -92,6 +92,13 @@ public static class AssetRefMethods
     {
         return Path.Combine(Application.persistentDataPath, "hcontent");
     }
+
+    #endregion
+
+
+
+
+    #region H-Content Background Functions
 
     /// <summary>
     /// Returns a background sprite from the hcontent files, wherever they're installed.
@@ -194,15 +201,131 @@ public static class AssetRefMethods
 
 
 
+    #region H-Content Portrait Functions
+
+    /*/// <summary>
+    /// Returns a portrait set from the hcontent files, wherever they're installed.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    public static CharacterPortraitSet LoadHcontentPortraitSet(string bgIdArg)
+    {
+        // if hcontent is in game files through an asset bundle
+        if (DoesAssetBundleHcontentExist())
+        {
+            return LoadAssetBundleHcontentBackground(bgIdArg);
+        }
+        // else if hcontent is in game files through the StreamingAssets
+        else if (DoesStreamingAssetsHcontentExist())
+        {
+            return LoadStreamingAssetsHcontentBackground(bgIdArg);
+        }
+        // else if hcontent is in game files through the PersistentDataPath
+        else if (DoesPersistentDataPathHcontentExist())
+        {
+            return LoadPersistentDataPathHcontentBackground(bgIdArg);
+        }
+        // else hcontent NOT in game files
+        else
+        {
+            // return null sprite
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns ero content portrait set from an asset bundle.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadAssetBundleHcontentPortraitSet(string bgIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "hcontent";
+        string ASSET_NAME_PREFIX = "bg/bg-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + bgIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    /// <summary>
+    /// Returns ero content portrait set from the StreamingAssets.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadStreamingAssetsHcontentBackground(string bgIdArg)
+    {
+        return LoadFolderBasedHcontentBackground(GetStreamingAssetsHcontentFolderPath(), bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content portrait set from the PersistentDataPath.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadPersistentDataPathHcontentBackground(string bgIdArg)
+    {
+        return LoadFolderBasedHcontentBackground(GetPersistentDataPathHcontentFolderPath(), bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content portrait set from one of the folder-based asset locations.
+    /// </summary>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadFolderBasedHcontentBackground(string folderPathArg, string bgIdArg)
+    {
+        // get the asset's file name
+        string fileName = $"bg-{bgIdArg}{GeneralMethods.GetPngFileExtension()}";
+        // get the path to the asset file
+        string filePath = Path.Combine(folderPathArg, "bg", fileName);
+
+        // if asset file actually exists
+        if (File.Exists(filePath))
+        {
+            // return sprite loaded from path
+            return GeneralMethods.GetSpriteFromFilePath(filePath);
+        }
+        // else asset file could NOT be found
+        else
+        {
+            // print warning to console
+            Debug.LogWarning($"Asset file path does not exist: {filePath}");
+            // return null sprite
+            return null;
+        }
+    }*/
+
+    #endregion
+
+
+
+
     #region Asset Bundle Character Functions
 
-    public static CharacterDataTemplate[] LoadAllBundleAssetPlayableCharacterDataTemplate()
+    /*public static CharacterDataTemplate[] LoadAllBundleAssetPlayableCharacterDataTemplate()
     {
         // initialize bundle properties
         string BUNDLE_NAME = "PlayCharDataTemp";
 
         //load and return asset
         return LoadAllBundleAsset<CharacterDataTemplate>(BUNDLE_NAME);
+    }*/
+
+    public static CharacterDataTemplate LoadBundleAssetCharacterDataTemplate(string charIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharData";
+        string ASSET_NAME_PREFIX = "chardata-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + charIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<CharacterDataTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
     /*public static AnimatorOverrideController LoadBundleAssetPlayableCharacterAnimator(string charIdArg)
@@ -290,6 +413,19 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadBundleAsset<ActiveAbilityTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static CharacterOutfitTemplate LoadBundleAssetCharacterOutfitTemplate(string outfitIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "CharOutfit";
+        string ASSET_NAME_PREFIX = "outfit-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + outfitIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<CharacterOutfitTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
     #endregion
@@ -416,6 +552,19 @@ public static class AssetRefMethods
         return LoadBundleAsset<LevelArenaSetDataTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
+    public static GameObject LoadBundleAssetTutorialLevelArenaPrefab(int arenaNumInSetArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "LevelArenaTutorial";
+        string ASSET_NAME_PREFIX = "arena-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + arenaNumInSetArg.ToString();
+
+        // load and return asset
+        return LoadBundleAsset<GameObject>(BUNDLE_NAME, loadAssetName);
+    }
+
     #endregion
 
 
@@ -459,6 +608,55 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
+    #endregion
+
+
+
+
+    #region Asset Bundle Dialogue Functions
+
+    public static Sprite LoadBundleAssetDialogueBackground(string bgIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "DialogueBackground";
+        string ASSET_NAME_PREFIX = "bg-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + bgIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static CharacterPortraitSet LoadBundleAssetCharacterPortraitSet(string charIdArg, 
+        string outfitIdArg)
+    {
+        /*// initialize bundle properties
+        string BUNDLE_NAME = "DialogueBackground";
+        string ASSET_NAME_PREFIX = $"outfit/char-{charIdArg}/outfit-";
+
+        if (outfitArg.isHContent)
+        {
+            BUNDLE_NAME = "hcontent";
+            ASSET_NAME_PREFIX = $"outfit/char-{charIdArg}/outfit-";
+        }
+        else
+        {
+            BUNDLE_NAME = "PortraitSet";
+            ASSET_NAME_PREFIX = $"char-{charIdArg}/outfit-";
+        }*/
+
+        // initialize bundle properties
+        string BUNDLE_NAME = "PortraitSet";
+        string ASSET_NAME_PREFIX = $"char-{charIdArg}/outfit-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + outfitIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<CharacterPortraitSet>(BUNDLE_NAME, loadAssetName);
     }
 
     #endregion

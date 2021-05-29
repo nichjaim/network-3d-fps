@@ -75,10 +75,23 @@ public class HavenData
     /// <summary>
     /// Refreshes all week's factors that require player planning.
     /// </summary>
-    public void ResetAllPlanning()
+    public void ResetAllPlanning(List<CharacterData> allActivityPartnersArg)
     {
-        activityPlanning.ResetAllPlanning(calendarSystem);
+        activityPlanning.ResetAllPlanning(calendarSystem, allActivityPartnersArg);
     }
+
+    /*private List<CharacterDataTemplate> GetAllActivityPartners()
+    {
+        // initialize return list as empty list
+        List<CharacterDataTemplate> activityPartners = new List<CharacterDataTemplate>();
+
+        // add all waiofu characters to
+        activityPartners.Add(AssetRefMethods.LoadBundleAssetCharacterDataTemplate("4"));
+        activityPartners.Add(AssetRefMethods.LoadBundleAssetCharacterDataTemplate("5"));
+        activityPartners.Add(AssetRefMethods.LoadBundleAssetCharacterDataTemplate("6"));
+
+        return activityPartners;
+    }*/
 
     /// <summary>
     /// Advance calendar date by one day.

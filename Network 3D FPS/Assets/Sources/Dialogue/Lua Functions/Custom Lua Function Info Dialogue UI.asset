@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dbbc84c70300ba489dc1fe1961516ec, type: 3}
+  m_Name: Custom Lua Function Info Dialogue UI
+  m_EditorClassIdentifier: 
+  conditionFunctions: []
+  scriptFunctions:
+  - functionName: DialogueUI/DialogueUIChangeBackground
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitEnterWaifu1
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitEnterWaifu2
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitEnterWaifu3
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitExitWaifu1
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitExitWaifu2
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIPortraitExitWaifu3
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIChangeExpressionWaifu1
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIChangeExpressionWaifu2
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIChangeExpressionWaifu3
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIAssignSpeakerMC
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIAssignSpeakerWaifu1
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIAssignSpeakerWaifu2
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIAssignSpeakerWaifu3
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/DialogueUIRemoveSpeaker
+    parameters: 
+    returnValue: 0

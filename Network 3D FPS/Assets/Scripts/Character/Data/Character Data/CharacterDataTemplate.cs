@@ -15,6 +15,7 @@ public class CharacterDataTemplate : ScriptableObject
     public FactionReputationTemplate factionReputationTemplate;
 
     public List<ActiveAbilityTemplate> activeAbilityTemplates;
+    public List<CharacterOutfitTemplate> outfitTemplates;
 
     [Header("Base Data Properties")]
 

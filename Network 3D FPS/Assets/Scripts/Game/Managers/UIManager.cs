@@ -23,6 +23,13 @@ public class UIManager : MonoBehaviour
         get { return dialgGameCoordr; }
     }
 
+    [SerializeField]
+    private DialogueUiCoordinator dialgUICoordr = null;
+    public DialogueUiCoordinator DialgUICoordr
+    {
+        get { return dialgUICoordr; }
+    }
+
     #endregion
 
 

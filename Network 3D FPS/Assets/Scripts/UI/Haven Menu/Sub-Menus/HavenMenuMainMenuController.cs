@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Nichjaim.MasterSubMenu;
 
-public class HavenMenuMainMenuController : SubMenuController
+public class HavenMenuMainMenuController : HavenSubMenuController
 {
     [SerializeField]
     private DialogueGameCoordinator dialgGameCoordr = null; // TESTING VAR!!!

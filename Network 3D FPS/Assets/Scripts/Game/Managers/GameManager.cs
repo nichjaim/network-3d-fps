@@ -320,6 +320,33 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         SetPartyOrder(partyOrder);
     }
 
+    /// <summary>
+    /// Returns all party members that are NOT he Main Character.
+    /// </summary>
+    /// <returns></returns>
+    private List<CharacterData> GetAllPartyMembersExcludingMC()
+    {
+        // initialize character ID for the MC
+        string CHAR_ID_MC = "3";
+
+        // initialize return list as empty list
+        List<CharacterData> partyMems = new List<CharacterData>();
+
+        // loop through all party members
+        foreach (CharacterData iterData in partyCharacters)
+        {
+            // if iterating character is NOT the MC
+            if (iterData.characterInfo.characterId != CHAR_ID_MC)
+            {
+                // add iterating party member to return list
+                partyMems.Add(iterData);
+            }
+        }
+
+        // return populated list
+        return partyMems;
+    }
+
     #endregion
 
 
@@ -340,21 +367,22 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
             return;
         }
 
-        // get all playable character data templates
+        /*// get all playable character data templates
         CharacterDataTemplate[] charDataTemps = AssetRefMethods.
-            LoadAllBundleAssetPlayableCharacterDataTemplate();
+            LoadAllBundleAssetPlayableCharacterDataTemplate();*/
+        CharacterDataTemplate charDataTemp = AssetRefMethods.LoadBundleAssetCharacterDataTemplate(charIdArg);
 
-        // get char template whose ID matches given char ID
+        /*// get char template whose ID matches given char ID
         CharacterDataTemplate matchingTemplate = charDataTemps.
-            FirstOrDefault(iterTemp => iterTemp.template.characterInfo.characterId == charIdArg);
+            FirstOrDefault(iterTemp => iterTemp.template.characterInfo.characterId == charIdArg);*/
 
-        // if match found
-        if (matchingTemplate != null)
+        // if data found
+        if (charDataTemp != null)
         {
             // add amtching character to party
-            partyCharacters.Add(new CharacterData(matchingTemplate));
+            partyCharacters.Add(new CharacterData(charDataTemp));
         }
-        // else no match exists
+        // else no such data exists
         else
         {
             // if gotten here then print warning to console
@@ -684,7 +712,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// <summary>
     /// Marks the game's tutorial as compelted.
     /// </summary>
-    private void SetTutorialAsComplete()
+    public void SetTutorialAsComplete()
     {
         gameFlags.SetFlag(FLAG_TUTORIAL_COMPLETE);
     }
@@ -833,7 +861,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStartListening<PartyWipeEvent>();
         this.MMEventStartListening<DayAdvanceEvent>();
-        //this.MMEventStartListening<EnterGameSessionEvent>();
+        this.MMEventStartListening<EnterGameSessionEvent>();
 
         //partyCharacters.Callback += OnPartyCharactersChanged;
     }
@@ -851,7 +879,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStopListening<PartyWipeEvent>();
         this.MMEventStopListening<DayAdvanceEvent>();
-        //this.MMEventStopListening<EnterGameSessionEvent>();
+        this.MMEventStopListening<EnterGameSessionEvent>();
 
         //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
@@ -897,7 +925,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         havenData.AdvanceOneDay();
 
         // refreshes week's activity planning factors
-        havenData.ResetAllPlanning();
+        havenData.ResetAllPlanning(GetAllPartyMembersExcludingMC());
         
         Debug.Log("NEED IMPL: ensure switched to visualnovel game mode"); // NEED IMPL!!!
     }

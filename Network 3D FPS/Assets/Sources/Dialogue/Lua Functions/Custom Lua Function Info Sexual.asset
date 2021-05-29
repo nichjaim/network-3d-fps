@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: Custom Lua Function Info Sexual
   m_EditorClassIdentifier: 
   conditionFunctions:
-  - functionName: Sexual/Hcontent/CanShowHcontent
-    parameters: 
-    returnValue: 1
   - functionName: Sexual/IsRomanced/IsRomancedWaifu1
     parameters: 
     returnValue: 1

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<GameStateModeTransitionEvent>, 
     MMEventListener<NetworkGameLocalJoinedEvent>
@@ -13,6 +14,11 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     [Tooltip("Button that switches to multiplayer sub-menu")]
     [SerializeField]
     private GameObject multiplayerMenuButton = null;
+
+    [Header("Background Transition References")]
+
+    [SerializeField]
+    private BackgroundFadeController bgFader = null;
 
     #endregion
 
@@ -87,6 +93,23 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     public void SwitchToMultiplayerMenu()
     {
         SwitchSubMenu("multiplayer");
+    }
+
+    #endregion
+
+
+
+
+    #region Transition Functions
+
+    /// <summary>
+    /// Performs the background transition.
+    /// </summary>
+    /// <param name="newBgArg"></param>
+    /// <param name="transitionTimeArg"></param>
+    public void BackgroundTransition(Sprite newBgArg, float transitionTimeArg)
+    {
+        bgFader.BackgroundTransition(newBgArg, transitionTimeArg);
     }
 
     #endregion

@@ -418,7 +418,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             inDialogueChainPhaseArena = false;
 
             // instantiates new arena
-            _gameManager.LevelManager.CreateArena();
+            _gameManager.LevelManager.CreateAppropriateArena();
         }
 
         // return that phase IS done

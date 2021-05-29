@@ -140,6 +140,9 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
         Lua.RegisterFunction("CanStartShooterStateMode", this, SymbolExtensions.GetMethodInfo(() => CanStartShooterStateMode()));
 
+        // HContent:
+        Lua.RegisterFunction("CanShowHcontent", this, SymbolExtensions.GetMethodInfo(() => CanShowHcontent()));
+
         // activity partner:
         Lua.RegisterFunction("CanActivityPartnerWaifu1", this, SymbolExtensions.GetMethodInfo(() => CanActivityPartnerWaifu1()));
         Lua.RegisterFunction("CanActivityPartnerWaifu2", this, SymbolExtensions.GetMethodInfo(() => CanActivityPartnerWaifu2()));
@@ -153,8 +156,6 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("CanDoActivity", this, SymbolExtensions.GetMethodInfo(() => CanDoActivity(string.Empty)));
 
         // sexual:
-        Lua.RegisterFunction("CanShowHcontent", this, SymbolExtensions.GetMethodInfo(() => CanShowHcontent()));
-
         Lua.RegisterFunction("IsRomancedWaifu1", this, SymbolExtensions.GetMethodInfo(() => IsRomancedWaifu1()));
         Lua.RegisterFunction("IsRomancedWaifu2", this, SymbolExtensions.GetMethodInfo(() => IsRomancedWaifu2()));
         Lua.RegisterFunction("IsRomancedWaifu3", this, SymbolExtensions.GetMethodInfo(() => IsRomancedWaifu3()));
@@ -174,6 +175,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("StartShooterStateMode", this, SymbolExtensions.GetMethodInfo(() => StartShooterStateMode()));
         Lua.RegisterFunction("StartVisualNovelStateMode", this, SymbolExtensions.GetMethodInfo(() => StartVisualNovelStateMode()));
 
+        Lua.RegisterFunction("TutorialDone", this, SymbolExtensions.GetMethodInfo(() => TutorialDone()));
+
+        // HContent:
+        Lua.RegisterFunction("DialogueUIChangeHBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeHBackground(string.Empty)));
+
         // activity partner:
         Lua.RegisterFunction("SetActivityPartnerWaifu1", this, SymbolExtensions.GetMethodInfo(() => SetActivityPartnerWaifu1()));
         Lua.RegisterFunction("SetActivityPartnerWaifu2", this, SymbolExtensions.GetMethodInfo(() => SetActivityPartnerWaifu2()));
@@ -192,6 +198,28 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("AddShieldAbilityWaifu1", this, SymbolExtensions.GetMethodInfo(() => AddShieldAbilityToCharacterWaifu1()));
         Lua.RegisterFunction("AddTrapAbilityWaifu2", this, SymbolExtensions.GetMethodInfo(() => AddTrapAbilityToCharacterWaifu2()));
         Lua.RegisterFunction("AddWeakenAbilityWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddWeakenAbilityToCharacterWaifu3()));
+
+        // dialogue UI:
+        Lua.RegisterFunction("DialogueUIChangeBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackground(string.Empty)));
+
+        Lua.RegisterFunction("DialogueUIPortraitEnterWaifu1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitEnterWaifu1(string.Empty)));
+        Lua.RegisterFunction("DialogueUIPortraitEnterWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitEnterWaifu2(string.Empty)));
+        Lua.RegisterFunction("DialogueUIPortraitEnterWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitEnterWaifu3(string.Empty)));
+
+        Lua.RegisterFunction("DialogueUIPortraitExitWaifu1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitExitWaifu1()));
+        Lua.RegisterFunction("DialogueUIPortraitExitWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitExitWaifu2()));
+        Lua.RegisterFunction("DialogueUIPortraitExitWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitExitWaifu3()));
+
+        Lua.RegisterFunction("DialogueUIChangeExpressionWaifu1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeExpressionWaifu1(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeExpressionWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeExpressionWaifu2(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeExpressionWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeExpressionWaifu3(string.Empty)));
+
+        Lua.RegisterFunction("DialogueUIAssignSpeakerMC", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerMC()));
+        Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu1()));
+        Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu2()));
+        Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu3()));
+
+        Lua.RegisterFunction("DialogueUIRemoveSpeaker", this, SymbolExtensions.GetMethodInfo(() => DialogueUIRemoveSpeaker()));
     }
 
     /// <summary>
@@ -206,6 +234,9 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("HaveFlag");
 
         Lua.UnregisterFunction("CanStartShooterStateMode");
+
+        // HContent:
+        Lua.UnregisterFunction("CanShowHcontent");
 
         // activity partner:
         Lua.UnregisterFunction("CanActivityPartnerWaifu1");
@@ -241,6 +272,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("StartShooterStateMode");
         Lua.UnregisterFunction("StartVisualNovelStateMode");
 
+        Lua.UnregisterFunction("TutorialDone");
+
+        // HContent:
+        Lua.UnregisterFunction("DialogueUIChangeHBackground");
+
         // activity partner:
         Lua.UnregisterFunction("SetActivityPartnerWaifu1");
         Lua.UnregisterFunction("SetActivityPartnerWaifu2");
@@ -259,6 +295,28 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("AddShieldAbilityWaifu1");
         Lua.UnregisterFunction("AddTrapAbilityWaifu2");
         Lua.UnregisterFunction("AddWeakenAbilityWaifu3");
+
+        // dialogue UI:
+        Lua.UnregisterFunction("DialogueUIChangeBackground");
+
+        Lua.UnregisterFunction("DialogueUIPortraitEnterWaifu1");
+        Lua.UnregisterFunction("DialogueUIPortraitEnterWaifu2");
+        Lua.UnregisterFunction("DialogueUIPortraitEnterWaifu3");
+
+        Lua.UnregisterFunction("DialogueUIPortraitExitWaifu1");
+        Lua.UnregisterFunction("DialogueUIPortraitExitWaifu2");
+        Lua.UnregisterFunction("DialogueUIPortraitExitWaifu3");
+
+        Lua.UnregisterFunction("DialogueUIChangeExpressionWaifu1");
+        Lua.UnregisterFunction("DialogueUIChangeExpressionWaifu2");
+        Lua.UnregisterFunction("DialogueUIChangeExpressionWaifu3");
+
+        Lua.UnregisterFunction("DialogueUIAssignSpeakerMC");
+        Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu1");
+        Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu2");
+        Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu3");
+
+        Lua.UnregisterFunction("DialogueUIRemoveSpeaker");
     }
 
     #endregion
@@ -296,8 +354,36 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     private void StartVisualNovelStateMode()
     {
-        // trigger event to start shooter state mode
+        // trigger event to start VN state mode
         GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+    }
+
+    private void TutorialDone()
+    {
+        // denote that tutorial is complete
+        _gameManager.SetTutorialAsComplete();
+
+        // trigger event to start VN state mode
+        GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+    }
+
+    #endregion
+
+
+
+
+    #region Lua HContent Functions
+
+    private bool CanShowHcontent()
+    {
+        Debug.LogWarning("NEED IMPL: implement second half of CanShowHcontent()"); // NEED IMPL
+        // if H-content is installed AND is enabled to be shown
+        return (AssetRefMethods.IsHcontentInstalled()) && (false);
+    }
+
+    private void DialogueUIChangeHBackground(string bgIdArg)
+    {
+        Debug.Log("NEED IMPL: DialogueUIChangeHBackground()"); // NEED IMPL
     }
 
     #endregion
@@ -423,13 +509,6 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     #region Sexual Functions
 
-    private bool CanShowHcontent()
-    {
-        Debug.LogWarning("NEED IMPL: implement second half of CanShowHcontent()"); // NEED IMPL
-        // if H-content is installed AND is enabled to be shown
-        return (AssetRefMethods.IsHcontentInstalled()) && (false);
-    }
-
     private bool IsRomanced(string charIdArg)
     {
         return _gameManager.GameFlags.IsRomanceFlagSet(charIdArg);
@@ -547,6 +626,116 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private void AddWeakenAbilityToCharacterWaifu3()
     {
         AddAbilityToCharacterWaifu3("4");
+    }
+
+    #endregion
+
+
+
+
+    #region Dialogue UI Functions
+
+    private void DialogueUIChangeBackground(string bgIdArg)
+    {
+        Debug.Log("NEED IMPL: DialogueUIChangeBackground()"); // NEED IMPL
+    }
+
+    private void DialogueUIPortraitEnter(string charIdArg, string exprAbrvArg)
+    {
+        // get dialogue expression from string abbraviation
+        CharacterDialogueExpressionType expression = GeneralMethods.
+            GetExpressionFromStringAbbreviation(exprAbrvArg);
+
+        _uiManager.DialgUICoordr.CharacterPortraitEnterDialogueScene(charIdArg, expression);
+    }
+
+    private void DialogueUIPortraitEnterWaifu1(string exprAbrvArg)
+    {
+        DialogueUIPortraitEnter(CHAR_ID_WAIFU_1, exprAbrvArg);
+    }
+
+    private void DialogueUIPortraitEnterWaifu2(string exprAbrvArg)
+    {
+        DialogueUIPortraitEnter(CHAR_ID_WAIFU_2, exprAbrvArg);
+    }
+
+    private void DialogueUIPortraitEnterWaifu3(string exprAbrvArg)
+    {
+        DialogueUIPortraitEnter(CHAR_ID_WAIFU_3, exprAbrvArg);
+    }
+
+    private void DialogueUIPortraitExit(string charIdArg)
+    {
+        _uiManager.DialgUICoordr.CharacterPortraitExitDialogueScene(charIdArg);
+    }
+
+    private void DialogueUIPortraitExitWaifu1()
+    {
+        DialogueUIPortraitExit(CHAR_ID_WAIFU_1);
+    }
+
+    private void DialogueUIPortraitExitWaifu2()
+    {
+        DialogueUIPortraitExit(CHAR_ID_WAIFU_2);
+    }
+
+    private void DialogueUIPortraitExitWaifu3()
+    {
+        DialogueUIPortraitExit(CHAR_ID_WAIFU_3);
+    }
+
+    private void DialogueUIChangeExpression(string charIdArg, string exprAbrvArg)
+    {
+        // get dialogue expression from string abbraviation
+        CharacterDialogueExpressionType expression = GeneralMethods.
+            GetExpressionFromStringAbbreviation(exprAbrvArg);
+
+        _uiManager.DialgUICoordr.SetCharacterPortraitExpression(charIdArg, expression);
+    }
+
+    private void DialogueUIChangeExpressionWaifu1(string exprAbrvArg)
+    {
+        DialogueUIChangeExpression(CHAR_ID_WAIFU_1, exprAbrvArg);
+    }
+
+    private void DialogueUIChangeExpressionWaifu2(string exprAbrvArg)
+    {
+        DialogueUIChangeExpression(CHAR_ID_WAIFU_2, exprAbrvArg);
+    }
+
+    private void DialogueUIChangeExpressionWaifu3(string exprAbrvArg)
+    {
+        DialogueUIChangeExpression(CHAR_ID_WAIFU_3, exprAbrvArg);
+    }
+
+    private void DialogueUIAssignSpeaker(string charIdArg)
+    {
+        _uiManager.DialgUICoordr.AssignSpeaker(charIdArg);
+    }
+
+    private void DialogueUIAssignSpeakerMC()
+    {
+        DialogueUIAssignSpeaker(CHAR_ID_MC);
+    }
+
+    private void DialogueUIAssignSpeakerWaifu1()
+    {
+        DialogueUIAssignSpeaker(CHAR_ID_WAIFU_1);
+    }
+
+    private void DialogueUIAssignSpeakerWaifu2()
+    {
+        DialogueUIAssignSpeaker(CHAR_ID_WAIFU_2);
+    }
+
+    private void DialogueUIAssignSpeakerWaifu3()
+    {
+        DialogueUIAssignSpeaker(CHAR_ID_WAIFU_3);
+    }
+
+    private void DialogueUIRemoveSpeaker()
+    {
+        _uiManager.DialgUICoordr.RemoveSpeaker();
     }
 
     #endregion

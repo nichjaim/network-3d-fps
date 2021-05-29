@@ -14,24 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conditionFunctions: []
   scriptFunctions:
-  - functionName: PartyAddWaifu1
+  - functionName: Character/PartyAdd/PartyAddWaifu1
     parameters: 
     returnValue: 0
-  - functionName: PartyAddWaifu2
+  - functionName: Character/PartyAdd/PartyAddWaifu2
     parameters: 
     returnValue: 0
-  - functionName: PartyAddWaifu3
+  - functionName: Character/PartyAdd/PartyAddWaifu3
     parameters: 
     returnValue: 0
-  - functionName: AddHealAbilityMC
+  - functionName: Character/AddAbility/AddHealAbilityMC
     parameters: 
     returnValue: 0
-  - functionName: AddShieldAbilityWaifu1
+  - functionName: Character/AddAbility/AddShieldAbilityWaifu1
     parameters: 
     returnValue: 0
-  - functionName: AddTrapAbilityWaifu2
+  - functionName: Character/AddAbility/AddTrapAbilityWaifu2
     parameters: 
     returnValue: 0
-  - functionName: AddWeakenAbilityWaifu3
+  - functionName: Character/AddAbility/AddWeakenAbilityWaifu3
     parameters: 
     returnValue: 0

@@ -7,7 +7,7 @@ using Mirror;
 using TMPro;
 using MoreMountains.Tools;
 
-public class HavenMenuMultiplayerMenuController : SubMenuController, 
+public class HavenMenuMultiplayerMenuController : HavenSubMenuController, 
     MMEventListener<ServerAddedPlayerEvent>, MMEventListener<ServerDisconnectedPlayerEvent>,
     MMEventListener<ExitGameSessionEvent>
 {

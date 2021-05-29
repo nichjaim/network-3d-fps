@@ -10,22 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86279ce7dd27d584b9a421f541b987f7, type: 3}
-  m_Name: chardata-5
+  m_Name: chardata-3
   m_EditorClassIdentifier: 
-  characterInfoColor: {r: 1, g: 0.4933104, b: 0, a: 0}
-  favoredWeaponTypesTemplate: {fileID: 11400000, guid: ebd12ea7ec2008b41b8dad9f59097934, type: 2}
-  characterInventoryTemplate: {fileID: 11400000, guid: 75a4a17424aed4e459411ebf3a121e17, type: 2}
+  characterInfoColor: {r: 1, g: 0.5330188, b: 0.89558953, a: 0}
+  favoredWeaponTypesTemplate: {fileID: 11400000, guid: 50c2b854613cd8a438abfaecf70805f0, type: 2}
+  characterInventoryTemplate: {fileID: 11400000, guid: 1da721a1bd2b17a4abc4ae72096d9dcf, type: 2}
   factionReputationTemplate: {fileID: 11400000, guid: f39d188f74cfbea4ea23fd104c786441, type: 2}
-  activeAbilityTemplates:
-  - {fileID: 11400000, guid: 8e8f0437c0b2ef64f89e744b0ed2ff13, type: 2}
+  activeAbilityTemplates: []
+  outfitTemplates:
+  - {fileID: 11400000, guid: a413a7d3df111cc4fa7ea149a7dd1230, type: 2}
   template:
     characterInfo:
-      characterId: 5
-      characterName: Ashley
-      characterHeightInCm: 170
+      characterId: 3
+      characterName: Hubert
+      characterHeightInCm: 188
       characterHexColorCode: FFFFFF
     characterStats:
-      healthMaxBase: 1
+      healthMaxBase: 9
       healthCurrent: 1
       healthFatigue: 0
       healthFatigueBuildup: 0
@@ -39,8 +40,8 @@ MonoBehaviour:
       statIntelligence: 1
       statStrength: 1
       statDexterity: 1
-      statMovementSpeed: 6
-      statJumpHeight: 3.5
+      statMovementSpeed: 5.5
+      statJumpHeight: 3
       statConsecutiveJumps: 1
       statDefense: 0
       statHealing: 0
@@ -69,3 +70,6 @@ MonoBehaviour:
     activeAbilityLoadout:
       activeAbilities: []
       quickSlotsAbilityIndices: ffffffffffffffffffffffff
+    outfitLoadout:
+      characterOutfits: []
+      characterOutfitEquippedIndex: -1

@@ -10,22 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86279ce7dd27d584b9a421f541b987f7, type: 3}
-  m_Name: chardata-4
+  m_Name: chardata-5
   m_EditorClassIdentifier: 
-  characterInfoColor: {r: 0.06132078, g: 0.33235517, b: 1, a: 0}
-  favoredWeaponTypesTemplate: {fileID: 11400000, guid: 78e1986665721f2478e0eaa6a507db22, type: 2}
-  characterInventoryTemplate: {fileID: 11400000, guid: c9ead6ddd32e9d14dbf03e4492248002, type: 2}
+  characterInfoColor: {r: 1, g: 0.4933104, b: 0, a: 0}
+  favoredWeaponTypesTemplate: {fileID: 11400000, guid: ebd12ea7ec2008b41b8dad9f59097934, type: 2}
+  characterInventoryTemplate: {fileID: 11400000, guid: 75a4a17424aed4e459411ebf3a121e17, type: 2}
   factionReputationTemplate: {fileID: 11400000, guid: f39d188f74cfbea4ea23fd104c786441, type: 2}
-  activeAbilityTemplates:
-  - {fileID: 11400000, guid: 6f0b938e611fa2a4c90e1bd08be9c05b, type: 2}
+  activeAbilityTemplates: []
+  outfitTemplates:
+  - {fileID: 11400000, guid: a413a7d3df111cc4fa7ea149a7dd1230, type: 2}
   template:
     characterInfo:
-      characterId: 4
-      characterName: Beatrice
-      characterHeightInCm: 183
+      characterId: 5
+      characterName: Ashley
+      characterHeightInCm: 170
       characterHexColorCode: FFFFFF
     characterStats:
-      healthMaxBase: 15
+      healthMaxBase: 1
       healthCurrent: 1
       healthFatigue: 0
       healthFatigueBuildup: 0
@@ -35,12 +36,12 @@ MonoBehaviour:
       manaFatigueBuildup: 0
       fatigueBuildupCap: 10
       fatigueMaxPercentage: 0.7
-      statStamina: 5
+      statStamina: 1
       statIntelligence: 1
       statStrength: 1
       statDexterity: 1
-      statMovementSpeed: 5
-      statJumpHeight: 3
+      statMovementSpeed: 6
+      statJumpHeight: 3.5
       statConsecutiveJumps: 1
       statDefense: 0
       statHealing: 0
@@ -69,3 +70,6 @@ MonoBehaviour:
     activeAbilityLoadout:
       activeAbilities: []
       quickSlotsAbilityIndices: ffffffffffffffffffffffff
+    outfitLoadout:
+      characterOutfits: []
+      characterOutfitEquippedIndex: -1

@@ -32,3 +32,6 @@ MonoBehaviour:
   - functionName: General/StartVisualNovelStateMode
     parameters: 
     returnValue: 0
+  - functionName: General/TutorialDone
+    parameters: 
+    returnValue: 0

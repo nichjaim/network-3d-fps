@@ -82,11 +82,11 @@ public class HavenActivityPlanningData
     /// Refreshes all factors that require player planning.
     /// </summary>
     /// <param name="timeCalendarArg"></param>
-    public void ResetAllPlanning(TimeCalendarSystem timeCalendarArg)
+    public void ResetAllPlanning(TimeCalendarSystem timeCalendarArg, List<CharacterData> allActivityPartnersArg)
     {
         SetupAvailableActivities(timeCalendarArg);
 
-        ResetAvailableActivityPartners();
+        ResetAvailableActivityPartners(allActivityPartnersArg);
     }
 
     /// <summary>
@@ -110,12 +110,19 @@ public class HavenActivityPlanningData
     /// <summary>
     /// Sets the available activity partner list back to default all party members.
     /// </summary>
-    private void ResetAvailableActivityPartners()
+    private void ResetAvailableActivityPartners(List<CharacterData> allActivityPartnersArg)
     {
         // reset partner list to empty list
         availableActivityPartnerIds = new List<string>();
 
-        // get all main character templates
+        // loop through all given activity partners
+        foreach (CharacterData iterData in allActivityPartnersArg)
+        {
+            // add iterating partner to avaialble partners list
+            availableActivityPartnerIds.Add(iterData.characterInfo.characterId);
+        }
+
+        /*// get all main character templates
         CharacterDataTemplate[] charTemps = AssetRefMethods.
             LoadAllBundleAssetPlayableCharacterDataTemplate();
         // initialize var for upcoming loop
@@ -133,7 +140,7 @@ public class HavenActivityPlanningData
                 // add the iterating main char ID to activity partner list
                 availableActivityPartnerIds.Add(iterId);
             }
-        }
+        }*/
     }
 
     /// <summary>

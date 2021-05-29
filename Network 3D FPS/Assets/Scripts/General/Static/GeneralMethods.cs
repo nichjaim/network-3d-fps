@@ -450,4 +450,57 @@ public static class GeneralMethods
         return DialogueManager.masterDatabase.conversations.
             FindAll(iterConversation => iterConversation.Title.StartsWith(convoCategoryPrefixArg));
     }
+
+    /// <summary>
+    /// Returns the dialogue expression associated with the given abbreviation.
+    /// </summary>
+    /// <param name="exprAbrvArg"></param>
+    /// <returns></returns>
+    public static CharacterDialogueExpressionType GetExpressionFromStringAbbreviation(string exprAbrvArg)
+    {
+        switch (exprAbrvArg.ToLower())
+        {
+            case "neutral":
+            case "neut":
+            case "neu":
+                return CharacterDialogueExpressionType.Neutral;
+
+            case "happy":
+            case "hap":
+                return CharacterDialogueExpressionType.Happy;
+
+            case "sad":
+                return CharacterDialogueExpressionType.Sad;
+
+            case "angry":
+            case "angr":
+            case "ang":
+                return CharacterDialogueExpressionType.Angry;
+
+            case "scared":
+            case "scar":
+            case "sca":
+                return CharacterDialogueExpressionType.Scared;
+
+            case "embarrassed":
+            case "emba":
+            case "emb":
+                return CharacterDialogueExpressionType.Embarrassed;
+
+            case "aroused":
+            case "arou":
+            case "aro":
+                return CharacterDialogueExpressionType.Aroused;
+
+            case "smug":
+            case "smu":
+                return CharacterDialogueExpressionType.Smug;
+
+
+            default:
+                // print warning to console
+                Debug.LogWarning($"Unknown exprAbrvArg: {exprAbrvArg}");
+                return CharacterDialogueExpressionType.Neutral;
+        }
+    }
 }

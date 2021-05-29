@@ -39,6 +39,11 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
     [SerializeField]
     private bool shouldAlterCursorFreedom = false;
 
+    [Header("Character References")]
+
+    [SerializeField]
+    private CharacterDataTemplate mainCharacterTemplate = null;
+
     private List<MasterMenuControllerCustom> openMenus = new List<MasterMenuControllerCustom>();
     private List<StandardDialogueUI> openDialogues = new List<StandardDialogueUI>();
 
@@ -326,20 +331,13 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
         // set game flag data to a new game flags data
         newSaveData.gameFlags = new GameFlags();
 
-        // load all starting playable character data
-        CharacterDataTemplate[] playableCharDataTemplates = AssetRefMethods.
-            LoadAllBundleAssetPlayableCharacterDataTemplate();
+        // initialize fresh empty character list
+        List<CharacterData> charPartyList = new List<CharacterData>();
+        // add MC to party character list
+        charPartyList.Add(new CharacterData(mainCharacterTemplate));
 
-        // setup fresh empty char data list
-        List<CharacterData> startingPlayableCharData = new List<CharacterData>();
-        // loop trhough all loaded templates
-        foreach (CharacterDataTemplate iterTemp in playableCharDataTemplates)
-        {
-            // add a playable char data to list that is derived from iterating template
-            startingPlayableCharData.Add(new CharacterData(iterTemp));
-        }
         // set the new save file's char data to starting data
-        newSaveData.playableCharacterData = startingPlayableCharData;
+        newSaveData.playableCharacterData = charPartyList;
 
         // set party inventory to starter party ivnentory
         newSaveData.partyInventory = new PartyInventory(startingPartyInventory);

@@ -16,6 +16,7 @@ public class CharacterData
     public FactionReputation factionReputation;
 
     public ActiveAbilityLoadout activeAbilityLoadout;
+    public CharacterOutfitLoadout outfitLoadout;
 
     #endregion
 
@@ -52,6 +53,12 @@ public class CharacterData
         {
             activeAbilityLoadout.AddActiveAbility(new ActiveAbility(iterAbilityTemp));
         }
+
+        outfitLoadout = new CharacterOutfitLoadout();
+        foreach (CharacterOutfitTemplate iterTemp in templateArg.outfitTemplates)
+        {
+            outfitLoadout.AddOutfit(iterTemp);
+        }
     }
 
     #endregion
@@ -72,6 +79,7 @@ public class CharacterData
         factionReputation = new FactionReputation();
 
         activeAbilityLoadout = new ActiveAbilityLoadout();
+        outfitLoadout = new CharacterOutfitLoadout();
     }
 
     private void Setup(CharacterData templateArg)
@@ -85,6 +93,7 @@ public class CharacterData
         factionReputation = new FactionReputation(templateArg.factionReputation);
 
         activeAbilityLoadout = new ActiveAbilityLoadout(templateArg.activeAbilityLoadout);
+        outfitLoadout = new CharacterOutfitLoadout(templateArg.outfitLoadout);
     }
 
     #endregion

@@ -83,6 +83,20 @@ public class LevelArenaCoordinator : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the tutorial arena prefab associated with curren arena number in set.
+    /// </summary>
+    /// <returns></returns>
+    private LevelArenaController GetAppropriateTutorialArenaPrefab()
+    {
+        // get tutorial arena prefab object
+        GameObject arenaPrefab = AssetRefMethods.
+            LoadBundleAssetTutorialLevelArenaPrefab(arenaNumInSet);
+
+        // return prefab's arena component
+        return arenaPrefab.GetComponent<LevelArenaController>();
+    }
+
+    /// <summary>
     /// Returns the arena object ID based on the given arena object.
     /// </summary>
     /// <param name="objArg"></param>
@@ -95,54 +109,6 @@ public class LevelArenaCoordinator : MonoBehaviour
         // return rest of object's name which should hold the arena ID
         return objArg.name.Substring(ARENA_OBJ_NAME_PREFIX.Length);
     }
-
-    public void CreateRandomArena()
-    {
-        CreateArena(GetAppropriateRandomArenaPrefab());
-    }
-
-    /// <summary>
-    /// Instantiates the given arena prefab into the game world.
-    /// </summary>
-    /// <param name="prefabArenaArg"></param>
-    public void CreateArena(LevelArenaController prefabArenaArg)
-    {
-        // destroys the currently instantiated arena
-        DestoryArena();
-
-        // denote that arena was used in this set
-        usedArenaIdsInSet.Add(GetArenaIdFromObject(prefabArenaArg.gameObject));
-
-        // create arena object from prefab
-        GameObject createdArenaObj = Instantiate(prefabArenaArg.gameObject);
-        // save reference to created object's arena component
-        createdArena = createdArenaObj.GetComponent<LevelArenaController>();
-    }
-
-    /// <summary>
-    /// Destroys the currenly instantiated arena.
-    /// </summary>
-    public void DestoryArena()
-    {
-        // if a created arena currently exists
-        if (createdArena != null)
-        {
-            // destory current arena
-            Destroy(createdArena);
-        }
-    }
-
-    /*/// <summary>
-    /// Begins a fresh new arena run.
-    /// </summary>
-    private void StartNewRun()
-    {
-        // resets all arena run's progress data to new run
-        ResetRunProgress();
-
-        // instantiates a random arena into the game world
-        CreateArena();
-    }*/
 
     /// <summary>
     /// Resets all arena run's progress data to new run.
@@ -201,7 +167,86 @@ public class LevelArenaCoordinator : MonoBehaviour
 
 
 
-    #region Set Properties Functions
+    #region Arena Creation Functions
+
+    /// <summary>
+    /// Instantiates the appropriate arena prefab into the game world.
+    /// </summary>
+    public void CreateAppropriateArena()
+    {
+        // if in the tutorial arena set
+        if (arenaSetData.setNum == GetTutorialArenaSetData().setNum)
+        {
+            // instantiate the appropriate tutorial arena prefab into the game world
+            CreateTutorialArena();
+        }
+        // else if all the arena sets are completed
+        else if (arenaSetData.setNum == GetEndArenaSetData().setNum)
+        {
+            // print warning to console
+            Debug.LogWarning("Trying to create an arena when all arena sets are finished!");
+        }
+        // else in a normal arena set
+        else
+        {
+            // instantiate a random arena prefab into the game world
+            CreateRandomArena();
+        }
+    }
+
+    /// <summary>
+    /// Instantiates the appropriate tutorial arena prefab into the game world.
+    /// </summary>
+    private void CreateTutorialArena()
+    {
+        CreateArena(GetAppropriateTutorialArenaPrefab());
+    }
+
+    /// <summary>
+    /// Instantiates a random arena prefab into the game world.
+    /// </summary>
+    private void CreateRandomArena()
+    {
+        CreateArena(GetAppropriateRandomArenaPrefab());
+    }
+
+    /// <summary>
+    /// Instantiates the given arena prefab into the game world.
+    /// </summary>
+    /// <param name="prefabArenaArg"></param>
+    private void CreateArena(LevelArenaController prefabArenaArg)
+    {
+        // destroys the currently instantiated arena
+        DestoryArena();
+
+        // denote that arena was used in this set
+        usedArenaIdsInSet.Add(GetArenaIdFromObject(prefabArenaArg.gameObject));
+
+        // create arena object from prefab
+        GameObject createdArenaObj = Instantiate(prefabArenaArg.gameObject);
+        // save reference to created object's arena component
+        createdArena = createdArenaObj.GetComponent<LevelArenaController>();
+    }
+
+    /// <summary>
+    /// Destroys the currenly instantiated arena.
+    /// </summary>
+    public void DestoryArena()
+    {
+        // if a created arena currently exists
+        if (createdArena != null)
+        {
+            // destory current arena
+            Destroy(createdArena);
+        }
+    }
+
+    #endregion
+
+
+
+
+    #region Arena Set Properties Functions
 
     /// <summary>
     /// Sets the arena set data based on the given set number.

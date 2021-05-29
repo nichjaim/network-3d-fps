@@ -44,13 +44,9 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
         arenaCoordinator.ResetRunProgress();
     }
 
-    public void CreateArena()
+    public void CreateAppropriateArena()
     {
-        /*if ()
-        {
-
-        }*/
-        arenaCoordinator.CreateRandomArena();
+        arenaCoordinator.CreateAppropriateArena();
     }
 
     public int GetArenaNumInSet()

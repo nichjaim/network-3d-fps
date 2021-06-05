@@ -13,6 +13,11 @@ public class LevelArenaCoordinator : MonoBehaviour
         get { return arenaSetData; }
     }
 
+    [Tooltip("The object that the instantiated arenas will be parented under.")]
+    [SerializeField]
+    private Transform arenaParentObject = null;
+
+    [Tooltip("The arena set data for the game's tutorial section.")]
     [SerializeField]
     private LevelArenaSetDataTemplate tutorialArenaSet = null;
 
@@ -222,8 +227,8 @@ public class LevelArenaCoordinator : MonoBehaviour
         // denote that arena was used in this set
         usedArenaIdsInSet.Add(GetArenaIdFromObject(prefabArenaArg.gameObject));
 
-        // create arena object from prefab
-        GameObject createdArenaObj = Instantiate(prefabArenaArg.gameObject);
+        // create arena object from prefab and parent to this coordinator
+        GameObject createdArenaObj = Instantiate(prefabArenaArg.gameObject, arenaParentObject);
         // save reference to created object's arena component
         createdArena = createdArenaObj.GetComponent<LevelArenaController>();
     }
@@ -236,8 +241,15 @@ public class LevelArenaCoordinator : MonoBehaviour
         // if a created arena currently exists
         if (createdArena != null)
         {
-            // destory current arena
-            Destroy(createdArena);
+            // destory current arena's gameobject (IMPORTANT to destroy the gameobject and not just the component)
+            Destroy(createdArena.gameObject);
+        }
+
+        /// loop through all the arena objects and destory them to ensure there are 
+        /// NO extra arenas hanging around in scene
+        foreach (Transform iterChild in arenaParentObject)
+        {
+            Destroy(iterChild.gameObject);
         }
     }
 

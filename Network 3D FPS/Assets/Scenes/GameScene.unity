@@ -4614,7 +4614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showGUI: 1
+  showGUI: 0
   offsetX: 0
   offsetY: 0
 --- !u!114 &447577129
@@ -14418,6 +14418,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1464097529}
   - component: {fileID: 1464097530}
+  - component: {fileID: 1464097531}
   m_Layer: 5
   m_Name: CharacterPortrait
   m_TagString: Untagged
@@ -14464,6 +14465,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1464097531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464097528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e48567081354404ebcc1d107cdb07fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portraitFramingAnimator: {fileID: 1464097530}
+  portraitImage: {fileID: 291069656}
 --- !u!1 &1472150519
 GameObject:
   m_ObjectHideFlags: 0
@@ -18459,7 +18474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2058788955
 Transform:
   m_ObjectHideFlags: 0
@@ -18687,6 +18702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c6d8f40a2b640247a7fb80b927f4064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arenaParentObject: {fileID: 2128220833}
   tutorialArenaSet: {fileID: 11400000, guid: d212f13710a85b04681cf85568476435, type: 2}
 --- !u!4 &2128220833
 Transform:
@@ -18748,6 +18764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arenaCoordinator: {fileID: 2128220832}
+  _navMeshSurface: {fileID: 627019731}
 --- !u!114 &539786380952634096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21555,9 +21572,9 @@ MonoBehaviour:
     - {fileID: 2785489077949935636}
     - {fileID: 2785489077949941232}
     - {fileID: 2785489077949785388}
-    defaultNPCSubtitlePanel: {fileID: 2785489077949935636}
-    defaultPCSubtitlePanel: {fileID: 2785489077949941232}
-    allowOpenSubtitlePanelsOnStartConversation: 1
+    defaultNPCSubtitlePanel: {fileID: 0}
+    defaultPCSubtitlePanel: {fileID: 0}
+    allowOpenSubtitlePanelsOnStartConversation: 0
     menuPanels:
     - {fileID: 2785489077949825710}
     defaultMenuPanel: {fileID: 2785489077949825710}
@@ -21754,7 +21771,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2785489077938658376}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 

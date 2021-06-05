@@ -77,7 +77,7 @@ public class HealAbilityController : ActiveAbilityController
         base.SetupActiveAbility(castedActiveAbilityArg, casterCharacterArg, 
             casterCharacterDataArg);
 
-        SetupAbilitySize(castedActiveAbilityArg.abilityRank);
+        SetupAbilitySize();
     }
 
     #endregion
@@ -90,8 +90,7 @@ public class HealAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's visuals and hitbox size based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilitySize(int abilityRankArg)
+    private void SetupAbilitySize()
     {
         // initialize hitbox size property values
         float hitboxSizeXBase = 3f;
@@ -107,11 +106,11 @@ public class HealAbilityController : ActiveAbilityController
         float hitboxSizeZMax = 12f;
 
         // get calcualted hitbox size values
-        float newHitboxSizeX = Mathf.Clamp(hitboxSizeXBase + (hitboxSizeXRankAddition * (abilityRankArg - 1)),
+        float newHitboxSizeX = Mathf.Clamp(hitboxSizeXBase + (hitboxSizeXRankAddition * (_appropriateAbilityRank - 1)),
             hitboxSizeXBase, hitboxSizeXMax);
-        float newHitboxSizeY = Mathf.Clamp(hitboxSizeYBase + (hitboxSizeYRankAddition * (abilityRankArg - 1)),
+        float newHitboxSizeY = Mathf.Clamp(hitboxSizeYBase + (hitboxSizeYRankAddition * (_appropriateAbilityRank - 1)),
             hitboxSizeYBase, hitboxSizeYMax);
-        float newHitboxSizeZ = Mathf.Clamp(hitboxSizeZBase + (hitboxSizeZRankAddition * (abilityRankArg - 1)),
+        float newHitboxSizeZ = Mathf.Clamp(hitboxSizeZBase + (hitboxSizeZRankAddition * (_appropriateAbilityRank - 1)),
             hitboxSizeZBase, hitboxSizeZMax);
 
         // get calcualted hitbox center values

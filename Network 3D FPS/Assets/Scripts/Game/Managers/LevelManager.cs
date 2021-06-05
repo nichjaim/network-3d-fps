@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransitionEvent>,*/
     MMEventListener<LevelArenaExitEvent>
@@ -12,6 +13,9 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
 
     [SerializeField]
     private LevelArenaCoordinator arenaCoordinator = null;
+
+    [SerializeField]
+    private NavMeshSurface _navMeshSurface = null;
 
     #endregion
 
@@ -30,6 +34,9 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
     {
         // stops listening for all relevant events
         StopAllEventListening();
+
+        // destroys the currenly instantiated arena
+        arenaCoordinator.DestoryArena();
     }
 
     #endregion
@@ -44,9 +51,15 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
         arenaCoordinator.ResetRunProgress();
     }
 
-    public void CreateAppropriateArena()
+    /// <summary>
+    /// Creates appropriate level arena and sets up it's navigation surface.
+    /// </summary>
+    public void BuildArena()
     {
         arenaCoordinator.CreateAppropriateArena();
+
+        // setup the navigation mesh surface. 
+        RefreshNavMeshSurfaceBake();
     }
 
     public int GetArenaNumInSet()
@@ -60,6 +73,29 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
     public void SetupTutorialArenaData()
     {
         arenaCoordinator.SetupTutorialArenaData();
+    }
+
+    /// <summary>
+    /// Returns the progress percentage within the current set.
+    /// </summary>
+    /// <returns></returns>
+    public float GetSetProgressPercentage()
+    {
+        return arenaCoordinator.ArenaNumInSet / 
+            arenaCoordinator.ArenaSetData.totalArenasInSet;
+    }
+
+    /// <summary>
+    /// Sets up the navigation mesh surface. 
+    /// Call when a new arena has been created.
+    /// </summary>
+    private void RefreshNavMeshSurfaceBake()
+    {
+        // removes any previously made nav mesh bake (I think, not actually sure???)
+        _navMeshSurface.RemoveData();
+
+        // creates a new nav mesh
+        _navMeshSurface.BuildNavMesh();
     }
 
     #endregion

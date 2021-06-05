@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86279ce7dd27d584b9a421f541b987f7, type: 3}
+  m_Name: chardata-7
+  m_EditorClassIdentifier: 
+  characterInfoColor: {r: 0, g: 0, b: 0, a: 0}
+  favoredWeaponTypesTemplate: {fileID: 0}
+  characterInventoryTemplate: {fileID: 0}
+  factionReputationTemplate: {fileID: 11400000, guid: dcc84192cf66b4d468a755ed19d06f88, type: 2}
+  activeAbilityTemplates: []
+  outfitTemplates: []
+  template:
+    characterInfo:
+      characterId: 7
+      characterName: Standard Zombie
+      characterHeightInCm: 165
+      characterHexColorCode: FFFFFF
+    characterStats:
+      healthMaxBase: 15
+      healthCurrent: 1
+      healthFatigue: 0
+      healthFatigueBuildup: 0
+      manaMaxBase: 1
+      manaCurrent: 1
+      manaFatigue: 0
+      manaFatigueBuildup: 0
+      fatigueBuildupCap: 10
+      fatigueMaxPercentage: 0.7
+      statStamina: 1
+      statIntelligence: 1
+      statStrength: 1
+      statDexterity: 1
+      statMovementSpeed: 1
+      statJumpHeight: 1
+      statConsecutiveJumps: 1
+      statDefense: 0
+      statHealing: 0
+      threatMultiplier: 1
+      manaRegenerationRate: 1
+      manaRegenerationAmount: 1
+      flashlightReachDirectional: 1
+      flashlightReachOmniDirectional: 0
+    characterInventory:
+      weaponSlots: []
+      inventoryAmmo:
+        ammoPouches: []
+    favoredWeaponTypes:
+      setId: 0
+      setName: NAME
+      doesNeedAmmo: 1
+      weaponTypes: 
+    factionReputation:
+      homeFaction:
+        factionId: 0
+        factionName: NAME
+        factionDescription: DESCRIPTION
+        canFriendlyFire: 0
+        inherentlyHostile: 0
+      factionsAndReputationPoints: []
+    activeAbilityLoadout:
+      activeAbilities: []
+      quickSlotsAbilityIndices: ffffffffffffffffffffffff
+    outfitLoadout:
+      characterOutfits: []
+      characterOutfitEquippedIndex: -1

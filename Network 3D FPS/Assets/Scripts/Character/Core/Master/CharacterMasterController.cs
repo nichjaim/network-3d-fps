@@ -14,6 +14,12 @@ public class CharacterMasterController : NetworkBehaviour
         get { return _netIdentity; }
     }*/
 
+    [Header("Template References")]
+
+    [Tooltip("Set character data here if character will always have the same character data.")]
+    [SerializeField]
+    private CharacterDataTemplate characterTemplate = null;
+
     [Header("Component References")]
 
     [SerializeField]
@@ -45,8 +51,8 @@ public class CharacterMasterController : NetworkBehaviour
     }
 
     [SerializeField]
-    private SightPivotPointController _charSight = null;
-    public SightPivotPointController CharSight
+    private CharacterSightController _charSight = null;
+    public CharacterSightController CharSight
     {
         get { return _charSight; }
     }
@@ -68,31 +74,45 @@ public class CharacterMasterController : NetworkBehaviour
 
 
 
-    /*#region MonoBehaviour Functions
+    #region MonoBehaviour Functions
 
     protected virtual void Awake()
     {
-        // setup all vars that reference relevant components
-        InitializeComponentReferences();
+        // setup character data if given a template
+        InitializeCharacterTemplateData();
     }
 
-    #endregion*/
+    #endregion
 
 
 
 
-    /*#region Initialization Functions
+    #region Initialization Functions
 
     /// <summary>
-    /// Sets up all vars that reference relevant components. 
+    /// Sets up character data if given a template. 
     /// Call in Awake().
     /// </summary>
-    protected virtual void InitializeComponentReferences()
+    protected virtual void InitializeCharacterTemplateData()
     {
-        _netIdentity = GetComponent<NetworkIdentity>();
+        // if given a character template to draw from
+        if (characterTemplate != null)
+        {
+            // get the new char data from the given template
+            CharacterData newData = new CharacterData(characterTemplate);
+
+            // temporarily just doing offline setting due to problems with the proper setting func
+            SetCharDataMain(newData);
+            OnCharDataChanged(newData, newData);
+
+            /// this line waits a frame but get deactivated when object is immediately 
+            /// deactivated so can't really use for spawned enemies idk maybe some way 
+            /// around it but not doing online right now so don't need it.
+            //SetCharData(new CharacterData(characterTemplate));
+        }
     }
 
-    #endregion*/
+    #endregion
 
 
 

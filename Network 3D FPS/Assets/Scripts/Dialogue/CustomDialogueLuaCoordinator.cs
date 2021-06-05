@@ -372,7 +372,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
 
 
-    #region Lua HContent Functions
+    #region Lua H-Content Functions
 
     private bool CanShowHcontent()
     {
@@ -383,7 +383,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     private void DialogueUIChangeHBackground(string bgIdArg)
     {
-        Debug.Log("NEED IMPL: DialogueUIChangeHBackground()"); // NEED IMPL
+        _uiManager.DialgUICoordr.ChangeBackground(bgIdArg, true);
     }
 
     #endregion
@@ -637,7 +637,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     private void DialogueUIChangeBackground(string bgIdArg)
     {
-        Debug.Log("NEED IMPL: DialogueUIChangeBackground()"); // NEED IMPL
+        _uiManager.DialgUICoordr.ChangeBackground(bgIdArg, false);
     }
 
     private void DialogueUIPortraitEnter(string charIdArg, string exprAbrvArg)

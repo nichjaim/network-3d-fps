@@ -85,12 +85,6 @@ MonoBehaviour:
       guid: b7d392f0514d7344dbb19c218d60bf9b
     IncludeSubfolder: 0
     CompressBundle: 1
-  - BundleName: PortraitSet
-    IncludedInPlayer: 1
-    Folder:
-      guid: 353a69c231b5c7c42b763252aafaee40
-    IncludeSubfolder: 1
-    CompressBundle: 1
   - BundleName: ArenaSet
     IncludedInPlayer: 1
     Folder:
@@ -108,6 +102,18 @@ MonoBehaviour:
     Folder:
       guid: 2fb9a6784c9dbaf459873b088cdeec13
     IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: DialogueBackground
+    IncludedInPlayer: 1
+    Folder:
+      guid: d1fe5437672820443a03f4be586a325f
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: PortraitSet
+    IncludedInPlayer: 1
+    Folder:
+      guid: 353a69c231b5c7c42b763252aafaee40
+    IncludeSubfolder: 1
     CompressBundle: 1
   AutoCreateSharedBundles: 1
   m_RemoteOutputFolder: RemoteBundles

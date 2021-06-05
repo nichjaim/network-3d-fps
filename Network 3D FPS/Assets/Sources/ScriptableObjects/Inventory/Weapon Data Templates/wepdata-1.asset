@@ -28,7 +28,7 @@ MonoBehaviour:
         rarityHexColorCode: FFFFFF
         contentPrefixName: RARITY-PREFIX-NAME
     weaponType: 2
-    fireMethod: 2
+    fireMethod: 1
     weaponStats:
       damageBoundaryLowBase: 1
       damageBoundaryHighBase: 1
@@ -38,3 +38,4 @@ MonoBehaviour:
       attackRateRarityModified: 1
       ammoPerUse: 1
       projectileSpeed: 15
+      raycastRange: 1

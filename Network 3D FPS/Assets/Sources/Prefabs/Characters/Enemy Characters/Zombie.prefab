@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Label: threat
+  _aiBrain: {fileID: 4717314208597752755}
 --- !u!1 &939767108541687928
 GameObject:
   m_ObjectHideFlags: 0
@@ -495,10 +496,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  characterTemplate: {fileID: 11400000, guid: 6fb81fb8c8e105540ac030e62971af87, type: 2}
   _charHealth: {fileID: 8909622671853885653}
   _charModel: {fileID: 358022990319445424}
   _charStatus: {fileID: 8307275054954123028}
   _charMovement: {fileID: 8011571234836635378}
+  _charSight: {fileID: 0}
 --- !u!195 &6441244628236715634
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -694,7 +697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Label: idle
-  _charMovement: {fileID: 0}
+  _charMovement: {fileID: 8011571234836635378}
 --- !u!1 &5930743058354517814
 GameObject:
   m_ObjectHideFlags: 0

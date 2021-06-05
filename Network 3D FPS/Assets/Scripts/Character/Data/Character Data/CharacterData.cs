@@ -42,9 +42,15 @@ public class CharacterData
         // set color hex code from the template's character color
         characterInfo.characterHexColorCode = ColorUtility.ToHtmlStringRGB(templateArg.characterInfoColor);
 
-        favoredWeaponTypes = new WeaponTypeSet(templateArg.favoredWeaponTypesTemplate);
+        if (templateArg.favoredWeaponTypesTemplate != null)
+        {
+            favoredWeaponTypes = new WeaponTypeSet(templateArg.favoredWeaponTypesTemplate);
+        }
 
-        characterInventory = new CharacterInventory(templateArg.characterInventoryTemplate);
+        if (templateArg.characterInventoryTemplate != null)
+        {
+            characterInventory = new CharacterInventory(templateArg.characterInventoryTemplate);
+        }
 
         factionReputation = new FactionReputation(templateArg.factionReputationTemplate);
 

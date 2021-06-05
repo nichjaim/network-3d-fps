@@ -53,6 +53,19 @@ public class SpawnManager : MonoBehaviour
 
 
 
+    #region MonoBehaviour Functions
+
+    private void OnDisable()
+    {
+        // despawns all pooled objects
+        DespawnAllPooledObjects();
+    }
+
+    #endregion
+
+
+
+
     #region Network Pooler Functions
 
     public NetworkObjectPooler GetNetworkObjectPooler(ObjectPoolerContentType 
@@ -97,6 +110,47 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Despawns all pooled objects.
+    /// </summary>
+    private void DespawnAllPooledObjects()
+    {
+        // despawns all network pooled objects
+        DespawnAllNetworkPooledObjects();
+
+        // despawns all local pooled objects
+        DespawnAllLocalPooledObjects();
+    }
+
+    /// <summary>
+    /// Despawns all network pooled objects.
+    /// </summary>
+    private void DespawnAllNetworkPooledObjects()
+    {
+        // get all network pooled objects (need to make sure to get the inactive ones as well)
+        NetworkPooledObjectController[] netPoolObjs = GetComponentsInChildren<NetworkPooledObjectController>(true);
+
+        // loop though all network pooled objects
+        foreach (NetworkPooledObjectController iterPoolObj in netPoolObjs)
+        {
+            // despawn the iterating net spawned object
+            iterPoolObj.UnspawnObject();
+        }
+    }
+
+    /// <summary>
+    /// Despawns all local pooled objects.
+    /// </summary>
+    private void DespawnAllLocalPooledObjects()
+    {
+        // loop through all the local object poolers' child objects (which would be the pooled objects)
+        foreach (Transform iterChildObj in localObjectPoolers.transform)
+        {
+            // deactivate the iterating pooled object
+            iterChildObj.gameObject.SetActive(false);
+        }
+    }
+
     #endregion
 
 
@@ -122,6 +176,37 @@ public class SpawnManager : MonoBehaviour
     }
 
     #endregion
+
+
+
+
+    /*#region Event Functions
+
+    /// <summary>
+    /// Starts listening for all relevant events. 
+    /// Call in OnEnable().
+    /// </summary>
+    private void StartAllEventListening()
+    {
+        this.MMEventStartListening<ExitGameSessionEvent>();
+    }
+
+    /// <summary>
+    /// Stops listening for all relevant events. 
+    /// Call in OnDisable().
+    /// </summary>
+    private void StopAllEventListening()
+    {
+        this.MMEventStopListening<ExitGameSessionEvent>();
+    }
+
+    public void OnMMEvent(ExitGameSessionEvent eventType)
+    {
+        // despawns all pooled objects
+        DespawnAllPooledObjects();
+    }
+
+    #endregion*/
 
 
 }

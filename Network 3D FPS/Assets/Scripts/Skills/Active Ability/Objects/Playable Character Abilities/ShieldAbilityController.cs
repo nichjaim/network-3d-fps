@@ -59,7 +59,7 @@ public class ShieldAbilityController : ActiveAbilityController
         base.SetupActiveAbility(castedActiveAbilityArg, casterCharacterArg,
             casterCharacterDataArg);
 
-        SetupAbilitySize(castedActiveAbilityArg.abilityRank);
+        SetupAbilitySize();
     }
 
     #endregion
@@ -72,8 +72,7 @@ public class ShieldAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's visuals and hitbox size based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilitySize(int abilityRankArg)
+    private void SetupAbilitySize()
     {
         // initialize visual object size property values
         float visualSizeXBase = 7f;
@@ -85,9 +84,9 @@ public class ShieldAbilityController : ActiveAbilityController
         float visualSizeYMax = 10f;
 
         // get calcualted visual object size values
-        float newVisualSizeX = Mathf.Clamp(visualSizeXBase + (visualSizeXRankAddition * (abilityRankArg - 1)),
+        float newVisualSizeX = Mathf.Clamp(visualSizeXBase + (visualSizeXRankAddition * (_appropriateAbilityRank - 1)),
             visualSizeXBase, visualSizeXMax);
-        float newVisualSizeY = Mathf.Clamp(visualSizeYBase + (visualSizeYRankAddition * (abilityRankArg - 1)),
+        float newVisualSizeY = Mathf.Clamp(visualSizeYBase + (visualSizeYRankAddition * (_appropriateAbilityRank - 1)),
             visualSizeYBase, visualSizeYMax);
 
         // get calculated hitbox size values

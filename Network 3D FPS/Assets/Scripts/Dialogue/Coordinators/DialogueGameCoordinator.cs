@@ -417,8 +417,8 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             // denote that done doing arena stuff for this chain
             inDialogueChainPhaseArena = false;
 
-            // instantiates new arena
-            _gameManager.LevelManager.CreateAppropriateArena();
+            // create appropriate level arena and sets up it's navigation surface
+            _gameManager.LevelManager.BuildArena();
         }
 
         // return that phase IS done

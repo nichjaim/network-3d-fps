@@ -57,9 +57,9 @@ public class WeakenAbilityController : ActiveAbilityController
         base.SetupActiveAbility(castedActiveAbilityArg, casterCharacterArg, casterCharacterDataArg);
 
         // setup ability proeprties
-        SetupAbilityDamageTakenIncreasePercentage(_castedAbility.abilityRank);
-        SetupAbilityEffectDuration(_castedAbility.abilityRank);
-        SetupAbilityTargetPenetration(_castedAbility.abilityRank);
+        SetupAbilityDamageTakenIncreasePercentage();
+        SetupAbilityEffectDuration();
+        SetupAbilityTargetPenetration();
 
         // fires off the appropriate amount of weakening projectiles
         FireWeakeningProjectiles();
@@ -75,8 +75,7 @@ public class WeakenAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's damage taken increase based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilityDamageTakenIncreasePercentage(int abilityRankArg)
+    private void SetupAbilityDamageTakenIncreasePercentage()
     {
         // initialize ability damage taken property values
         float dmgTakeBase = 0.5f;
@@ -85,7 +84,7 @@ public class WeakenAbilityController : ActiveAbilityController
 
         // get calculated damage percentage value
         float newDmgTake = Mathf.Clamp(dmgTakeBase + (dmgTakeRankAddition *
-            (abilityRankArg - 1)), dmgTakeBase, dmgTakeMax);
+            (_appropriateAbilityRank - 1)), dmgTakeBase, dmgTakeMax);
 
         // set damage taken increase to calcualted damage percentage value
         damageTakenIncreasePercentage = newDmgTake;
@@ -94,8 +93,7 @@ public class WeakenAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's status effect duration based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilityEffectDuration(int abilityRankArg)
+    private void SetupAbilityEffectDuration()
     {
         // initialize ability effect duration property values
         float effectDurBase = 15f;
@@ -104,7 +102,7 @@ public class WeakenAbilityController : ActiveAbilityController
 
         // get calculated damage percentage value
         float newEffectDur = Mathf.Clamp(effectDurBase + (effectDurRankAddition *
-            (abilityRankArg - 1)), effectDurBase, effectDurMax);
+            (_appropriateAbilityRank - 1)), effectDurBase, effectDurMax);
 
         // set status effect duration to calcualted effect duration value
         effectDuration = newEffectDur;
@@ -113,8 +111,7 @@ public class WeakenAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's max target penetration based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilityTargetPenetration(int abilityRankArg)
+    private void SetupAbilityTargetPenetration()
     {
         // initialize relevant ability property values
         int valueBase = 5;
@@ -123,7 +120,7 @@ public class WeakenAbilityController : ActiveAbilityController
 
         // get calculated value
         int newValue = Mathf.Clamp(valueBase + (valueRankAddition *
-            (abilityRankArg - 1)), valueBase, valueMax);
+            (_appropriateAbilityRank - 1)), valueBase, valueMax);
 
         // set target penetration to calculated value
         targetPenetration = newValue;
@@ -166,9 +163,8 @@ public class WeakenAbilityController : ActiveAbilityController
     /// <summary>
     /// Returns number of projectiles to fire based on given abilty rank.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
     /// <returns></returns>
-    private int GetNumberOfProjectileBasedOnAbilityRank(int abilityRankArg)
+    private int GetNumberOfProjectileBasedOnAbilityRank()
     {
         // initialize count property values
         int projCountBase = 5;
@@ -176,8 +172,8 @@ public class WeakenAbilityController : ActiveAbilityController
         int projCountMax = 20;
 
         // get calcualted count value
-        int newProjCount = Mathf.Clamp(projCountBase + (projCountRankAddition * (abilityRankArg - 1)),
-            projCountBase, projCountMax);
+        int newProjCount = Mathf.Clamp(projCountBase + (projCountRankAddition * 
+            (_appropriateAbilityRank - 1)), projCountBase, projCountMax);
 
         // return calcualted count
         return newProjCount;
@@ -196,7 +192,7 @@ public class WeakenAbilityController : ActiveAbilityController
         }
 
         // get number of projectiles to fire
-        int projNum = GetNumberOfProjectileBasedOnAbilityRank(_castedAbility.abilityRank);
+        int projNum = GetNumberOfProjectileBasedOnAbilityRank();
 
         // loop through every projectile to be fired
         for (int i = 0; i < projNum; i++)

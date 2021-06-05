@@ -115,9 +115,9 @@ public class TrapAbilityController : ActiveAbilityController
         base.SetupActiveAbility(castedActiveAbilityArg, casterCharacterArg,
             casterCharacterDataArg);
 
-        SetupAbilitySize(castedActiveAbilityArg.abilityRank);
-        SetupAbilityMovementDecreasePercentageAndStatusEffect(castedActiveAbilityArg.abilityRank);
-        SetupAbilityEffectDuration(castedActiveAbilityArg.abilityRank);
+        SetupAbilitySize();
+        SetupAbilityMovementDecreasePercentageAndStatusEffect();
+        SetupAbilityEffectDuration();
     }
 
     #endregion
@@ -130,8 +130,7 @@ public class TrapAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's visuals and hitbox size based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilitySize(int abilityRankArg)
+    private void SetupAbilitySize()
     {
         // initialize ability size property values
         float unsprungAbilitySizeBase = 3f;
@@ -144,9 +143,9 @@ public class TrapAbilityController : ActiveAbilityController
 
         // get calculated ability size values
         float newUnsprungAbilitySize = Mathf.Clamp(unsprungAbilitySizeBase + (unsprungAbilitySizeBaseRankAddition * 
-            (abilityRankArg - 1)), unsprungAbilitySizeBase, unsprungAbilitySizeBaseMax);
+            (_appropriateAbilityRank - 1)), unsprungAbilitySizeBase, unsprungAbilitySizeBaseMax);
         float newSprungAbilitySize = Mathf.Clamp(sprungAbilitySizeBase + (sprungAbilitySizeBaseRankAddition *
-            (abilityRankArg - 1)), sprungAbilitySizeBase, sprungAbilitySizeBaseMax);
+            (_appropriateAbilityRank - 1)), sprungAbilitySizeBase, sprungAbilitySizeBaseMax);
 
         // set ability size vectors based on calculated size values
         abilitySizeUnsprung = new Vector3(newUnsprungAbilitySize, newUnsprungAbilitySize, newUnsprungAbilitySize);
@@ -164,8 +163,7 @@ public class TrapAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's damage taken increase based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilityMovementDecreasePercentageAndStatusEffect(int abilityRankArg)
+    private void SetupAbilityMovementDecreasePercentageAndStatusEffect()
     {
         // initialize value property values
         float moveReducBase = 0.75f;
@@ -174,7 +172,7 @@ public class TrapAbilityController : ActiveAbilityController
 
         // get calculated damage percentage value
         float newMoveReduc = Mathf.Clamp(moveReducBase + (moveReducRankAddition *
-            (abilityRankArg - 1)), moveReducBase, moveReducMax);
+            (_appropriateAbilityRank - 1)), moveReducBase, moveReducMax);
 
         // set move reduction to calcualted new percentage value
         movementDecreasePercentage = newMoveReduc;
@@ -186,8 +184,7 @@ public class TrapAbilityController : ActiveAbilityController
     /// <summary>
     /// Adjusts the ability's status effect duration based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    private void SetupAbilityEffectDuration(int abilityRankArg)
+    private void SetupAbilityEffectDuration()
     {
         // initialize ability effect duration property values
         float effectDurBase = 15f;
@@ -196,7 +193,7 @@ public class TrapAbilityController : ActiveAbilityController
 
         // get calculated damage percentage value
         float newEffectDur = Mathf.Clamp(effectDurBase + (effectDurRankAddition *
-            (abilityRankArg - 1)), effectDurBase, effectDurMax);
+            (_appropriateAbilityRank - 1)), effectDurBase, effectDurMax);
 
         // set status effect duration to calcualted effect duration value
         effectDuration = newEffectDur;

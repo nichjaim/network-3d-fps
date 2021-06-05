@@ -13,8 +13,6 @@ public class CharacterActionInteractController : MonoBehaviour
     private NetworkIdentity _networkIdentity = null;
     [SerializeField]
     private CharacterMasterController _characterMasterController = null;
-    [SerializeField]
-    private SightPivotPointController _sightPoint = null;
 
     [Header("Detection Properties")]
 
@@ -125,9 +123,12 @@ public class CharacterActionInteractController : MonoBehaviour
         RaycastHit raycastHit;
         InteractableController hitInteractable;
 
+        // get point to fire interact raycast from
+        Transform firePoint = _characterMasterController.CharSight.FirePoint;
+
         // if a fired raycast hit an interactable object
-        if (Physics.Raycast(_sightPoint.FirePoint.transform.position, 
-            _sightPoint.FirePoint.transform.forward, out raycastHit, detectRange, interactableLayerMask))
+        if (Physics.Raycast(firePoint.position, firePoint.forward, out raycastHit, detectRange, 
+            interactableLayerMask))
         {
             // get interactable component from hit interactable object
             hitInteractable = raycastHit.transform.GetComponent<InteractableController>();

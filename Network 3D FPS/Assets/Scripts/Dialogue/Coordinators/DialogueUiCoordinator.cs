@@ -499,7 +499,7 @@ public class DialogueUiCoordinator : MonoBehaviour
     /// </summary>
     /// <param name="bgIdArg"></param>
     /// <param name="isHContentArg"></param>
-    private void ChangeBackground(string bgIdArg, bool isHContentArg)
+    public void ChangeBackground(string bgIdArg, bool isHContentArg)
     {
         // initialize var for upcoming conditionals
         Sprite bg = null;

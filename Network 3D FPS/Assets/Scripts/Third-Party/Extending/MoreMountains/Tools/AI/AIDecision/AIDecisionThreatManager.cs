@@ -8,6 +8,13 @@ public class AIDecisionThreatManager : AIDecision
 {
     #region Class Variables
 
+    [Header("Component References")]
+
+    [Tooltip("AiDecision won't get the brain reference if not on same object, so " +
+        "set here to allow for seperate objects.")]
+    [SerializeField]
+    private AIBrain _aiBrain = null;
+
     private Dictionary<CharacterMasterController, int> characterToThreatPoints = new 
         Dictionary<CharacterMasterController, int>();
 
@@ -37,17 +44,17 @@ public class AIDecisionThreatManager : AIDecision
     /// <param name="charToTargetArg"></param>
     private void SetBrainTarget(CharacterMasterController charToTargetArg)
     {
-        //if given valid existing character
+        //i f given valid existing character
         if (charToTargetArg != null)
         {
-            //set brain target to given char's trans
-            _brain.Target = charToTargetArg.transform;
+            // set brain target to given char's trans
+            _aiBrain.Target = charToTargetArg.transform;
         }
-        //else given invalid non-existing character
+        // else given invalid non-existing character
         else
         {
-            //set brain target to a NULL trans
-            _brain.Target = null;
+            // set brain target to a NULL trans
+            _aiBrain.Target = null;
         }
     }
 
@@ -137,7 +144,7 @@ public class AIDecisionThreatManager : AIDecision
         CharacterMasterController mostThreateningChar = GetMostThreateningCharacter();
 
         // if threatening target found AND that character to target was not previously being targeted (i.e. is a new target)
-        if ((mostThreateningChar != null) && (mostThreateningChar.transform != _brain.Target))
+        if ((mostThreateningChar != null) && (mostThreateningChar.transform != _aiBrain.Target))
         {
             Debug.Log("NEED IMPL: Play aggro sound effect"); // NEED IMPL!!!
         }

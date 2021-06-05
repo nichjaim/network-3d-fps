@@ -15,6 +15,8 @@ public abstract class ActiveAbilityController : NetworkBehaviour
     protected CharacterData _casterCharData = null;
     protected Transform _castPoint = null;
 
+    protected int _appropriateAbilityRank = 1;
+
     protected float abilityDuration = 1f;
 
     [Header("Base Ability Movement Properties")]
@@ -80,11 +82,38 @@ public abstract class ActiveAbilityController : NetworkBehaviour
         _castedAbility = castedActiveAbilityArg;
         _casterCharMaster = casterCharacterArg;
         _casterCharData = casterCharacterDataArg;
-        _castPoint = casterCharacterArg.GetComponentInChildren<SightPivotPointController>().
-            FirePoint;
+        _castPoint = casterCharacterArg.CharSight.FirePoint;
+
+        // setup the ability rank to the rank calcualted based on the casted ability and the caster
+        SetupAppropriateAbilityRank();
 
         // setup how long the object will be active for
         SetupObjectLifetime();
+    }
+
+    /// <summary>
+    /// Sets up the appropriate ability rank based on the casted ability and the caster.
+    /// </summary>
+    protected void SetupAppropriateAbilityRank()
+    {
+        // initialize ability rank as the casting ability's rank
+        int newAbilityRank = _castedAbility.abilityRank;
+
+        // add any of the caster's ability proficiency if they are above the base level
+        newAbilityRank += (_casterCharData.characterStats.statAllAbilityProficiencyLevel - 1);
+
+        // if ability rank is an invalid value
+        if (newAbilityRank < 1)
+        {
+            // print warning to console
+            Debug.LogWarning($"Invalid ability rank of: {newAbilityRank}");
+        }
+
+        // ensure ability rank is a valid value
+        newAbilityRank = Mathf.Max(1, newAbilityRank);
+
+        // set apporpriate ability rank to the newly calculated rank
+        _appropriateAbilityRank = newAbilityRank;
     }
 
     /// <summary>
@@ -93,7 +122,7 @@ public abstract class ActiveAbilityController : NetworkBehaviour
     protected virtual void SetupObjectLifetime()
     {
         // refresh ability duration based on rank
-        SetupAbilityDuration(_castedAbility.abilityRank);
+        SetupAbilityDuration();
 
         // despawn object after lifetime has run it's course
         DespawnObjectAfterLifetime();
@@ -102,11 +131,10 @@ public abstract class ActiveAbilityController : NetworkBehaviour
     /// <summary>
     /// Adjusts the ability's time duration based on the given ability rank argument.
     /// </summary>
-    /// <param name="abilityRankArg"></param>
-    protected virtual void SetupAbilityDuration(int abilityRankArg)
+    protected virtual void SetupAbilityDuration()
     {
         // get calculated duration
-        float newDuration = Mathf.Clamp(durationBase + (durationRankAddition * (abilityRankArg - 1)),
+        float newDuration = Mathf.Clamp(durationBase + (durationRankAddition * (_appropriateAbilityRank - 1)),
             durationBase, durationMax);
         // set ability duration to new ability duration
         abilityDuration = newDuration;

@@ -65,6 +65,11 @@ public class CharacterStats
     // the amount of mana regenerated when mana regen procs
     public int manaRegenerationAmount;
 
+    /// The level improvement to all active abilities. (Ex. specific ability at 
+    /// level 4 and this stat at 3 then that ability would be consiered level 6 
+    /// as first level of this stat doesn't really count as it's the default.
+    public int statAllAbilityProficiencyLevel;
+
     [Header("Utility Stats")]
 
     //the size of the flashlight lighting sources
@@ -126,6 +131,8 @@ public class CharacterStats
         manaRegenerationRate = 1f;
         manaRegenerationAmount = 1;
 
+        statAllAbilityProficiencyLevel = 1;
+
         flashlightReachDirectional = 1f;
         flashlightReachOmniDirectional = 0f;
     }
@@ -164,6 +171,8 @@ public class CharacterStats
 
         manaRegenerationRate = templateArg.manaRegenerationRate;
         manaRegenerationAmount = templateArg.manaRegenerationAmount;
+
+        statAllAbilityProficiencyLevel = templateArg.statAllAbilityProficiencyLevel;
 
         flashlightReachDirectional = templateArg.flashlightReachDirectional;
         flashlightReachOmniDirectional = templateArg.flashlightReachOmniDirectional;

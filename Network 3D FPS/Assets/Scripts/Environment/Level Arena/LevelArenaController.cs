@@ -15,7 +15,7 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     [SerializeField]
     private Transform spawnPointMasterParent = null;
 
-    private List<GameObject> spawnedObjects = new List<GameObject>();
+    private List<NetworkPooledObjectController> spawnedObjects = new List<NetworkPooledObjectController>();
     // the enemy characters that were spawned that are still alive
     private List<CharacterMasterController> aliveSpawnedCharacters = new List<CharacterMasterController>();
 
@@ -36,6 +36,10 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     {
         // starts listening for all relevant events
         StartAllEventListening();
+
+        /// processes all spawning on all spawn points related to the spawn point 
+        /// master parent
+        PerformAllSpawning();
     }
 
     private void OnDisable()
@@ -96,19 +100,19 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     /// </summary>
     private void DespawnAllSpawnedObjects()
     {
-        // loop trhough all spawned objects
-        foreach (GameObject iterObj in spawnedObjects)
+        // loop through all spawned objects
+        foreach (NetworkPooledObjectController iterSpawnObj in spawnedObjects)
         {
             // if iterating object exists
-            if (iterObj != null)
+            if (iterSpawnObj != null)
             {
                 // deactivate iteratign spawned object
-                iterObj.SetActive(false);
+                iterSpawnObj.UnspawnObject();
             }
         }
 
         // set spawn object lists to fresh empty lists
-        spawnedObjects = new List<GameObject>();
+        spawnedObjects = new List<NetworkPooledObjectController>();
         aliveSpawnedCharacters = new List<CharacterMasterController>();
     }
 
@@ -137,8 +141,8 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
                 // spawn an object from the pooler at the iterating spawn point's position
                 iterSpawnedObj = iterObjPooler.GetFromPool(iterPoint.position, iterPoint.rotation);
 
-                // add the object to the relevant spawn lists
-                AddObjectToSpawnsList(iterSpawnedObj);
+                // add the object's net pool component to the relevant spawn lists
+                AddObjectToSpawnsList(iterSpawnedObj.GetComponent<NetworkPooledObjectController>());
             }
         }
     }
@@ -212,18 +216,47 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     /// <returns></returns>
     private int GetNumberOfSpawnPointsToUse(int maxSpawnPointCountArg)
     {
-        Debug.Log("NEED IMPL: Get how many spawn points will be used based on how far into set the player is."); // NEED IMPL!!!
-        float spawnPointPercToUse = 1f; // TEMP VAR VALUE!!!
-
         // get number of spawn points to be used, as a float
-        float numOfSpawnPointsToUseUnrounded = maxSpawnPointCountArg * spawnPointPercToUse;
+        float numOfSpawnPointsToUseUnrounded = maxSpawnPointCountArg * GetSpawnPointUsePercentage();
+
         // rount value to an int
         int numOfSpawnPointsToUse = Mathf.RoundToInt(numOfSpawnPointsToUseUnrounded);
+
         // ensure rounded value does stays within valid boundary
         numOfSpawnPointsToUse = Mathf.Clamp(numOfSpawnPointsToUse, 0, maxSpawnPointCountArg);
 
         // return calculated number
         return numOfSpawnPointsToUse;
+    }
+
+    /// <summary>
+    /// Returns the percentage of spawn points that are to be used based on how 
+    /// far into set the player is.
+    /// </summary>
+    private float GetSpawnPointUsePercentage()
+    {
+        // if game manager reference not set yet
+        if (_gameManager == null)
+        {
+            // setup manager reference
+            InitializeSingletonReferences();
+        }
+
+        // initialize the percent usage boundaries
+        float PERC_USE_MIN = 0.5f;
+        float PERC_USE_MAX = 0.9f;
+
+        // get the progress within the current set
+        float setProgressPercentage = _gameManager.LevelManager.GetSetProgressPercentage();
+
+        // get the percentage to add to minimum boundary value
+        float percAdd = (PERC_USE_MAX - PERC_USE_MIN) * setProgressPercentage;
+
+        // get the final value by adding the calcualted value to the minimum boundary
+        float returnPerc = PERC_USE_MIN + percAdd;
+
+        // return the final value
+        return returnPerc;
     }
 
     #endregion
@@ -237,7 +270,7 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     /// Adds the given objects to the relevant spawn lists.
     /// </summary>
     /// <param name="spawnedObjArg"></param>
-    private void AddObjectToSpawnsList(GameObject spawnedObjArg)
+    private void AddObjectToSpawnsList(NetworkPooledObjectController spawnedObjArg)
     {
         // add spawned object to spawned list for easy cleanup later
         spawnedObjects.Add(spawnedObjArg);

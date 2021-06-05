@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class SightPivotPointController : MonoBehaviour
+public class CharacterSightController : MonoBehaviour
 {
     #region Class Variables
 
@@ -20,6 +20,10 @@ public class SightPivotPointController : MonoBehaviour
     private PlayerCharacterMasterController _playerCharacterMasterController = null;
 
     [Header("Sight Components")]
+
+    [Tooltip("The object from which the character's sight will be positioned from.")]
+    [SerializeField]
+    private Transform sightPivotPoint;
 
     [SerializeField]
     private Transform firePoint = null;
@@ -117,7 +121,7 @@ public class SightPivotPointController : MonoBehaviour
     /// </summary>
     private void AttachCameraToSight()
     {
-        sightCamera.transform.SetParent(transform);
+        sightCamera.transform.SetParent(sightPivotPoint);
     }
 
     /// <summary>
@@ -186,11 +190,13 @@ public class SightPivotPointController : MonoBehaviour
         /// get height in world space units from given cm heigth (calculated on assumption 
         /// that 170cm (5'7, which is around average) is equal to 1 local world space unit)
         float worldSpaceUnitHeight = heightInCmArg / 170f;
+
         // get the new position based on current position and calculated heigth
-        Vector3 newPos = new Vector3(transform.localPosition.x, worldSpaceUnitHeight, 
+        Vector3 newPos = new Vector3(sightPivotPoint.localPosition.x, worldSpaceUnitHeight, 
             transform.localPosition.z);
+
         // set local pos to new position
-        transform.localPosition = newPos;
+        sightPivotPoint.localPosition = newPos;
     }
 
     #endregion

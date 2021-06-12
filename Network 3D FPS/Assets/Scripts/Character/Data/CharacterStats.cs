@@ -60,6 +60,9 @@ public class CharacterStats
     // multiplies threat of actions done, whether increasing it or reducing it
     public float threatMultiplier;
 
+    // the amount of time after taking damage that the character cannot take damage again
+    public float postDamageInvincibilityTime;
+
     // the amount of time it takes for a mana regen instance to proc
     public float manaRegenerationRate;
     // the amount of mana regenerated when mana regen procs
@@ -128,6 +131,8 @@ public class CharacterStats
         statHealing = 0;
         threatMultiplier = 1f;
 
+        postDamageInvincibilityTime = 0f;
+
         manaRegenerationRate = 1f;
         manaRegenerationAmount = 1;
 
@@ -168,6 +173,8 @@ public class CharacterStats
         statDefense = templateArg.statDefense;
         statHealing = templateArg.statHealing;
         threatMultiplier = templateArg.threatMultiplier;
+
+        postDamageInvincibilityTime = templateArg.postDamageInvincibilityTime;
 
         manaRegenerationRate = templateArg.manaRegenerationRate;
         manaRegenerationAmount = templateArg.manaRegenerationAmount;

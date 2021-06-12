@@ -125,8 +125,11 @@ public class HavenData
     /// <summary>
     /// Plans the week's social dialogue events.
     /// </summary>
+    /// <param name="allSocialDialogueEventsArg"></param>
+    /// <param name="setFlagsArg"></param>
+    /// <param name="canHcontentBeViewedArg"></param>
     public void PlanWeekSocialDialogueEvents(List<DialogueEventData> 
-        allSocialDialogueEventsArg, List<string> setFlagsArg)
+        allSocialDialogueEventsArg, List<string> setFlagsArg, bool canHcontentBeViewedArg)
     {
         // initialize week's plan as empty list
         List<SerializableDataDayOfWeekAndDialogueEventData> weekPlan = new 
@@ -141,7 +144,7 @@ public class HavenData
         List<DialogueEventData> nextDialogueEvents = havenDialogue.
             GetNextAvailableDialogueEvents(allSocialDialogueEventsArg, 
             havenProgression.GetAverageForAllCumulativeStatPoints(), setFlagsArg, 
-            MAX_SOCIAL_DIALOGUE_EVENTS_PER_WEEK);
+            canHcontentBeViewedArg, MAX_SOCIAL_DIALOGUE_EVENTS_PER_WEEK);
 
         // get weekdays in a random order
         List<DayOfWeek> randomWeekdays = GetWeekdaysInRandomOrder();

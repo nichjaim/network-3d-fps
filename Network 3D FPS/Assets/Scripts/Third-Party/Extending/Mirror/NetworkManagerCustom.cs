@@ -392,6 +392,16 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
         return playerObjects.Length;
     }
 
+    /// <summary>
+    /// Returns whether H-content is both installed and allowed to be viewed.
+    /// </summary>
+    /// <returns></returns>
+    public bool CanHcontentBeViewed()
+    {
+        Debug.Log("IMPL latter half of CanHcontentBeViewed()"); // NEED IMPL!!!
+        return AssetRefMethods.IsHcontentInstalled() && true; // second half has TEMP return!!!!
+    }
+
     #endregion
 
 

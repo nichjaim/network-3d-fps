@@ -53,11 +53,11 @@ public class ImageFaderController : MonoBehaviour
             return;
         }
 
-        // set visual's transparency to the current transparency color
-        SetVisualTransparency(GetCurrentTransparencyValue());
-
         // increase fade timer time by time passed
         currentFadeTime += Time.deltaTime;
+
+        // set visual's transparency to the current transparency color
+        SetVisualTransparency(GetCurrentTransparencyValue());
 
         // if timer is done
         if (currentFadeTime >= totalFadeTime)
@@ -102,7 +102,7 @@ public class ImageFaderController : MonoBehaviour
         if (!isFadingIn)
         {
             // inverse the alpha value
-            transpValue = 1 - transpValue;
+            transpValue = 1f - transpValue;
         }
 
         // return the calculated alpha value

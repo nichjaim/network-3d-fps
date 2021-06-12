@@ -46,8 +46,10 @@ MonoBehaviour:
       statDefense: 0
       statHealing: 0
       threatMultiplier: 1
+      postDamageInvincibilityTime: 1.5
       manaRegenerationRate: 1
       manaRegenerationAmount: 1
+      statAllAbilityProficiencyLevel: 1
       flashlightReachDirectional: 1
       flashlightReachOmniDirectional: 0
     characterInventory:

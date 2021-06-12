@@ -17,6 +17,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
     public static GameManager Instance;
 
+    private NetworkManagerCustom _networkManagerCustom = null;
+
     // the current save file number being used
     private int saveFileNumber = 0;
 
@@ -156,6 +158,15 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
             // ensure this object is not destroyed when loading a new scene
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    /// <summary>
+    /// Sets up reference vars to their respective singletons. 
+    /// Call in Start() so as to give time for singleton instances to actually instantiate.
+    /// </summary>
+    private void InitializeSingetonReferences()
+    {
+        //_networkManagerCustom = NetworkManager.Instance;
     }
 
     /// <summary>
@@ -639,7 +650,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         List<DialogueEventData> nextStoryDialogues = havenData.havenDialogue.
             GetNextAvailableDialogueEvents(potentialStoryDialogues, 
             havenData.havenProgression.GetAverageForAllCumulativeStatPoints(), 
-            gameFlags.setFlags, MAX_RETURN_COUNT);
+            gameFlags.setFlags, _networkManagerCustom.CanHcontentBeViewed(), 
+            MAX_RETURN_COUNT);
 
         // return dialogue events
         return nextStoryDialogues;
@@ -655,7 +667,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
             GetPotentialDialogueEvents(dialogueEventDatabaseSocial);
 
         // setup the week's social dialogue events
-        havenData.PlanWeekSocialDialogueEvents(potentialSocialDialogues, gameFlags.setFlags);
+        havenData.PlanWeekSocialDialogueEvents(potentialSocialDialogues, gameFlags.setFlags, 
+            _networkManagerCustom.CanHcontentBeViewed());
     }
 
     /// <summary>

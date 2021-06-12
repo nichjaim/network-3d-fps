@@ -62,12 +62,14 @@ public class HavenDialogueData
     /// <param name="allDialogueEventsArg"></param>
     /// <param name="currentGroupTraitProgressionArg"></param>
     /// <param name="setFlagsArg"></param>
+    /// <param name="canHcontentBeViewed"></param>
     /// <param name="maxReturnCountArg"></param>
     /// <returns></returns>
     public List<DialogueEventData> GetNextAvailableDialogueEvents(
         List<DialogueEventData> allDialogueEventsArg, 
         int currentGroupTraitProgressionArg, 
-        List<string> setFlagsArg, int maxReturnCountArg)
+        List<string> setFlagsArg, bool canHcontentBeViewed, 
+        int maxReturnCountArg)
     {
         // initialize vars for upcoming loop
         List<DialogueEventData> nextDialgEvents = new List<DialogueEventData>();
@@ -88,7 +90,7 @@ public class HavenDialogueData
             /// required amount
             currentProgRequirement += iterDialgEvent.requiredAdditionalGroupTraitProgression;
 
-            // if iterating dialogue vent has already been completed
+            // if iterating dialogue event has already been completed
             if (completedDialogues.Exists(
                 iterDialg => iterDialg == iterDialgEvent.dialogueName))
             {
@@ -106,6 +108,14 @@ public class HavenDialogueData
             // if iterating dialogue event DOES require a flag BUT NO such set flag given
             if (iterDialgEvent.RequiresFlag() && 
                 !setFlagsArg.Contains(iterDialgEvent.requiredFlag))
+            {
+                // skip to next loop iteration
+                continue;
+            }
+
+            /// if the iterating dialogue DOES have a focus on H-content BUT H-content dialogues can 
+            /// NOT be viewed by player
+            if (iterDialgEvent.focusesOnHcontent && !canHcontentBeViewed)
             {
                 // skip to next loop iteration
                 continue;

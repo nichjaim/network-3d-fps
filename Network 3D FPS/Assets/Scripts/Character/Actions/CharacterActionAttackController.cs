@@ -20,6 +20,11 @@ public class CharacterActionAttackController : NetworkBehaviour
 
     private NetworkObjectPooler _bulletPooler = null;
 
+    [Header("Attack Properties")]
+
+    [SerializeField]
+    private LayerMask effectableRaycastLayers = new LayerMask();
+
     //[SerializeField]
     //private Transform firePoint = null;
 
@@ -234,7 +239,7 @@ public class CharacterActionAttackController : NetworkBehaviour
 
         // cast raycast and get all hits
         RaycastHit[] raycastHits = GeneralMethods.FireRaycast(true, originTrans.position,
-            originTrans.forward, castRange);
+            originTrans.forward, castRange, effectableRaycastLayers);
 
         return raycastHits;
     }
@@ -301,7 +306,7 @@ public class CharacterActionAttackController : NetworkBehaviour
         foreach (RaycastHit iterRayHit in raycastHitsArg)
         {
             // get hitbox component of enemy that was hit
-            iterHitbox = iterRayHit.transform.GetComponent<HitboxController>();
+            iterHitbox = iterRayHit.collider.gameObject.GetComponent<HitboxController>();
 
             // if object hit was NOT an enemy hitbox
             if (iterHitbox == null)

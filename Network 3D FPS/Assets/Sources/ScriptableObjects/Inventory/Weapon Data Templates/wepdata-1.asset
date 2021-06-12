@@ -38,4 +38,4 @@ MonoBehaviour:
       attackRateRarityModified: 1
       ammoPerUse: 1
       projectileSpeed: 15
-      raycastRange: 1
+      raycastRange: 10

@@ -31,6 +31,10 @@ public class DialogueEventData
     /// characters can be hanged out with in any time slot.
     public TimeSlotType associatedTimeSlot;
 
+    /// whether the dialogue has a strong focus on H-content and should be skipped if H-content is NOT 
+    /// installed or disabled
+    public bool focusesOnHcontent;
+
     #endregion
 
 
@@ -63,6 +67,7 @@ public class DialogueEventData
         requiredFlag = string.Empty;
         associatedCharId = string.Empty;
         associatedTimeSlot = TimeSlotType.None;
+        focusesOnHcontent = false;
     }
 
     private void Setup(DialogueEventData templateArg)
@@ -74,6 +79,7 @@ public class DialogueEventData
         requiredFlag = templateArg.requiredFlag;
         associatedCharId = templateArg.associatedCharId;
         associatedTimeSlot = templateArg.associatedTimeSlot;
+        focusesOnHcontent = templateArg.focusesOnHcontent;
     }
 
     #endregion

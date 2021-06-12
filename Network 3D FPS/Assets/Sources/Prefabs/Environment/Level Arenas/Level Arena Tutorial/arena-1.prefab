@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnChanceToPoolerContent:
-  - value1: 0.8
+  - value1: 1
     value2: 1
 --- !u!114 &7590482386292923563
 MonoBehaviour:

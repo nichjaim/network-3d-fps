@@ -12,6 +12,11 @@ public class AIActionFollow : AIAction
     [SerializeField]
     private CharacterMovementController _charMovement = null;
 
+    [Tooltip("AiDecision won't get the brain reference if not on same object, so " +
+        "set here to allow for seperate objects.")]
+    [SerializeField]
+    private AIBrain _aiBrain = null;
+
     #endregion
 
 
@@ -22,7 +27,7 @@ public class AIActionFollow : AIAction
     public override void PerformAction()
     {
         // set follow target to brain's target
-        _charMovement.NavTarget = _brain.Target;
+        _charMovement.NavTarget = _aiBrain.Target;
     }
 
     #endregion

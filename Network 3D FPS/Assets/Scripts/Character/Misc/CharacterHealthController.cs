@@ -21,12 +21,18 @@ public class CharacterHealthController : MonoBehaviour
     public Action OnHealthChangedAction;
     public Action OnOutOfHealthAction;
 
+    public Action OnDamageTaken;
+    public Action OnHealthHealed;
+
     /// positive for increased dmg taken, negative for decreased damage taken. 
     /// Used for status effects.
     private float damageTakenChangePercentage = 0f;
     /// list of colors that the damage popup will temporarily be changed to. 
     /// Used for status effects.
     private List<Color> temporaryDamagePopupColors = new List<Color>();
+
+    //private StopTimer postDamageInvinciblilityTimer = null;
+    private bool inPostDamageInvincibility = false;
 
     #endregion
 
@@ -39,6 +45,12 @@ public class CharacterHealthController : MonoBehaviour
     {
         // setup all variables that reference singleton instance related components
         InitializeSingletonReferences();
+    }
+
+    private void OnEnable()
+    {
+        // ensure char is out of post-damage invincibility
+        inPostDamageInvincibility = false;
     }
 
     #endregion
@@ -93,6 +105,13 @@ public class CharacterHealthController : MonoBehaviour
     private void ChangeHealthValue(CharacterMasterController changeInflicterArg, 
         bool isIncreasingArg, int changeValueArg)
     {
+        // if taking damage AND in post-damage invincibility
+        if (!isIncreasingArg && inPostDamageInvincibility)
+        {
+            // DONT continue code
+            return;
+        }
+
         // get char data for surface level properties from the char master
         CharacterData charFrontFacingData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
             _characterMasterController);
@@ -118,12 +137,28 @@ public class CharacterHealthController : MonoBehaviour
         {
             // have the surface level char recover health
             charFrontFacingData.characterStats.HealHealth(changeValueArg);
+
+            // call health healed actions if NOT null
+            OnHealthHealed?.Invoke();
         }
         // else removing health
         else
         {
             // have the surface level char take health damage
             actualChangeValue = charFrontFacingData.characterStats.TakeDamage(changeValueArg);
+
+            // call damage taken actions if NOT null
+            OnDamageTaken?.Invoke();
+        }
+
+        /// get the char's post-damage invincibility time. 
+        /// NOTE: this code stuff done here because healing should also give char a short invincibility
+        float dmgInvincTime = charFrontFacingData.characterStats.postDamageInvincibilityTime;
+        // if char has post-damage invincibility
+        if (dmgInvincTime > 0f)
+        {
+            // make char unable to take damage for given time
+            ApplyPostDamageInvincibility(dmgInvincTime);
         }
 
         // spawns and sets up the action text popup, if appropriate to do so
@@ -215,6 +250,33 @@ public class CharacterHealthController : MonoBehaviour
     {
 
     }*/
+
+    /*private void IncreasePostDamageInvincibilityCooldownTimersByTimePassed()
+    {
+
+    }*/
+
+    /// <summary>
+    /// Puts character in a post-damage invincibility and then removing them from it after 
+    /// the given time.
+    /// </summary>
+    /// <param name="timeArg"></param>
+    private void ApplyPostDamageInvincibility(float timeArg)
+    {
+        StartCoroutine(ApplyPostDamageInvincibilityInternal(timeArg));
+    }
+
+    private IEnumerator ApplyPostDamageInvincibilityInternal(float timeArg)
+    {
+        // put char IN post-damage invincibility
+        inPostDamageInvincibility = true;
+
+        // wait given time
+        yield return new WaitForSeconds(timeArg);
+
+        // take char OUT of post-damage invincibility
+        inPostDamageInvincibility = false;
+    }
 
     #endregion
 

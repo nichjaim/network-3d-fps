@@ -163,14 +163,16 @@ public class HealthBarController : ValueBarController, MMEventListener<UiPlayerC
     {
         playerCharArg.OnCharDataSecondaryChangedAction += RefreshHealthBarFull;
 
-        // find the char's health component
+        playerCharArg.CharHealth.OnHealthChangedAction += RefreshHealthBarCount;
+
+        /*// find the char's health component
         CharacterHealthController charHealth = playerCharArg.
             GetComponentInChildren<CharacterHealthController>(true);
         // if comp found
         if (charHealth != null)
         {
             charHealth.OnHealthChangedAction += RefreshHealthBarCount;
-        }
+        }*/
     }
 
     public void OnMMEvent(UiPlayerCharChangedEvent eventType)

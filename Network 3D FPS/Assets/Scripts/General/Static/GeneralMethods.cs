@@ -408,7 +408,7 @@ public static class GeneralMethods
     }
 
     public static RaycastHit[] FireRaycast(bool willPenetrateArg, Vector3 originArg, 
-        Vector3 directionArg, float castRangeArg)
+        Vector3 directionArg, float castRangeArg, LayerMask layerMaskArg)
     {
         // initialize var for upcoming conditionals
         RaycastHit[] raycastHits;
@@ -417,7 +417,7 @@ public static class GeneralMethods
         if (willPenetrateArg)
         {
             // fire raycast and get ALL objects hit
-            raycastHits = Physics.RaycastAll(originArg, directionArg, castRangeArg);
+            raycastHits = Physics.RaycastAll(originArg, directionArg, castRangeArg, layerMaskArg);
         }
         // else attack will stop at first hit
         else
@@ -426,7 +426,7 @@ public static class GeneralMethods
             RaycastHit raycastHit;
 
             // if a fired raycast did NOT hit something
-            if (!Physics.Raycast(originArg, directionArg, out raycastHit, castRangeArg))
+            if (!Physics.Raycast(originArg, directionArg, out raycastHit, castRangeArg, layerMaskArg))
             {
                 //DONT continue code
                 return null;
@@ -502,5 +502,16 @@ public static class GeneralMethods
                 Debug.LogWarning($"Unknown exprAbrvArg: {exprAbrvArg}");
                 return CharacterDialogueExpressionType.Neutral;
         }
+    }
+
+    /// <summary>
+    /// Returns whether the given layer mask contaisn the given layer.
+    /// </summary>
+    /// <param name="layerMaskArg"></param>
+    /// <param name="layerArg"></param>
+    /// <returns></returns>
+    public static bool DoesLayerMaskContainLayer(LayerMask layerMaskArg, int layerArg)
+    {
+        return layerMaskArg == (layerMaskArg | (1 << layerArg));
     }
 }

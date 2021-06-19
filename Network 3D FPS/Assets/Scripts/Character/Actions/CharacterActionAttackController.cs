@@ -37,10 +37,23 @@ public class CharacterActionAttackController : NetworkBehaviour
     [SerializeField]
     private float detectRefreshRate = 0.1f;
 
+    [Header("Testing Properties")]
+
+    [SerializeField]
+    private LineDrawerController _lineDrawer = null;
+
+    [SerializeField]
+    private bool drawRaycasts = false;
+
     // denotes if attacking is on cooldown
     private bool attackOnCooldown = false;
 
     public Action OnCharacterAttackAction;
+
+    /// positive for increased, negative for decreased. 
+    /// Used for status effects.
+    private float temporaryChangePercentageAttackPower = 0f;
+    private float temporaryChangePercentageAttackSpeed = 0f;
 
     #endregion
 
@@ -139,9 +152,8 @@ public class CharacterActionAttackController : NetworkBehaviour
         // reduces amount of ammo currently held based on equipped weapon
         _characterMasterController.ReduceEquippedAmmoByEquippedWeapon();
 
-        // put attacking on cooldown for weapon fire rate length
-        AttackCooldown(_characterMasterController.GetEquippedWeapon().weaponStats.
-            attackRateRarityModified);
+        // put attacking on cooldown for the appropriate length length
+        AttackCooldown(GetAttackSpeedCooldown());
 
         // call attack actions if NOT null
         OnCharacterAttackAction?.Invoke();
@@ -177,16 +189,45 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// </summary>
     private void FireProjectile()
     {
-        // check cases based on equipped weapon's firing method
-        switch (_characterMasterController.GetEquippedWeapon().fireMethod)
-        {
-            case ProjectileFireMethodType.Raycast:
-                FireProjectileRaycast();
-                break;
+        // get the currently equipped weapon
+        WeaponData equipWep = _characterMasterController.GetEquippedWeapon();
 
-            case ProjectileFireMethodType.Object:
-                SpawnProjectileObject();
-                break;
+        // get the shot values based on the equipped weapon
+        int projPerShot = equipWep.weaponStats.projectilesPerShot;
+        float directionalSpread = GetDirectionSpreadFromShotSpreadStat(equipWep.weaponStats.shotSpread);
+
+        // initialize these vars for upcoming loop
+        Vector3 baseDir = GetStraightFiringDirection();
+        Vector3 iterDir;
+
+        // loop for as many projectiles are in a single firing
+        for (int i = 0; i < projPerShot; i++)
+        {
+            // if first projectile in shot
+            if (i == 0)
+            {
+                // get a straight direction
+                iterDir = GetStraightFiringDirection();
+            }
+            // else this an additonal projectile in shot
+            else
+            {
+                // get direction randomly offset by weapon spread
+                iterDir = GeneralMethods.GetRandomRotationDirection(
+                    baseDir, directionalSpread, true);
+            }
+
+            // check cases based on equipped weapon's firing method
+            switch (_characterMasterController.GetEquippedWeapon().fireMethod)
+            {
+                case ProjectileFireMethodType.Raycast:
+                    FireProjectileRaycast(iterDir);
+                    break;
+
+                case ProjectileFireMethodType.Object:
+                    SpawnProjectileObject();
+                    break;
+            }
         }
     }
 
@@ -228,18 +269,33 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// Fires raycast whose properties are based on the currently equipped weapon.
     /// </summary>
     /// <returns></returns>
-    private RaycastHit[] FireWeaponRaycast()
+    private RaycastHit[] FireWeaponRaycast(Vector3 fireDirectionArg)
     {
         // get equipped weapon's raycast range
         float castRange = _characterMasterController.GetEquippedWeapon().weaponStats.
             raycastRange;
 
         // get character's fire point
-        Transform originTrans = _characterMasterController.CharSight.transform;
+        Transform originTrans = _characterMasterController.CharSight.FirePoint;
+
+        // get values for raycast
+        Vector3 rayOrigin = originTrans.position;
+        //Vector3 rayDirection = originTrans.forward;
+        Vector3 rayDirection = fireDirectionArg;
 
         // cast raycast and get all hits
-        RaycastHit[] raycastHits = GeneralMethods.FireRaycast(true, originTrans.position,
-            originTrans.forward, castRange, effectableRaycastLayers);
+        RaycastHit[] raycastHits = GeneralMethods.FireRaycast(true, rayOrigin, rayDirection, 
+            castRange, effectableRaycastLayers);
+
+        // if should draw the raycast
+        if (drawRaycasts)
+        {
+            // get the raycast's ending position
+            Vector3 rayEndpoint = rayOrigin + (rayDirection * castRange);
+
+            // draw the raycast
+            _lineDrawer.DrawLine(rayOrigin, rayEndpoint);
+        }
 
         return raycastHits;
     }
@@ -250,14 +306,15 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// <returns></returns>
     private bool IsEnemyInSights()
     {
-        // fire a weapon based raycast and returns any hitboxes that were hit by it
-        List<HitboxController> hitHitboxes = FireWeaponRaycastAndGetHitHitboxes();
+        // fire a weapon based raycast and returns any hit sets that were hit by it
+        List<(HitboxController, Vector3)> hitSets = FireWeaponRaycastAndGetHitSets(
+            GetStraightFiringDirection());
 
         // if list retrieved
-        if (hitHitboxes != null)
+        if (hitSets != null)
         {
             // return whether list is empty or not
-            return hitHitboxes.Count > 0;
+            return hitSets.Count > 0;
         }
         // else NULL value gotten back
         else
@@ -271,10 +328,10 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// Fires a weapon based raycast and returns any hitboxes that were hit by it.
     /// </summary>
     /// <returns></returns>
-    private List<HitboxController> FireWeaponRaycastAndGetHitHitboxes()
+    private List<(HitboxController, Vector3)> FireWeaponRaycastAndGetHitSets(Vector3 fireDirectionArg)
     {
         // fire weapon raycast and get the hits
-        RaycastHit[] wepRaycastHits = FireWeaponRaycast();
+        RaycastHit[] wepRaycastHits = FireWeaponRaycast(fireDirectionArg);
 
         // if nothing hit by raycast
         if (wepRaycastHits == null)
@@ -283,21 +340,21 @@ public class CharacterActionAttackController : NetworkBehaviour
             return null;
         }
 
-        // get all enemy hitboxes from the raycast
-        List<HitboxController> enemyHitboxes = GetAllEnemyHitboxesFromRaycastHits(wepRaycastHits);
+        // get all enemy hit sets from the raycast
+        List<(HitboxController, Vector3)> enemyHitSets = GetAllEnemyHitSetsFromRaycastHits(wepRaycastHits);
 
-        return enemyHitboxes;
+        return enemyHitSets;
     }
 
     /// <summary>
-    /// Returns all enemy hitboxes from given raycast hits.
+    /// Returns all enemy hitboxes and hit-points from given raycast hits.
     /// </summary>
     /// <param name="raycastHitsArg"></param>
     /// <returns></returns>
-    private List<HitboxController> GetAllEnemyHitboxesFromRaycastHits(RaycastHit[] raycastHitsArg)
+    private List<(HitboxController, Vector3)> GetAllEnemyHitSetsFromRaycastHits(RaycastHit[] raycastHitsArg)
     {
         // initialize return var as fresh empty list
-        List<HitboxController> enemyHitboxes = new List<HitboxController>();
+        List<(HitboxController, Vector3)> enemyHitSets = new List<(HitboxController, Vector3)>();
 
         // initialize var for upcoming loop
         HitboxController iterHitbox;
@@ -318,36 +375,23 @@ public class CharacterActionAttackController : NetworkBehaviour
             // if hitbox can be harmed by this character
             if (GeneralMethods.CanHarmHitboxTarget(_characterMasterController.CharData, iterHitbox))
             {
-                // add the enemy's hitbox to list
-                enemyHitboxes.Add(iterHitbox);
+                // add the enemy's hit set to list
+                enemyHitSets.Add((iterHitbox, iterRayHit.point));
             }
         }
 
         // return populated list
-        return enemyHitboxes;
-    }
-
-    /// <summary>
-    /// Returns random damage within equipped weapon's boundaries.
-    /// </summary>
-    /// <returns></returns>
-    private int GetEquippedWeaponRandomDamage()
-    {
-        // get equipped weapon's stats
-        WeaponStats equipWepStats = _characterMasterController.GetEquippedWeapon().weaponStats;
-
-        // return random damage value
-        return UnityEngine.Random.Range(equipWepStats.damageBoundaryLowRarityModified,
-            equipWepStats.damageBoundaryHighRarityModified);
+        return enemyHitSets;
     }
 
     /// <summary>
     /// Damage a hitbox based on equipped weapon.
     /// </summary>
     /// <param name="hitboxArg"></param>
-    private void DamageHitboxWithEquippedWeapon(HitboxController hitboxArg)
+    private void DamageHitboxWithEquippedWeapon(HitboxController hitboxArg, Vector3 impactPointArg)
     {
-        hitboxArg.CharMaster.CharHealth.TakeDamage(_characterMasterController, GetEquippedWeaponRandomDamage());
+        hitboxArg.CharMaster.CharHealth.TakeDamage(_characterMasterController, GetAttackDamage(), 
+            impactPointArg);
     }
 
     #endregion
@@ -369,6 +413,38 @@ public class CharacterActionAttackController : NetworkBehaviour
             // performs the act of attacking
             AttackAction();
         }
+    }
+
+    #endregion
+
+
+
+
+    #region General Functions
+
+    private Vector3 GetStraightFiringDirection()
+    {
+        //return _characterMasterController.CharSight.FirePoint.localRotation.eulerAngles;
+        //return _characterMasterController.CharSight.FirePoint.localEulerAngles;
+        return _characterMasterController.CharSight.FirePoint.forward;
+    }
+
+    /// <summary>
+    /// Returns a useable directional spread value from a weapon's spread stat value.
+    /// </summary>
+    /// <param name="spreadStatArg"></param>
+    /// <returns></returns>
+    private float GetDirectionSpreadFromShotSpreadStat(float spreadStatArg)
+    {
+        // get the direction spread based on given stat value
+        //float dirSpread = (1f - spreadStatArg) * 100f;
+        float dirSpread = spreadStatArg * 100f;
+
+        // ensure spread is a valid value
+        dirSpread = Mathf.Max(0f, dirSpread);
+
+        // return the calculated value
+        return dirSpread;
     }
 
     #endregion
@@ -438,39 +514,167 @@ public class CharacterActionAttackController : NetworkBehaviour
     /// <summary>
     /// Fires a raycast for the projectile.
     /// </summary>
-    private void FireProjectileRaycast()
+    private void FireProjectileRaycast(Vector3 fireDirectionArg)
     {
         if (NetworkClient.isConnected)
         {
-            CmdFireProjectileRaycast();
+            CmdFireProjectileRaycast(fireDirectionArg);
         }
         else
         {
-            FireProjectileRaycastInternal();
+            FireProjectileRaycastInternal(fireDirectionArg);
         }
     }
 
     [Command]
-    private void CmdFireProjectileRaycast()
+    private void CmdFireProjectileRaycast(Vector3 fireDirectionArg)
     {
-        FireProjectileRaycastInternal();
+        FireProjectileRaycastInternal(fireDirectionArg);
     }
 
-    private void FireProjectileRaycastInternal()
+    private void FireProjectileRaycastInternal(Vector3 fireDirectionArg)
     {
-        // fire a weapon based raycast and returns any hitboxes that were hit by it
-        List<HitboxController> hitHitboxes = FireWeaponRaycastAndGetHitHitboxes();
+        // fire a weapon based raycast and returns any hit sets that were hit by it
+        List<(HitboxController, Vector3)> hitSets = FireWeaponRaycastAndGetHitSets(fireDirectionArg);
 
-        // if retreived actual hitbox list
-        if (hitHitboxes != null)
+        // if retreived actual hit set list
+        if (hitSets != null)
         {
             // if some hitboxes were hit
-            if (hitHitboxes.Count > 0)
+            if (hitSets.Count > 0)
             {
                 // damage the front hitbox with equipped weapon
-                DamageHitboxWithEquippedWeapon(hitHitboxes[0]);
+                DamageHitboxWithEquippedWeapon(hitSets[0].Item1, hitSets[0].Item2);
             }
         }
+    }
+
+    #endregion
+
+
+
+
+    #region Stat Attack Power Functions
+
+    /// <summary>
+    /// Returns the appropriate amount of attack damage.
+    /// </summary>
+    /// <returns></returns>
+    private int GetAttackDamage()
+    {
+        // get dmg based on equipped weapon
+        int atkPower = GetEquippedWeaponRandomDamage();
+
+        // add to damage based on char's stats
+        atkPower += GetCharacterStatAttackPowerIncrease();
+
+        // add/substract damage based on status effects
+        atkPower += GetStatusAttackPowerChange(atkPower);
+
+        // ensure the atk power is a valid value
+        atkPower = Mathf.Max(0, atkPower);
+
+        // return the calculated value
+        return atkPower;
+    }
+
+    /// <summary>
+    /// Returns random damage within equipped weapon's boundaries.
+    /// </summary>
+    /// <returns></returns>
+    private int GetEquippedWeaponRandomDamage()
+    {
+        // get equipped weapon's stats
+        WeaponStats equipWepStats = _characterMasterController.GetEquippedWeapon().weaponStats;
+
+        // return random damage value
+        return UnityEngine.Random.Range(equipWepStats.damageBoundaryLowRarityModified,
+            equipWepStats.damageBoundaryHighRarityModified);
+    }
+
+    /// <summary>
+    /// Returns the amount to increase the attack power by based on the character's stats.
+    /// </summary>
+    /// <returns></returns>
+    private int GetCharacterStatAttackPowerIncrease()
+    {
+        // get front-facign char's data
+        CharacterData charBeingUsed = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+            _characterMasterController);
+
+        // return the char's stat that is relevant to atk power
+        int powerStat = charBeingUsed.characterStats.statStrength;
+
+        // return the retrieved value
+        return powerStat;
+    }
+
+    /// <summary>
+    /// Returns the change to attack power based on the current status effects.
+    /// </summary>
+    /// <param name="baseAttackPowerArg"></param>
+    /// <returns></returns>
+    private int GetStatusAttackPowerChange(int baseAttackPowerArg)
+    {
+        // get status effect change value to attack power as an unrounded float
+        float statusAttackPowerChangeFloat = ((float)baseAttackPowerArg) * 
+            temporaryChangePercentageAttackPower;
+
+        // round change value to an int
+        int statusAttackPowerChange = Mathf.RoundToInt(statusAttackPowerChangeFloat);
+
+        // return calcualted value
+        return statusAttackPowerChange;
+    }
+
+    #endregion
+
+
+
+
+    #region Stat Attack Speed Functions
+
+    /// <summary>
+    /// Returns the current character's attack rate cooldown.
+    /// </summary>
+    /// <returns></returns>
+    private float GetAttackSpeedCooldown()
+    {
+        // get atk cooldown based on current weapon's attack speed
+        float atkRateCooldown = _characterMasterController.GetEquippedWeapon().weaponStats.
+            attackRateRarityModified;
+
+        // reduce atk cooldown based on char's stats
+        atkRateCooldown -= GetCharacterStatAttackCooldownReduction();
+
+        // change atk cooldown based on current stats effects
+        atkRateCooldown += (atkRateCooldown * temporaryChangePercentageAttackSpeed);
+
+        // ensure the atk cooldown is a valid value
+        atkRateCooldown = Mathf.Max(0.01f, atkRateCooldown);
+
+        // return the calcualted value
+        return atkRateCooldown;
+    }
+
+    /// <summary>
+    /// Returns the amount to reduce the attack cooldown by based on the character's stats.
+    /// </summary>
+    /// <returns></returns>
+    private float GetCharacterStatAttackCooldownReduction()
+    {
+        // get front-facign char's data
+        CharacterData charBeingUsed = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+            _characterMasterController);
+
+        // get the char's stat that is relevant to atk speed
+        int speedStat = charBeingUsed.characterStats.statDexterity;
+
+        // get the amount to reduce cooldown by
+        float cooldownReduction = speedStat / 100f;
+
+        // return calculated value
+        return cooldownReduction;
     }
 
     #endregion

@@ -101,14 +101,18 @@ public class ActionTextPopupController : MonoBehaviour
         //_spreadVector.x = Random.Range(-DIRECTION_SPREAD, DIRECTION_SPREAD);
         //Quaternion spreadQuat = Quaternion.Euler(_spreadVector);
 
-        // get random spread value
+        /*// get random spread value
         float randomSpread = Random.Range(-directionSpread, directionSpread);
 
         // get upward direction with some random spread
-        Vector3 randomDirection = transform.up * randomSpread;
+        Vector3 randomDirection = transform.up * randomSpread;*/
+
+        Vector3 randomDirection = GeneralMethods.GetRandomRotationDirection(
+            transform.up, directionSpread, false);
 
         // set this objects velocity towards the retrieved direction
         _rigBody.velocity = randomDirection * moveSpeed;
+        //_rigBody.velocity = randomDir.eulerAngles * moveSpeed;
     }
 
     #endregion

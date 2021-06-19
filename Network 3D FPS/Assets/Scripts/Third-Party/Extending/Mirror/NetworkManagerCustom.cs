@@ -47,6 +47,15 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
     private List<MasterMenuControllerCustom> openMenus = new List<MasterMenuControllerCustom>();
     private List<StandardDialogueUI> openDialogues = new List<StandardDialogueUI>();
 
+    [Header("Misc References")]
+
+    [SerializeField]
+    private CameraCoordinator _cameraCoordr = null;
+    public CameraCoordinator CameraCoordr
+    {
+        get { return _cameraCoordr; }
+    }
+
     #endregion
 
 

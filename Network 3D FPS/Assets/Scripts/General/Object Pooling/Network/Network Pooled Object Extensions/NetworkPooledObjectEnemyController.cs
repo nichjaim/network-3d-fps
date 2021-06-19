@@ -12,7 +12,7 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     private CharacterMasterController _charMaster = null;
 
     [SerializeField]
-    private CharacterHealthController _charHealth = null;
+    private ObjectActivationController _objActivation = null;
 
     #endregion
 
@@ -47,6 +47,12 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     {
         // trigger event to denote that this spawned char died
         SpawnedCharacterDeathEvent.Trigger(_charMaster);
+
+        Debug.Log("NEED IMPL: Play enemy death effect."); // NEED IMPL!!!
+        Debug.Log("NEED IMPL: Play enemy death sound."); // NEED IMPL!!!
+
+        // set obj deactivate of this object
+        _objActivation.SetObjectActivation(false);
     }
 
     #endregion
@@ -62,7 +68,7 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     /// </summary>
     private void StartAllEventListening()
     {
-        _charHealth.OnOutOfHealthAction += OnSpawnedEnemyDeath;
+        _charMaster.CharHealth.OnOutOfHealthAction += OnSpawnedEnemyDeath;
     }
 
     /// <summary>
@@ -71,7 +77,7 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     /// </summary>
     private void StopAllEventListening()
     {
-        _charHealth.OnOutOfHealthAction -= OnSpawnedEnemyDeath;
+        _charMaster.CharHealth.OnOutOfHealthAction -= OnSpawnedEnemyDeath;
     }
 
     #endregion

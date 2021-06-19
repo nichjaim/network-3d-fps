@@ -18,6 +18,10 @@ public class CharacterHealthController : MonoBehaviour
     [SerializeField]
     private CharacterSwapController _characterSwapController = null;
 
+    [Tooltip("The point from which an action text popup will spawn when a position is not specified.")]
+    [SerializeField]
+    private Transform defaultActionTextPopupPointArg = null;
+
     public Action OnHealthChangedAction;
     public Action OnOutOfHealthAction;
 
@@ -81,9 +85,15 @@ public class CharacterHealthController : MonoBehaviour
     /// </summary>
     /// <param name="damageInflicterArg"></param>
     /// <param name="damageArg"></param>
+    public void TakeDamage(CharacterMasterController damageInflicterArg, int damageArg, 
+        Vector3 impactPointArg)
+    {
+        ChangeHealthValue(damageInflicterArg, false, damageArg, impactPointArg);
+    }
+
     public void TakeDamage(CharacterMasterController damageInflicterArg, int damageArg)
     {
-        ChangeHealthValue(damageInflicterArg, false, damageArg);
+        TakeDamage(damageInflicterArg, damageArg, defaultActionTextPopupPointArg.position);
     }
 
     /// <summary>
@@ -91,9 +101,15 @@ public class CharacterHealthController : MonoBehaviour
     /// </summary>
     /// <param name="healingInflicterArg"></param>
     /// <param name="healingArg"></param>
+    public void HealHealth(CharacterMasterController healingInflicterArg, int healingArg, 
+        Vector3 impactPointArg)
+    {
+        ChangeHealthValue(healingInflicterArg, true, healingArg, impactPointArg);
+    }
+
     public void HealHealth(CharacterMasterController healingInflicterArg, int healingArg)
     {
-        ChangeHealthValue(healingInflicterArg, true, healingArg);
+        HealHealth(healingInflicterArg, healingArg, defaultActionTextPopupPointArg.position);
     }
 
     /// <summary>
@@ -102,8 +118,9 @@ public class CharacterHealthController : MonoBehaviour
     /// <param name="changeInflicterArg"></param>
     /// <param name="isIncreasingArg"></param>
     /// <param name="changeValueArg"></param>
+    /// <param name="impactPointArg"></param>
     private void ChangeHealthValue(CharacterMasterController changeInflicterArg, 
-        bool isIncreasingArg, int changeValueArg)
+        bool isIncreasingArg, int changeValueArg, Vector3 impactPointArg)
     {
         // if taking damage AND in post-damage invincibility
         if (!isIncreasingArg && inPostDamageInvincibility)
@@ -162,7 +179,7 @@ public class CharacterHealthController : MonoBehaviour
         }
 
         // spawns and sets up the action text popup, if appropriate to do so
-        SetupActionTextPopupIfAppropriate(changeInflicterArg, isIncreasingArg, actualChangeValue);
+        SetupActionTextPopupIfAppropriate(changeInflicterArg, isIncreasingArg, actualChangeValue, impactPointArg);
 
         /// set all the swap characters health based on the surface level char's health percentage, 
         /// if appropriate to do so
@@ -176,6 +193,24 @@ public class CharacterHealthController : MonoBehaviour
             // call out-of-health change actions if NOT null
             OnOutOfHealthAction?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// Resets the character's health back to max.
+    /// </summary>
+    public void ResetHealth()
+    {
+        // get char data for surface level properties from the char master
+        CharacterData charFrontFacingData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+            _characterMasterController);
+
+        // have the surface level char recover all health
+        charFrontFacingData.characterStats.FillHealthToMax();
+
+        // call health healed actions if NOT null
+        OnHealthHealed?.Invoke();
+        // call health change actions if NOT null
+        OnHealthChangedAction?.Invoke();
     }
 
     /// <summary>
@@ -289,11 +324,11 @@ public class CharacterHealthController : MonoBehaviour
     /// Spawns a pooled action text popup.
     /// </summary>
     /// <returns></returns>
-    private ActionTextPopupController SpawnActionTextPopup()
+    private ActionTextPopupController SpawnActionTextPopup(Vector3 spawnPosArg)
     {
         // get pooled object
         GameObject spawnedPopupObj = _spawnManager.GetPooledActionTextPopup(
-            _characterMasterController.transform.position,
+            spawnPosArg,
             _characterMasterController.transform.rotation);
 
         // turn ON pooled object
@@ -314,7 +349,7 @@ public class CharacterHealthController : MonoBehaviour
     /// <param name="isIncreasingArg"></param>
     /// <param name="changeValueArg"></param>
     private void SetupActionTextPopupIfAppropriate(CharacterMasterController changeInflicterArg,
-        bool isIncreasingArg, int changeValueArg)
+        bool isIncreasingArg, int changeValueArg, Vector3 spawnPointArg)
     {
         // if NO inflicter
         if (changeInflicterArg == null)
@@ -345,7 +380,7 @@ public class CharacterHealthController : MonoBehaviour
         }
 
         // spawn an action text popup
-        ActionTextPopupController spawnedPopup = SpawnActionTextPopup();
+        ActionTextPopupController spawnedPopup = SpawnActionTextPopup(spawnPointArg);
 
         // if adding health
         if (isIncreasingArg)

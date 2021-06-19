@@ -6,13 +6,20 @@ public class BillboarderController : MonoBehaviour
 {
     #region Class Variables
 
+    [Header("Component References")]
+
     [SerializeField]
     private Transform billboardingObject = null;
 
+    [Header("Billboarding Properties")]
+
+    [Tooltip("Does billboard the object up and down?")]
     [SerializeField]
     private bool billboardVertically = false;
 
-    //private bool shouldBillboard = false;
+    [Tooltip("Billboards away from the camera. Useful for world-based UI objects.")]
+    [SerializeField]
+    private bool invertBillboarding = false;
 
     private Camera _playerCamera;
 
@@ -25,28 +32,14 @@ public class BillboarderController : MonoBehaviour
 
     private void Start()
     {
-        //setup all variables that reference singleton instance related components
-        //InitializeSingletonReferences();
         // setup variable that holds reference to the player camera
         InitializePlayerCamera();
     }
 
     private void FixedUpdate()
     {
-        /*//if should do billboarding effect
-        if (shouldBillboard)
-        {
-            //refresh the billboarding effect visual based on observer perspective
-            RefreshBillboardingEffect();
-        }*/
         // refresh the billboarding effect visual based on observer perspective
         RefreshBillboardingEffect();
-    }
-
-    private void OnEnable()
-    {
-        //denote whether billboarding is warranted based on if there is a player nearby
-        //shouldBillboard = IsZoneOccupied();
     }
 
     #endregion
@@ -54,31 +47,7 @@ public class BillboarderController : MonoBehaviour
 
 
 
-    /*#region Override Functions
-
-    protected override void OnInhabitantNumberChange()
-    {
-        base.OnInhabitantNumberChange();
-
-        //denote whether billboarding is warranted based on if there is a player nearby
-        shouldBillboard = IsZoneOccupied();
-    }
-
-    #endregion*/
-
-
-
-
     #region Initialization Functions
-
-    /*/// <summary>
-    /// Setup all variables that reference singleton instance related components. 
-    /// Call in Start(), needs to be start to give the instances time to be created.
-    /// </summary>
-    private void InitializeSingletonReferences()
-    {
-        _playerCamera = CameraManager.Instance.GetPlayerCamera();
-    }*/
 
     /// <summary>
     /// Sets up variable that holds reference to the player camera. 
@@ -105,18 +74,38 @@ public class BillboarderController : MonoBehaviour
         if (_playerCamera != null)
         {
             // rotate object being billboarded towards camera
-            billboardingObject.LookAt(new Vector3(
-                _playerCamera.transform.position.x,
-                GetBillboardLookPositionY(),
-                _playerCamera.transform.position.z));
+            billboardingObject.LookAt(GetLookPosition());
         }
+    }
+
+    /// <summary>
+    /// Returns the position to look at.
+    /// </summary>
+    /// <returns></returns>
+    private Vector3 GetLookPosition()
+    {
+        // get position to look at
+        Vector3 lookAtPos = new Vector3(
+            _playerCamera.transform.position.x,
+            GetLookPositionY(),
+            _playerCamera.transform.position.z);
+
+        // if should invert the billboarding effect
+        if (invertBillboarding)
+        {
+            // invert the pos to look at
+            lookAtPos = billboardingObject.position - lookAtPos;
+        }
+
+        // return the calculated position
+        return lookAtPos;
     }
 
     /// <summary>
     /// Returns the appropriate look position for Y-axis.
     /// </summary>
     /// <returns></returns>
-    private float GetBillboardLookPositionY()
+    private float GetLookPositionY()
     {
         // if should billboard the object vertically
         if (billboardVertically)
@@ -126,7 +115,7 @@ public class BillboarderController : MonoBehaviour
         // else should only be billboarding horizontal
         else
         {
-            return billboardingObject.transform.position.y;
+            return billboardingObject.position.y;
         }
     }
 

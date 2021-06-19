@@ -15,6 +15,14 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     [SerializeField]
     private Transform spawnPointMasterParent = null;
 
+    [SerializeField]
+    private LevelArenaExitController _levelExit = null;
+
+    [Header("Level Properties")]
+
+    [SerializeField]
+    private bool useAllSpawns = false;
+
     private List<NetworkPooledObjectController> spawnedObjects = new List<NetworkPooledObjectController>();
     // the enemy characters that were spawned that are still alive
     private List<CharacterMasterController> aliveSpawnedCharacters = new List<CharacterMasterController>();
@@ -128,6 +136,7 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
         // initialize iterating vars for upcoming loop
         NetworkObjectPooler iterObjPooler;
         GameObject iterSpawnedObj;
+        ObjectActivationController iterObjActivator;
 
         // loop through all retreieved spawn points
         foreach (Transform iterPoint in randomSpawnPoints)
@@ -140,6 +149,11 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
             {
                 // spawn an object from the pooler at the iterating spawn point's position
                 iterSpawnedObj = iterObjPooler.GetFromPool(iterPoint.position, iterPoint.rotation);
+
+                // get spawned object's object activation comp
+                iterObjActivator = iterSpawnedObj.GetComponent<ObjectActivationController>();
+                // activate the spawned object
+                iterObjActivator.SetObjectActivation(true);
 
                 // add the object's net pool component to the relevant spawn lists
                 AddObjectToSpawnsList(iterSpawnedObj.GetComponent<NetworkPooledObjectController>());
@@ -217,7 +231,7 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
     private int GetNumberOfSpawnPointsToUse(int maxSpawnPointCountArg)
     {
         // get number of spawn points to be used, as a float
-        float numOfSpawnPointsToUseUnrounded = maxSpawnPointCountArg * GetSpawnPointUsePercentage();
+        float numOfSpawnPointsToUseUnrounded = ((float)maxSpawnPointCountArg) * GetSpawnPointUsePercentage();
 
         // rount value to an int
         int numOfSpawnPointsToUse = Mathf.RoundToInt(numOfSpawnPointsToUseUnrounded);
@@ -240,6 +254,13 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
         {
             // setup manager reference
             InitializeSingletonReferences();
+        }
+
+        // if supposed to use all the potential spawns
+        if (useAllSpawns)
+        {
+            // return 100%
+            return 1f;
         }
 
         // initialize the percent usage boundaries
@@ -281,7 +302,7 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
         if (spawnCharMaster != null)
         {
             // heal char to full health
-            spawnCharMaster.CharHealth.HealHealth(null, 999999);
+            spawnCharMaster.CharHealth.ResetHealth();
 
             // add enemy to alive spawn chars
             aliveSpawnedCharacters.Add(spawnCharMaster);
@@ -313,7 +334,8 @@ public class LevelArenaController : MonoBehaviour, MMEventListener<SpawnedCharac
         // get whether any arena enemies are still alive
         bool areEnemiesLeft = (aliveSpawnedCharacters.Count > 0);
 
-        Debug.Log("NEED IMPL: finish rest of RefreshArenaExitStatus()");
+        // activate/deactivate the exit based on if NO enemies are left
+        _levelExit.SetExitActivation(!areEnemiesLeft);
     }
 
     #endregion

@@ -29,7 +29,8 @@ public class BulletController : ProjectileController
         base.OnContactWithEnemy(enemyHitboxArg);
 
         // deal weapon damage to hitbox target
-        enemyHitboxArg.CharMaster.CharHealth.TakeDamage(charOwner, GetRandomWeaponDamage());
+        enemyHitboxArg.CharMaster.CharHealth.TakeDamage(charOwner, GetRandomWeaponDamage(), 
+            transform.position);
 
         // despawn this pooled object
         DespawnObject();

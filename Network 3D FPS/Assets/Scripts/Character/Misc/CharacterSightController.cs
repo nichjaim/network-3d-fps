@@ -7,9 +7,9 @@ public class CharacterSightController : MonoBehaviour
 {
     #region Class Variables
 
-    private NetworkManagerCustom _networkManagerCustom;
+    private CameraCoordinator _cameraCoordr;
 
-    private Camera sightCamera = null;
+    //private Camera sightCamera = null;
 
     [Header("Component References")]
 
@@ -51,12 +51,12 @@ public class CharacterSightController : MonoBehaviour
         // setup all variables that reference singleton instance related components
         InitializeSingletonReferences();
         // setup the camera object reference, if haven't already
-        InitializeSightCameraIfAppropriate();
+        //InitializeSightCameraIfAppropriate();
 
         // sets the camera to follow this sight pivot point
         AttachCameraToSight();
         // reset player camera's transform values to default
-        ResetPlayerCameraTransform();
+        //ResetPlayerCameraTransform();
     }
 
     private void OnEnable()
@@ -77,7 +77,8 @@ public class CharacterSightController : MonoBehaviour
     private void OnDestroy()
     {
         // removes the camera from this pivot point
-        DetachCameraFromSight();
+        //DetachCameraFromSight();
+        _cameraCoordr.DetachCameraHolder();
     }
 
     #endregion
@@ -93,7 +94,8 @@ public class CharacterSightController : MonoBehaviour
     /// </summary>
     private void InitializeSingletonReferences()
     {
-        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
+        NetworkManagerCustom netMngr = (NetworkManagerCustom)NetworkManager.singleton;
+        _cameraCoordr = netMngr.CameraCoordr;
     }
 
     #endregion
@@ -103,7 +105,7 @@ public class CharacterSightController : MonoBehaviour
 
     #region Camera Functions
 
-    /// <summary>
+    /*/// <summary>
     /// Sets up the camera object reference, if haven't done already. 
     /// Call in Awake().
     /// </summary>
@@ -114,17 +116,18 @@ public class CharacterSightController : MonoBehaviour
         {
             sightCamera = FindObjectOfType<Camera>();
         }
-    }
+    }*/
 
     /// <summary>
     /// Sets the camera to follow this sight pivot point.
     /// </summary>
     private void AttachCameraToSight()
     {
-        sightCamera.transform.SetParent(sightPivotPoint);
+        //sightCamera.transform.SetParent(sightPivotPoint);
+        _cameraCoordr.AttachCameraHolder(sightPivotPoint);
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Reset player camera's transform values to default.
     /// </summary>
     private void ResetPlayerCameraTransform()
@@ -132,9 +135,9 @@ public class CharacterSightController : MonoBehaviour
         sightCamera.transform.localPosition = Vector3.zero;
         sightCamera.transform.localRotation = Quaternion.identity;
         sightCamera.transform.localScale = Vector3.one;
-    }
+    }*/
 
-    /// <summary>
+    /*/// <summary>
     /// Removes the camera from this pivot point.
     /// </summary>
     private void DetachCameraFromSight()
@@ -161,7 +164,7 @@ public class CharacterSightController : MonoBehaviour
             // print warning to log
             Debug.LogWarning("No sightCamera reference to detach!");
         }
-    }
+    }*/
 
     /// <summary>
     /// Sets the camera heigth based on based on current char's heigth.

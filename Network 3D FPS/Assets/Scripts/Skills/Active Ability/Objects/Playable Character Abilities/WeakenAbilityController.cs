@@ -133,7 +133,7 @@ public class WeakenAbilityController : ActiveAbilityController
 
     #region Ability Functions
 
-    /// <summary>
+    /*/// <summary>
     /// Returns a random rotation within the ability's projectile firing cone boundary.
     /// </summary>
     /// <returns></returns>
@@ -158,7 +158,7 @@ public class WeakenAbilityController : ActiveAbilityController
         Quaternion newDirection = Quaternion.Euler(newDirX, newDirY, baseDirection.z);
         // return the new direction
         return newDirection;
-    }
+    }*/
 
     /// <summary>
     /// Returns number of projectiles to fire based on given abilty rank.
@@ -232,9 +232,15 @@ public class WeakenAbilityController : ActiveAbilityController
 
     private void SpawnProjectileInternal()
     {
+        // get random projectile rotation
+        /*Quaternion randDir = GeneralMethods.GetRandomRotationDirection(
+            transform.localRotation.eulerAngles, 15f);*/
+        Vector3 randDirVector = GeneralMethods.GetRandomRotationDirection(
+            transform.localRotation.eulerAngles, 15f, true);
+        Quaternion randDir = Quaternion.Euler(randDirVector);
+
         // get object from given pooler
-        GameObject projectileObj = _weakenProjectilePooler.GetFromPool(_castPoint.position,
-            GetRandomProjectileRotation());
+        GameObject projectileObj = _weakenProjectilePooler.GetFromPool(_castPoint.position, randDir);
 
         // spawn pooled object on network
         NetworkServer.Spawn(projectileObj);

@@ -166,7 +166,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// </summary>
     private void InitializeSingetonReferences()
     {
-        //_networkManagerCustom = NetworkManager.Instance;
+        _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
     }
 
     /// <summary>

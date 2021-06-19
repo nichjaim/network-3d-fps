@@ -514,4 +514,80 @@ public static class GeneralMethods
     {
         return layerMaskArg == (layerMaskArg | (1 << layerArg));
     }
+
+    /*/// <summary>
+    /// Returns a random rotation within the given base's cone boundary.
+    /// </summary>
+    /// <param name="baseDirectionArg"></param>
+    /// <param name="rotationChangeRangeArg"></param>
+    /// <returns></returns>
+    public static Quaternion GetRandomRotationDirection(Vector3 baseDirectionArg, float rotationChangeRangeArg)
+    {
+        // get random rotational changes for the X and Y axis
+        float newRotChangeX = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+        float newRotChangeY = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+
+        // get new directional values for the X and Y axis
+        float newDirX = baseDirectionArg.x + newRotChangeX;
+        float newDirY = baseDirectionArg.y + newRotChangeY;
+
+        // get new direction from new directional values
+        Quaternion newDirection = Quaternion.Euler(newDirX, newDirY, baseDirectionArg.z);
+        // return the new direction
+        return newDirection;
+    }*/
+
+    /*/// <summary>
+    /// Returns a random direction within the given base's cone boundary.
+    /// </summary>
+    /// <param name="baseDirectionArg"></param>
+    /// <param name="rotationChangeRangeArg"></param>
+    /// <returns></returns>
+    public static Vector3 GetRandomRotationDirection(Vector3 baseDirectionArg, float rotationChangeRangeArg)
+    {
+        // get random rotational changes for the X and Y axis
+        float newRotChangeX = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+        float newRotChangeY = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+
+        // get new directional values for the X and Y axis
+        float newDirX = baseDirectionArg.x + newRotChangeX;
+        float newDirY = baseDirectionArg.y + newRotChangeY;
+
+        return new Vector3(newDirX, newDirY, baseDirectionArg.z);
+    }*/
+
+    /// <summary>
+    /// Returns a random direction within the given base's cone boundary.
+    /// </summary>
+    /// <param name="baseDirectionArg"></param>
+    /// <param name="rotationChangeRangeArg"></param>
+    /// <param name="isHorizontalSpreadArg"></param>
+    /// <returns></returns>
+    public static Vector3 GetRandomRotationDirection(Vector3 baseDirectionArg, float rotationChangeRangeArg, 
+        bool isHorizontalSpreadArg)
+    {
+        // get random rotational changes for the X axis
+        float newRotChangeX = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+
+        // initialzie vars for upcoming conditionals
+        float newRotChangeY = 0f;
+        float newRotChangeZ = 0f;
+
+        // set random rotational changes based on the relevant axises
+        if (isHorizontalSpreadArg)
+        {
+            newRotChangeY = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+        }
+        else
+        {
+            newRotChangeZ = Random.Range(-rotationChangeRangeArg, rotationChangeRangeArg);
+        }
+
+        // get new directional values for the X and Y axis
+        float newDirX = baseDirectionArg.x + newRotChangeX;
+        float newDirY = baseDirectionArg.y + newRotChangeY;
+        float newDirZ = baseDirectionArg.z + newRotChangeZ;
+
+        return new Vector3(newDirX, newDirY, newDirZ);
+    }
 }

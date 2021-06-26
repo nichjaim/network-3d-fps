@@ -65,6 +65,11 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     // the arena-related dialogues that have already been used in the current run
     private List<string> arenaDialoguesUsed = new List<string>();
 
+    private bool inDialogueChainPhaseLevelUp = false;
+    private List<(string, CharacterProgressionInfoSet)> charIdsToLevelUpInfo = new 
+        List<(string, CharacterProgressionInfoSet)>();
+    private int currentIndexLevelUpChain = 0;
+
     #endregion
 
 
@@ -252,6 +257,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             // DONT continue code
             return;
         }
+
+        // if while processing the level up chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhaseLevelUp())
+        {
+            // DONT continue code
+            return;
+        }
     }
 
     /// <summary>
@@ -426,6 +438,46 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     }
 
     /// <summary>
+    /// Plays pass time event dialogue that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhaseLevelUp()
+    {
+        // if player should give level up info once dialogue is done
+        if (inDialogueChainPhaseLevelUp)
+        {
+            // if have more level up info to show
+            if (currentIndexLevelUpChain < charIdsToLevelUpInfo.Count)
+            {
+                // get char and level up info of current chain link
+                (string, CharacterProgressionInfoSet) charIdToProgInfo = charIdsToLevelUpInfo[currentIndexLevelUpChain];
+
+                Debug.Log("NEED IMPL: Set level up info's char as only portrait in dialogue scene."); // NEED IMPL!!!
+
+                Debug.Log("NEED IMPL: Play dialogue based on current level up chain link."); // NEED IMPL!!!
+
+                // increment level up chain's index
+                currentIndexLevelUpChain++;
+            }
+            // else shown all level up info
+            else
+            {
+                // denote that done doing level up stuff for this chain
+                inDialogueChainPhaseLevelUp = false;
+
+                Debug.Log("NEED IMPL: Play ending level up phase dialogue."); // NEED IMPL!!!
+            }
+
+            // return that phase is NOT done
+            return false;
+        }
+
+        // return that phase IS done
+        return true;
+    }
+
+    /// <summary>
     /// Turns off all dialogue chain phases.
     /// </summary>
     private void DeactivateAllDialogueChainPhases()
@@ -434,6 +486,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         inDialogueChainPhasePassTime = false;
         inDialogueChainPhaseRestDay = false;
         inDialogueChainPhaseArena = false;
+        inDialogueChainPhaseLevelUp = false;
     }
 
     #endregion
@@ -520,6 +573,64 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // play dialogue conversation
         PlayDialogue(locationConvo);
+    }
+
+    /// <summary>
+    /// Denote that the tutorial has been completed and performs necessary processes.
+    /// </summary>
+    public void CompleteTutorial()
+    {
+        // denote that tutorial is complete
+        _gameManager.SetTutorialAsComplete();
+
+        // trigger event to start VN state mode
+        GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+
+        // turns off all dialogue chain phases
+        DeactivateAllDialogueChainPhases();
+    }
+
+    #endregion
+
+
+
+
+    #region Leveling Functions
+
+    private void LevelUpProcess()
+    {
+        // loop through all girl party members
+        //{
+        // loop through every haven stat for the iterating girl
+
+        // apply exp based on run exp to haven progress stats associated with character and haven stat
+
+        // store levels up for this particular character and haven stat
+        //}
+
+        // level up chars based on what levels were reached for which haven stats on which party members
+
+        // set run exp to zero
+
+        // start chain dialogue that will inform user of which party memebrs gained what progress.
+    }
+
+    /// <summary>
+    /// Begins the leveling up dialogue chain.
+    /// </summary>
+    /// <param name="charIdsToLevelUpInfoArg"></param>
+    private void StartLevelingChain(List<(string, CharacterProgressionInfoSet)> charIdsToLevelUpInfoArg)
+    {
+        // set leveling info to given info
+        charIdsToLevelUpInfo = charIdsToLevelUpInfoArg;
+
+        // reset chain index to zero
+        currentIndexLevelUpChain = 0;
+
+        // denote that now in leveling chain
+        inDialogueChainPhaseLevelUp = true;
+
+        Debug.Log("NEED IMPL: Play starting leveling chain dialogue"); // NEED IMPL!!!
     }
 
     #endregion

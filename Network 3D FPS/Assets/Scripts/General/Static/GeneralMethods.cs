@@ -590,4 +590,13 @@ public static class GeneralMethods
 
         return new Vector3(newDirX, newDirY, newDirZ);
     }
+
+    /// <summary>
+    /// Returns the character ID for the MC.
+    /// </summary>
+    /// <returns></returns>
+    public static string GetCharacterIdMainCharacter()
+    {
+        return "3";
+    }
 }

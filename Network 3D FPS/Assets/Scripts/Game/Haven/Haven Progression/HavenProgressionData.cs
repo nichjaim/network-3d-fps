@@ -235,12 +235,13 @@ public class HavenProgressionData
     }
 
     /// <summary>
-    /// Applies the external exp to the given char's given stat's progression.
+    /// Applies the external exp to the given char's given stat's progression. 
+    /// Returns what levels were reached.
     /// </summary>
     /// <param name="charIdArg"></param>
     /// <param name="statTypeNumArg"></param>
     /// <returns></returns>
-    public bool ApplyExternalExpToCharProgress(string charIdArg, int statTypeNumArg)
+    public List<int> ApplyExternalExpToCharProgress(string charIdArg, int statTypeNumArg)
     {
         // get char's stat type's progress stat data
         HavenProgressionStatData progStatData = GetCharProgressStatData(charIdArg, statTypeNumArg);
@@ -253,8 +254,8 @@ public class HavenProgressionData
         // else data NOT found
         else
         {
-            // return some default bool
-            return false;
+            // return some invalid value
+            return null;
         }
     }
 
@@ -289,6 +290,21 @@ public class HavenProgressionData
 
         // return calcualted average number of points
         return averagePts;
+    }
+
+    /// <summary>
+    /// Adds character's haven progression to data being tracked.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="statSetArg"></param>
+    public void AddCharacterProgression(string charIdArg)
+    {
+        // if there is NO haven progress data already being tracked for given character
+        if (GetCharProgressStatsSet(charIdArg) == null)
+        {
+            charIdToProgressionStats.Add(new SerializableDataStringAndHavenProgressionStatsSet(
+                charIdArg, new HavenProgressionStatsSet()));
+        }
     }
 
     #endregion

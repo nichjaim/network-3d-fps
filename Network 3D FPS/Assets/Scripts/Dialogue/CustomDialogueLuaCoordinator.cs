@@ -360,11 +360,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     private void TutorialDone()
     {
-        // denote that tutorial is complete
-        _gameManager.SetTutorialAsComplete();
-
-        // trigger event to start VN state mode
-        GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, ActionProgressType.Started);
+        _uiManager.DialgGameCoordr.CompleteTutorial();
     }
 
     #endregion

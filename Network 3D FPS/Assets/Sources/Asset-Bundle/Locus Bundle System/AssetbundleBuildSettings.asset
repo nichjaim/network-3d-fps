@@ -85,6 +85,12 @@ MonoBehaviour:
       guid: b7d392f0514d7344dbb19c218d60bf9b
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: ProgressLeveling
+    IncludedInPlayer: 1
+    Folder:
+      guid: 496eedfb53b6a9845935ca3768d5f004
+    IncludeSubfolder: 1
+    CompressBundle: 1
   - BundleName: ArenaSet
     IncludedInPlayer: 1
     Folder:

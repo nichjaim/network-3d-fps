@@ -610,6 +610,24 @@ public static class AssetRefMethods
         return LoadBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
+    public static CharacterProgressionInfoSet LoadBundleAssetProgressionInfoLeveling(int havenStatNumArg, string charIdArg, int levelNumArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "ProgressLeveling";
+        string ASSET_NAME_PREFIX = $"havenstat-{havenStatNumArg.ToString()}/char-{charIdArg}/level-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + levelNumArg.ToString();
+
+        // load and return asset
+        return LoadBundleAsset<CharacterProgressionInfoSet>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static CharacterProgressionInfoSet LoadBundleAssetProgressionInfoLeveling(int havenStatNumArg, string charIdArg)
+    {
+        return LoadBundleAssetProgressionInfoLeveling(havenStatNumArg, charIdArg, 0);
+    }
+
     #endregion
 
 

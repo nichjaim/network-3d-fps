@@ -392,6 +392,13 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         {
             // add amtching character to party
             partyCharacters.Add(new CharacterData(charDataTemp));
+
+            // if the given character is NOT the MC
+            if (charIdArg != GeneralMethods.GetCharacterIdMainCharacter())
+            {
+                // make haven stat progression data for the new character
+                havenData.havenProgression.AddCharacterProgression(charIdArg);
+            }
         }
         // else no such data exists
         else

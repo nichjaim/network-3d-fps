@@ -497,5 +497,35 @@ public class CharacterStats
     #endregion
 
 
+
+
+    #region Stat Functions
+
+    /// <summary>
+    /// Improves character's stats/properties based on given progress values.
+    /// </summary>
+    /// <param name="progTypeArg"></param>
+    /// <param name="progValueArg"></param>
+    private void AddCharacterProgression(CharacterProgressionType progTypeArg, float progValueArg)
+    {
+        // round value to int for cases that require an integer
+        int progInt = Mathf.RoundToInt(progValueArg);
+
+        switch (progTypeArg)
+        {
+            case CharacterProgressionType.Stamina:
+                statStamina += progInt;
+                break;
+
+            default:
+                // print warning to console
+                Debug.LogWarning($"Unknown case for AddCharacterProgression(): {progTypeArg.ToString()}");
+                break;
+        }
+    }
+
+    #endregion
+
+
 }
 

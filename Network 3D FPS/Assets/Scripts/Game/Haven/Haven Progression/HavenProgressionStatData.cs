@@ -95,7 +95,7 @@ public class HavenProgressionStatData
     }
 
     /// <summary>
-    /// Returns the points needed for stat to reach the next level.
+    /// Returns the total points needed for stat to reach the next level.
     /// </summary>
     /// <returns></returns>
     public int GetPointRequirementForNextLevel()
@@ -104,60 +104,81 @@ public class HavenProgressionStatData
     }
 
     /// <summary>
-    /// Add amount to current progress points.
+    /// Add amount to current progress points. 
+    /// Returns the levels that were reached, need this info to be able to know what 
+    /// stats to improve.
     /// </summary>
     /// <param name="amountArg"></param>
     /// <returns></returns>
-    private bool AddToCurrentProgressPoints(int amountArg)
+    private List<int> AddToCurrentProgressPoints(int amountArg)
     {
-        // add given points to current points
-        progressPointsCurrent += amountArg;
+        // set new var from given value that will be manipulated throughout func
+        int addingExp = amountArg;
 
-        // get points required for the next stat level
-        int ptsReq = GetPointRequirementForNextLevel();
+        // initialize these vars for upcoming loop
+        int ptsReq;
+        List<int> levelsReached = new List<int>();
+        int expNeededForCurrentLvl;
 
-        // if have enough points to level up
-        if (progressPointsCurrent >= ptsReq)
+        // while there is still some given exp left
+        while (addingExp > 0)
         {
-            // increment stat level
-            statLevel++;
+            // get the total exp needed for next level up
+            ptsReq = GetPointRequirementForNextLevel();
 
-            // reduce currently held points by points spent to level up
-            progressPointsCurrent -= ptsReq;
+            // get the actual exp needed for next level up
+            expNeededForCurrentLvl = ptsReq - progressPointsCurrent;
 
-            // add the spent points to the used points amount
-            progressPointsUsed += ptsReq;
+            // if still have enough given enough exp for a level up
+            if (addingExp >= expNeededForCurrentLvl)
+            {
+                // remove the given exp by the amount spent to reach this level
+                addingExp -= expNeededForCurrentLvl;
 
-            // return that stat WAS leveled up
-            return true;
+                // increment stat level
+                statLevel++;
+
+                // add the new level to the levels that were reached
+                levelsReached.Add(statLevel);
+
+                // denote that current prgoress reset to beginning of next level
+                progressPointsCurrent = 0;
+
+                // add the spent points to the used points amount
+                progressPointsUsed += ptsReq;
+            }
+            // else do NOT still have enough given exp for a level up
+            else
+            {
+                // add remaining given exp to current level progress
+                progressPointsCurrent += addingExp;
+            }
         }
-        // else did NOT have enough points to level up
-        else
-        {
-            // return that stat was NOT leveled up
-            return false;
-        }
+
+        // return the levels that were reached
+        return levelsReached;
     }
 
     /// <summary>
     /// Applies the given exp to the stat progression while taking into account the current 
-    /// activity points.
+    /// activity points. 
+    /// Returns what levels were reached.
     /// </summary>
     /// <param name="expArg"></param>
     /// <returns></returns>
-    public bool ApplyExpToProgression(int expArg)
+    public List<int> ApplyExpToProgression(int expArg)
     {
         // get amount to add based on activity (which act as multipliers)
         int amountToAdd = expArg * activityPoints;
 
-        // add calcualted amount to progress points while getting whether this stat leveld up
-        bool didLevelUp = AddToCurrentProgressPoints(amountToAdd);
+        // add calcualted amount to progress points while getting what levels were reached
+        List<int> levelsReached = AddToCurrentProgressPoints(amountToAdd);
 
         // reset activity points to zero to denote they have been used
         activityPoints = 0;
 
-        // return whether stat leveled up from this
-        return didLevelUp;
+        // return what stat levels were reached due to given exp
+        return levelsReached;
     }
 
     /// <summary>

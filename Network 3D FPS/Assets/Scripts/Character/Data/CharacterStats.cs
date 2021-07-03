@@ -506,7 +506,7 @@ public class CharacterStats
     /// </summary>
     /// <param name="progTypeArg"></param>
     /// <param name="progValueArg"></param>
-    private void AddCharacterProgression(CharacterProgressionType progTypeArg, float progValueArg)
+    public void ImproveCharacterAttribute(CharacterProgressionType progTypeArg, float progValueArg)
     {
         // round value to int for cases that require an integer
         int progInt = Mathf.RoundToInt(progValueArg);

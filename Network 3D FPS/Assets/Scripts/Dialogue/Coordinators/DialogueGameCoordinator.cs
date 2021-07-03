@@ -597,24 +597,6 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
     #region Leveling Functions
 
-    private void LevelUpProcess()
-    {
-        // loop through all girl party members
-        //{
-        // loop through every haven stat for the iterating girl
-
-        // apply exp based on run exp to haven progress stats associated with character and haven stat
-
-        // store levels up for this particular character and haven stat
-        //}
-
-        // level up chars based on what levels were reached for which haven stats on which party members
-
-        // set run exp to zero
-
-        // start chain dialogue that will inform user of which party memebrs gained what progress.
-    }
-
     /// <summary>
     /// Begins the leveling up dialogue chain.
     /// </summary>

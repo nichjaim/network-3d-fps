@@ -162,6 +162,25 @@ public class HavenProgressionData
         }
     }
 
+    /*private List<HavenProgressionStatData> GetAllCharProgressStatData(string charIdArg)
+    {
+        // get progress stat set associated with given character ID
+        HavenProgressionStatsSet progStatsSet = GetCharProgressStatsSet(charIdArg);
+
+        // if associated progress stat set actually existed
+        if (progStatsSet != null)
+        {
+            // return stat type's progress stat data
+            return progStatsSet.GetAllProgressStatData();
+        }
+        // else data NOT found
+        else
+        {
+            // return NULL data
+            return null;
+        }
+    }*/
+
     /// <summary>
     /// Get the current points held used to reach the next level for the given char's given stat.
     /// </summary>
@@ -258,6 +277,30 @@ public class HavenProgressionData
             return null;
         }
     }
+
+    /*public List<List<int>> ApplyExternalExpToAllCharProgress(string charIdArg)
+    {
+        // get char's stat type's progress stat data
+        List<HavenProgressionStatData> progStatDatas = GetAllCharProgressStatData(charIdArg);
+
+        // if data successfully retreived
+        if (progStatDatas != null)
+        {
+            List<List<int>> statTypeLevelUps = new List<List<int>>();
+            foreach (HavenProgressionStatData iterData in progStatDatas)
+            {
+                statTypeLevelUps.Add(iterData.ApplyExpToProgression());
+            }
+
+            return progStatData.ApplyExpToProgression(externalExp);
+        }
+        // else data NOT found
+        else
+        {
+            // return some invalid value
+            return null;
+        }
+    }*/
 
     /// <summary>
     /// Returns average total stat points for all stat types.

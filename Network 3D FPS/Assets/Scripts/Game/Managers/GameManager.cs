@@ -337,9 +337,6 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// <returns></returns>
     private List<CharacterData> GetAllPartyMembersExcludingMC()
     {
-        // initialize character ID for the MC
-        string CHAR_ID_MC = "3";
-
         // initialize return list as empty list
         List<CharacterData> partyMems = new List<CharacterData>();
 
@@ -347,7 +344,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         foreach (CharacterData iterData in partyCharacters)
         {
             // if iterating character is NOT the MC
-            if (iterData.characterInfo.characterId != CHAR_ID_MC)
+            if (iterData.characterInfo.characterId != GeneralMethods.GetCharacterIdMainCharacter())
             {
                 // add iterating party member to return list
                 partyMems.Add(iterData);
@@ -356,6 +353,115 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
 
         // return populated list
         return partyMems;
+    }
+
+    #endregion
+
+
+
+
+    #region Level Up Functions
+
+    /// <summary>
+    /// Performs the full process for adding exp to party members and leveling up if appropriate.
+    /// </summary>
+    private void ExecuteLevelingProcess()
+    {
+        // performs Level-up process for all party members on their haven stats
+        List<(string, CharacterProgressionInfoSet)> charIdToLevelInfo = LevelUpHavenStatProperties();
+
+        // improves party member attributes based on the retrieved level-up info
+        ImprovePartyCharacterAttributes(charIdToLevelInfo);
+
+        Debug.Log("Start game coordinator's level up porcess chain with level-up info."); // NEED IMPL!!!
+    }
+
+    /// <summary>
+    /// Performs Level-up process for all party members on their haven stats.
+    /// </summary>
+    /// <returns></returns>
+    private List<(string, CharacterProgressionInfoSet)> LevelUpHavenStatProperties()
+    {
+        // inittialize return list
+        List<(string, CharacterProgressionInfoSet)> charIdToLevelInfo =
+            new List<(string, CharacterProgressionInfoSet)>(); ;
+        // initialize how many haven stats there are
+        int NUM_OF_HAVEN_STATS = 4;
+
+        // initialize vars for upcoming loop
+        string charId;
+        List<int> levelsReached;
+        CharacterProgressionInfoSet levelUpInfo;
+
+        // loop through all party members
+        foreach (CharacterData iterChar in partyCharacters)
+        {
+            // get the iterating char's ID
+            charId = iterChar.characterInfo.characterId;
+
+            // if the iterating char is the MC
+            if (charId == GeneralMethods.GetCharacterIdMainCharacter())
+            {
+                // skip this loop iteration
+                continue;
+            }
+
+            // loop through all haven stats
+            for (int i = 0; i < NUM_OF_HAVEN_STATS; i++)
+            {
+                // get all the levels reached by the iterating char's iterating haven stat
+                levelsReached = havenData.havenProgression.ApplyExternalExpToCharProgress(charId, i + 1);
+
+                // loop through all levels reached in iterating char's iterating haven stat
+                foreach (int iterLevel in levelsReached)
+                {
+                    // get level-up info for the iterating level
+                    levelUpInfo = AssetRefMethods.LoadBundleAssetProgressionInfoLeveling(i + 1, charId, iterLevel);
+
+                    // add the level-up info and associated char to return list
+                    charIdToLevelInfo.Add((charId, levelUpInfo));
+                }
+            }
+
+            // reset the iterating char's haven external exp
+            havenData.havenProgression.ResetExternalExpAmount();
+        }
+
+        // return the populated list
+        return charIdToLevelInfo;
+    }
+
+    /// <summary>
+    /// Improves party member attributes based on given level-up info.
+    /// </summary>
+    /// <param name="charIdToLevelInfoArg"></param>
+    private void ImprovePartyCharacterAttributes(List<(string, CharacterProgressionInfoSet)> charIdToLevelInfoArg)
+    {
+        // loop through all given level-up info
+        foreach ((string, CharacterProgressionInfoSet) iterTuple in charIdToLevelInfoArg)
+        {
+            // get party member associated with the iterating level-up info
+            CharacterData partyChar = partyCharacters.Find(
+                iterChar => iterChar.characterInfo.characterId == iterTuple.Item1);
+
+            // if no matching party member was found
+            if (partyChar == null)
+            {
+                // print warning to console
+                Debug.LogWarning($"No party member with this ID was found: {iterTuple.Item1}");
+
+                // skip this loop iteration
+                continue;
+            }
+
+            // loop through all level-up improvements of the iterating level-up info
+            foreach (SerializableDataCharacterProgressionTypeAndFloat iterData in
+                iterTuple.Item2.progressionTypeAndProgressionAmount)
+            {
+                // improve the assoicated party member character by the iterating level-up improvement
+                partyChar.characterStats.ImproveCharacterAttribute(iterData.typeValue, iterData.floatValue);
+            }
+        }
     }
 
     #endregion

@@ -130,6 +130,11 @@ public class HavenProgressionStatsSet
         return statTypesToStatData[statTypeNumArg - 1];
     }
 
+    public List<HavenProgressionStatData> GetAllProgressStatData()
+    {
+        return statTypesToStatData;
+    }
+
     /// <summary>
     /// Returns total stat points for all stat types.
     /// </summary>

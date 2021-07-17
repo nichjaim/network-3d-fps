@@ -17,6 +17,7 @@ MonoBehaviour:
     ammoType:
       setId: 0
       setName: NAME
+      doesNeedAmmo: 1
       weaponTypes: 
-    currentAmmo: 0
-    maxAmmo: 1
+    currentAmmo: 25
+    maxAmmo: 25

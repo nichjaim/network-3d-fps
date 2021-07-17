@@ -43,6 +43,18 @@ MonoBehaviour:
       guid: 1cb3098019dd3834da2cfbbffe073aff
     IncludeSubfolder: 1
     CompressBundle: 1
+  - BundleName: WepData
+    IncludedInPlayer: 1
+    Folder:
+      guid: f7a83d83a8afb194ba3a0bb54eac2416
+    IncludeSubfolder: 0
+    CompressBundle: 1
+  - BundleName: WepSlot
+    IncludedInPlayer: 1
+    Folder:
+      guid: 184a27a70d32f6046984dddd86249730
+    IncludeSubfolder: 0
+    CompressBundle: 1
   - BundleName: WepTypeSets
     IncludedInPlayer: 1
     Folder:

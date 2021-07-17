@@ -37,6 +37,16 @@ public class WeaponData
         Setup(templateArg.template);
 
         itemInfo.SetupPrefixName(templateArg.potentialPrefixNames);
+
+        // if template has a template rarity
+        if (templateArg.rarityTemplate != null)
+        {
+            // set item's rarity to template rarity
+            itemInfo.itemRarity = new RarityTier(templateArg.rarityTemplate);
+
+            // setup weapon stats based on weapon rarity
+            weaponStats.SetupRarityModifiers(itemInfo.itemRarity);
+        }
     }
 
     #endregion
@@ -55,6 +65,9 @@ public class WeaponData
         fireMethod = ProjectileFireMethodType.None;
 
         weaponStats = new WeaponStats();
+
+        // setup weapon stats based on weapon rarity
+        weaponStats.SetupRarityModifiers(itemInfo.itemRarity);
     }
 
     private void Setup(WeaponData templateArg)
@@ -66,6 +79,9 @@ public class WeaponData
         fireMethod = templateArg.fireMethod;
 
         weaponStats = new WeaponStats(templateArg.weaponStats);
+
+        // setup weapon stats based on weapon rarity
+        weaponStats.SetupRarityModifiers(itemInfo.itemRarity);
     }
 
     #endregion

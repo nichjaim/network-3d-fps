@@ -458,6 +458,32 @@ public static class AssetRefMethods
         return LoadAllBundleAsset<WeaponTypeSetTemplate>(BUNDLE_NAME);
     }
 
+    public static WeaponDataTemplate LoadBundleAssetWeaponDataTemplate(string wepIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "WepData";
+        string ASSET_NAME_PREFIX = "wepdata-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + wepIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<WeaponDataTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static WeaponSlotDataTemplate LoadBundleAssetWeaponSlotDataTemplate(int slotNumArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "WepSlot";
+        string ASSET_NAME_PREFIX = "wepslot-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + slotNumArg;
+
+        // load and return asset
+        return LoadBundleAsset<WeaponSlotDataTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
     #endregion
 
 
@@ -595,6 +621,19 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadAllBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME);
+    }
+
+    public static HavenActivityDataTemplate LoadBundleAssetHavenActivityTemplate(string activityIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenActivity";
+        string ASSET_NAME_PREFIX = "activity-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + activityIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<HavenActivityDataTemplate>(BUNDLE_NAME, loadAssetName);
     }
 
     public static HavenActivityDataTemplate LoadBundleAssetUniqueHavenActivityTemplate(string activityIdArg)

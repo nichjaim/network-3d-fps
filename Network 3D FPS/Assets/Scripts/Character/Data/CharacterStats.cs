@@ -269,7 +269,7 @@ public class CharacterStats
         healthCurrent = Mathf.Max(healthCurrent - trueDamage, 0);
 
         // builds up fatigue in health if apporpriate
-        BuildFatigueHealth(damageArg);
+        //BuildFatigueHealth(damageArg); // MAYBE REMOVE FATIGUE MECHANIC??? UN-COMMENT TO BRING IT BACK
 
         // return amount of actual damage taken
         return trueDamage;

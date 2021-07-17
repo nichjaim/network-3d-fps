@@ -12,6 +12,9 @@ public enum HavenLocation
     Cafeteria,
     Gym,
     StorageRoom,
-    SchoolField,
-    Library
+    Field,
+    Library,
+    Pool,
+    ClubroomFloor,
+    OldBuilding
 }

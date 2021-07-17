@@ -187,7 +187,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
         // activity:
         Lua.RegisterFunction("SetActivity", this, SymbolExtensions.GetMethodInfo(() => SetActivity(string.Empty)));
-        Lua.RegisterFunction("StartActivity", this, SymbolExtensions.GetMethodInfo(() => StartActivity()));
+        Lua.RegisterFunction("SetActivityStart", this, SymbolExtensions.GetMethodInfo(() => SetActivityStart()));
 
         // character:
         Lua.RegisterFunction("PartyAddWaifu1", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu1()));
@@ -220,6 +220,12 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu3()));
 
         Lua.RegisterFunction("DialogueUIRemoveSpeaker", this, SymbolExtensions.GetMethodInfo(() => DialogueUIRemoveSpeaker()));
+
+
+
+        // ===DIALOGUE TAG FUNCTIONS===
+
+        Lua.RegisterFunction("LevelingInfo", this, SymbolExtensions.GetMethodInfo(() => LevelingInfo()));
     }
 
     /// <summary>
@@ -317,6 +323,12 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu3");
 
         Lua.UnregisterFunction("DialogueUIRemoveSpeaker");
+
+
+
+        // ===DIALOGUE TAG FUNCTIONS===
+
+        Lua.UnregisterFunction("LevelingInfo");
     }
 
     #endregion
@@ -491,11 +503,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     }
 
     /// <summary>
-    /// Start the activity convo that is currently being targeted.
+    /// Sets the activity convo that is currently being targeted to start at end of current dialogue.
     /// </summary>
-    private void StartActivity()
+    private void SetActivityStart()
     {
-        _uiManager.DialgGameCoordr.StartTargetedActivityDialogue();
+        _uiManager.DialgGameCoordr.SetTargetedActivityDialogueStart();
     }
 
     #endregion
@@ -559,17 +571,38 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
     private void AddCharacterToPartyWaifu1()
     {
+        // add weapon slot for MC so that new party member can be used
+        _gameManager.AddNewAppropriateWeaponSlotToMainCharacterInventory();
+
         _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_1);
+
+        /// add waifu 1's starting weapon to MC's ivnentory, so that player can 
+        /// use it when switching to this waifu
+        _gameManager.AddWeaponToMainCharacterInventory("2");
     }
 
     private void AddCharacterToPartyWaifu2()
     {
+        // add weapon slot for MC so that new party member can be used
+        _gameManager.AddNewAppropriateWeaponSlotToMainCharacterInventory();
+
         _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_2);
+
+        /// add waifu 2's starting weapon to MC's ivnentory, so that player can 
+        /// use it when switching to this waifu
+        _gameManager.AddWeaponToMainCharacterInventory("3");
     }
 
     private void AddCharacterToPartyWaifu3()
     {
+        // add weapon slot for MC so that new party member can be used
+        _gameManager.AddNewAppropriateWeaponSlotToMainCharacterInventory();
+
         _gameManager.AddCharacterToParty(CHAR_ID_WAIFU_3);
+
+        /// add waifu 3's starting weapon to MC's ivnentory, so that player can 
+        /// use it when switching to this waifu
+        _gameManager.AddWeaponToMainCharacterInventory("4");
     }
 
     #endregion
@@ -732,6 +765,113 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private void DialogueUIRemoveSpeaker()
     {
         _uiManager.DialgUICoordr.RemoveSpeaker();
+    }
+
+    #endregion
+
+
+
+
+    #region Dialogue Tag Functions
+
+    /// <summary>
+    /// Returns the dialogue that displays the current level-up info.
+    /// </summary>
+    /// <returns></returns>
+    private string LevelingInfo() //GetCurrentLevelUpInfoDialogue()
+    {
+        // get current character and level up info
+        (string, CharacterProgressionInfoSet) charIdToProgInfo = 
+            _uiManager.DialgGameCoordr.GetCurrentCharToLevelUpInfo();
+
+        // initialize return dialogue with character's name and some preamble
+        string dialogueText = GetCharacterName(charIdToProgInfo.Item1) + "has gained: ";
+
+        // get list of the progress type and values for the upcoming loop
+        List<SerializableDataCharacterProgressionTypeAndFloat> progDataToValue = 
+            charIdToProgInfo.Item2.progressionTypeAndProgressionAmount;
+
+        // loop through all power increase entries
+        for (int i = 0; i < progDataToValue.Count; i++)
+        {
+            // if this is NOT the first iteration
+            if (i > 0)
+            {
+                // add some text to denote a new entry in this list
+                dialogueText += ", ";
+            }
+
+            // add iterating power increase type's actual dialogue text
+            dialogueText += GetProgressTypeDialogueText(progDataToValue[i].typeValue);
+            // add iterating power increase value to dialogue text
+            dialogueText += (" " + "+" + progDataToValue[i].floatValue);
+        }
+
+        // add ending punctuation to dialogue text
+        dialogueText += ".";
+
+        // return the setup dialogue text
+        return dialogueText;
+    }
+
+    /// <summary>
+    /// Returns the name of the character asscoaited with the given ID.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <returns></returns>
+    private string GetCharacterName(string charIdArg)
+    {
+        // load character template from given ID
+        CharacterDataTemplate charTemp = AssetRefMethods.
+            LoadBundleAssetCharacterDataTemplate(charIdArg);
+
+        // if a character was found
+        if (charTemp != null)
+        {
+            // return loaded char's name
+            return charTemp.template.characterInfo.characterName;
+        }
+        // else NO character template could be found
+        else
+        {
+            // print warning to log
+            Debug.LogWarning("Problem in GetCharacterName(). No character " +
+                $"associated with ID: {charIdArg}");
+
+            // return some default value
+            return string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Returns dialogue text associated with the given progress type.
+    /// </summary>
+    /// <param name="typeArg"></param>
+    /// <returns></returns>
+    private string GetProgressTypeDialogueText(CharacterProgressionType typeArg)
+    {
+        switch (typeArg)
+        {
+            case CharacterProgressionType.Stamina:
+                return "Health";
+
+            case CharacterProgressionType.Strength:
+                return "Weapon Damage";
+
+            case CharacterProgressionType.Dexterity:
+                return "Health";
+
+            case CharacterProgressionType.AbilityProficiency:
+                return "Ability Proficiency";
+
+            default:
+                // print warning to console
+                Debug.LogWarning("Problem in GetProgressTypeDialogueText(), No case " +
+                    $"for enum: {typeArg.ToString()}");
+
+                // return some default value
+                return string.Empty;
+        }
     }
 
     #endregion

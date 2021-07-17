@@ -20,6 +20,6 @@ MonoBehaviour:
   - functionName: Activity/SetActivity
     parameters: 02000000
     returnValue: 0
-  - functionName: Activity/StartActivity
+  - functionName: Activity/SetActivityStart
     parameters: 
     returnValue: 0

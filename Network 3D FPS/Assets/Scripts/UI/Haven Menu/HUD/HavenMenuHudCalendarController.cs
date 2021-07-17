@@ -79,7 +79,7 @@ public class HavenMenuHudCalendarController : MonoBehaviour, MMEventListener<Day
     /// <summary>
     /// Sets all the HUD calendar properties appropriately.
     /// </summary>
-    private void RefreshHudCalendar()
+    public void RefreshHudCalendar()
     {
         // if singleton references NOT setup yet
         if (_gameManager == null)

@@ -15,6 +15,14 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     [SerializeField]
     private GameObject multiplayerMenuButton = null;
 
+    [Tooltip("Controller for the haven HUD calendar")]
+    [SerializeField]
+    private HavenMenuHudCalendarController havenHudCalendar = null;
+
+    [Tooltip("The controller for the popup menu that has the scheduel info.")]
+    [SerializeField]
+    private HavenMenuSchedulePopupController havenSchedulePopup = null;
+
     [Header("Background Transition References")]
 
     [SerializeField]
@@ -37,6 +45,28 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     {
         // stops listening for all relevant events
         StopAllEventListening();
+    }
+
+    #endregion
+
+
+
+
+    #region Override Functions
+
+    protected override void SetMenuActivation(bool activeArg)
+    {
+        base.SetMenuActivation(activeArg);
+
+        // if haven menu is being turned on
+        if (activeArg)
+        {
+            // set all the HUD calendar properties appropriately
+            havenHudCalendar.RefreshHudCalendar();
+
+            // deactivate schedule popup menu
+            havenSchedulePopup.MenuDeactivate();
+        }
     }
 
     #endregion

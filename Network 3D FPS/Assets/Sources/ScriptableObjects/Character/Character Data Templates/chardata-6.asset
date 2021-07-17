@@ -26,7 +26,7 @@ MonoBehaviour:
       characterHeightInCm: 175
       characterHexColorCode: FFFFFF
     characterStats:
-      healthMaxBase: 1
+      healthMaxBase: 13
       healthCurrent: 1
       healthFatigue: 0
       healthFatigueBuildup: 0

@@ -89,6 +89,41 @@ public class CharacterInventory
         }
     }
 
+    /// <summary>
+    /// Adds the given weapon slot to the list of available weapon slots.
+    /// </summary>
+    /// <param name="templateArg"></param>
+    public void AddWeaponSlot(WeaponSlotDataTemplate templateArg)
+    {
+        weaponSlots.Add(new WeaponSlotData(templateArg));
+    }
+
+    /// <summary>
+    /// Adds given weapon to an available appropriate weapon slot, if possible.
+    /// </summary>
+    /// <param name="wepArg"></param>
+    public void AddWeapon(WeaponData wepArg)
+    {
+        // loop through all weapon slots
+        foreach (WeaponSlotData iterWepSlot in weaponSlots)
+        {
+            // if iterating weapon slot is empty AND is allows the given weapon's type
+            if (iterWepSlot.slotWeapon == null && 
+                iterWepSlot.requiredWeaponTypeSet.IsWeaponTypeInSet(wepArg.weaponType))
+            {
+                // place given weapon in iterating weapon slot
+                iterWepSlot.slotWeapon = new WeaponData(wepArg);
+
+                // DONT continue code
+                return;
+            }
+        }
+
+        // if got here then no room for weapon. print warning to console.
+        Debug.LogWarning("No room for weapon being added. " +
+            $"ID: {wepArg.itemInfo.itemId}");
+    }
+
     #endregion
 
 

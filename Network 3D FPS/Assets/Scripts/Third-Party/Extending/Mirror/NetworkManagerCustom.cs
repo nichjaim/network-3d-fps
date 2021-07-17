@@ -342,8 +342,14 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
 
         // initialize fresh empty character list
         List<CharacterData> charPartyList = new List<CharacterData>();
+
+        // get MC's char data
+        CharacterData mainCharData = new CharacterData(mainCharacterTemplate);
+        // refill MC's health
+        mainCharData.characterStats.FillHealthToMax();
+
         // add MC to party character list
-        charPartyList.Add(new CharacterData(mainCharacterTemplate));
+        charPartyList.Add(mainCharData);
 
         // set the new save file's char data to starting data
         newSaveData.playableCharacterData = charPartyList;

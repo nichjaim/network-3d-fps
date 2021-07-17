@@ -204,6 +204,8 @@ public class CharacterHealthController : MonoBehaviour
         CharacterData charFrontFacingData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
             _characterMasterController);
 
+        // remove all char's health fatigue
+        charFrontFacingData.characterStats.RemoveAllHealthFatigue();
         // have the surface level char recover all health
         charFrontFacingData.characterStats.FillHealthToMax();
 

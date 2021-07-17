@@ -599,4 +599,33 @@ public static class GeneralMethods
     {
         return "3";
     }
+
+    /// <summary>
+    /// Returns the character ID associated with given waifu character. 
+    /// Returns empty string if invalid enum given.
+    /// </summary>
+    /// <param name="typeArg"></param>
+    /// <returns></returns>
+    public static string GetWaifuCharacterId(WaifuCharacterType typeArg)
+    {
+        switch (typeArg)
+        {
+            case WaifuCharacterType.Waifu1:
+                return "4";
+
+            case WaifuCharacterType.Waifu2:
+                return "5";
+
+            case WaifuCharacterType.Waifu3:
+                return "6";
+
+            case WaifuCharacterType.None:
+                return string.Empty;
+
+            default:
+                Debug.LogWarning("In GetWaifuCharacterId(), given " +
+                    $"unknown enum: {typeArg.ToString()}");
+                return string.Empty;
+        }
+    }
 }

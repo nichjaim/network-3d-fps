@@ -27,6 +27,10 @@ public class DialogueEventData
     /// and largely that girl alone.
     public string associatedCharId;
 
+    [Tooltip("If set, this will override the char ID to the approriate waifu character's ID. " +
+        "Use this for quick easy selecting of the waifu character IDs.")]
+    public WaifuCharacterType waifuChar;
+
     /// the time slot that this event should play at. Will be ignored if event asscoaited with char as 
     /// characters can be hanged out with in any time slot.
     public TimeSlotType associatedTimeSlot;
@@ -65,7 +69,12 @@ public class DialogueEventData
 
         requiredAdditionalGroupTraitProgression = 0;
         requiredFlag = string.Empty;
+
         associatedCharId = string.Empty;
+        waifuChar = WaifuCharacterType.None;
+        // sets the character ID based on the set waifu char type, if appropriate
+        SetupCharIdFromWaifuChar();
+
         associatedTimeSlot = TimeSlotType.None;
         focusesOnHcontent = false;
     }
@@ -77,7 +86,12 @@ public class DialogueEventData
         requiredAdditionalGroupTraitProgression = templateArg.
             requiredAdditionalGroupTraitProgression;
         requiredFlag = templateArg.requiredFlag;
+
         associatedCharId = templateArg.associatedCharId;
+        waifuChar = templateArg.waifuChar;
+        // sets the character ID based on the set waifu char type, if appropriate
+        SetupCharIdFromWaifuChar();
+
         associatedTimeSlot = templateArg.associatedTimeSlot;
         focusesOnHcontent = templateArg.focusesOnHcontent;
     }
@@ -115,6 +129,22 @@ public class DialogueEventData
     public bool RequiresSpecificTimeSlot()
     {
         return associatedTimeSlot != TimeSlotType.None;
+    }
+
+    /// <summary>
+    /// Sets the character ID based on the set waifu char type, if appropriate.
+    /// </summary>
+    private void SetupCharIdFromWaifuChar()
+    {
+        // get waifu's char ID
+        string waifuId = GeneralMethods.GetWaifuCharacterId(waifuChar);
+
+        // if the waifu char was a valid type
+        if (waifuId != string.Empty)
+        {
+            // set the char ID to the waifu's ID
+            associatedCharId = waifuId;
+        }
     }
 
     #endregion

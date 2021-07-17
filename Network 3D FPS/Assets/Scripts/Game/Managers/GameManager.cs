@@ -18,6 +18,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public static GameManager Instance;
 
     private NetworkManagerCustom _networkManagerCustom = null;
+    private UIManager _uiManager = null;
 
     // the current save file number being used
     private int saveFileNumber = 0;
@@ -119,6 +120,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         DeactivateIfNotNetworkConnected();
     }
 
+    private void Start()
+    {
+        // setup reference vars to their respective singletons
+        InitializeSingetonReferences();
+    }
+
     private void OnEnable()
     {
         // starts listening for all relevant events
@@ -167,6 +174,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private void InitializeSingetonReferences()
     {
         _networkManagerCustom = (NetworkManagerCustom)NetworkManager.singleton;
+        _uiManager = UIManager.Instance;
     }
 
     /// <summary>
@@ -365,7 +373,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// <summary>
     /// Performs the full process for adding exp to party members and leveling up if appropriate.
     /// </summary>
-    private void ExecuteLevelingProcess()
+    public void ExecuteLevelingProcess()
     {
         // performs Level-up process for all party members on their haven stats
         List<(string, CharacterProgressionInfoSet)> charIdToLevelInfo = LevelUpHavenStatProperties();
@@ -373,7 +381,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // improves party member attributes based on the retrieved level-up info
         ImprovePartyCharacterAttributes(charIdToLevelInfo);
 
-        Debug.Log("Start game coordinator's level up porcess chain with level-up info."); // NEED IMPL!!!
+        // start game coordinator's level up porcess chain with level-up info
+        _uiManager.DialgGameCoordr.StartLevelingChain(charIdToLevelInfo);
+
+        // advance two days so that both weekend days are past and player starts on monday of new week
+        DayAdvanceEvent.Trigger();
+        DayAdvanceEvent.Trigger();
     }
 
     /// <summary>
@@ -417,6 +430,13 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
                 {
                     // get level-up info for the iterating level
                     levelUpInfo = AssetRefMethods.LoadBundleAssetProgressionInfoLeveling(i + 1, charId, iterLevel);
+
+                    // if no such info found for that level
+                    if (levelUpInfo == null)
+                    {
+                        // get default level-up info
+                        levelUpInfo = AssetRefMethods.LoadBundleAssetProgressionInfoLeveling(i + 1, charId, 0);
+                    }
 
                     // add the level-up info and associated char to return list
                     charIdToLevelInfo.Add((charId, levelUpInfo));
@@ -496,8 +516,14 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // if data found
         if (charDataTemp != null)
         {
-            // add amtching character to party
-            partyCharacters.Add(new CharacterData(charDataTemp));
+            // get the char to add to party
+            CharacterData charToAdd = new CharacterData(charDataTemp);
+
+            // refill the char's health to full
+            charToAdd.characterStats.FillHealthToMax();
+
+            // add matching character to party
+            partyCharacters.Add(charToAdd);
 
             // if the given character is NOT the MC
             if (charIdArg != GeneralMethods.GetCharacterIdMainCharacter())
@@ -569,6 +595,79 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     private CharacterData GetPartyCharacter(string charIdArg)
     {
         return partyCharacters.FirstOrDefault(iterChar => iterChar.characterInfo.characterId == charIdArg);
+    }
+
+    /*/// <summary>
+    /// Recovers the health for all party members.
+    /// </summary>
+    private void RecoverHealthAllPartyMembers()
+    {
+        // loop through all party memebrs
+        foreach (CharacterData iterChar in partyCharacters)
+        {
+            // remove all health fatigue for iterating party member
+            iterChar.characterStats.RemoveAllHealthFatigue();
+
+            // refill health to full for iterating party member
+            iterChar.characterStats.FillHealthToMax();
+        }
+    }*/
+
+    /// <summary>
+    /// Adds the apporpriate weapon slot to the main character's inventory. 
+    /// Needed as MC will not have all the wepon slots at beginning of game's tutorial.
+    /// </summary>
+    public void AddNewAppropriateWeaponSlotToMainCharacterInventory()
+    {
+        // get the main character's data
+        CharacterData mcPartyMember = GetPartyCharacter(GeneralMethods.GetCharacterIdMainCharacter());
+
+        // get how many weapon slots the MC currenlty has
+        int numOfWepSlots = mcPartyMember.characterInventory.weaponSlots.Count;
+
+        // load the weapon slot template based on which weapon slot the MC needs next
+        WeaponSlotDataTemplate loadedWepSlotTemplate = AssetRefMethods.
+            LoadBundleAssetWeaponSlotDataTemplate(numOfWepSlots + 1);
+
+        // if NO loaded weapon slot data was found
+        if (loadedWepSlotTemplate == null)
+        {
+            // print warning to console
+            Debug.LogWarning($"No weapon slot assoicated with slot number: {numOfWepSlots + 1}");
+
+            // DONT continue code
+            return;
+        }
+
+        // add the loaded weapon slot to the MC's available weapon slots
+        mcPartyMember.characterInventory.AddWeaponSlot(loadedWepSlotTemplate);
+    }
+
+    /// <summary>
+    /// Adds a weapon to the main character's inventory.
+    /// </summary>
+    /// <param name="wepIdArg"></param>
+    public void AddWeaponToMainCharacterInventory(string wepIdArg)
+    {
+        // get the main character's data
+        CharacterData mcPartyMember = GetPartyCharacter(GeneralMethods.GetCharacterIdMainCharacter());
+
+        // load the weapon template based on given weapon ID
+        WeaponDataTemplate loadedWepTemplate = AssetRefMethods.
+            LoadBundleAssetWeaponDataTemplate(wepIdArg);
+
+        // if NO loaded weapon was found
+        if (loadedWepTemplate == null)
+        {
+            // print warning to console
+            Debug.LogWarning($"No weapon assoicated with ID: {wepIdArg}");
+
+            // DONT continue code
+            return;
+        }
+
+        // add weapon to MC's inventory
+        mcPartyMember.characterInventory.AddWeapon(new WeaponData(loadedWepTemplate));
     }
 
     #endregion
@@ -819,6 +918,33 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         return potentialDialogueEvents;
     }
 
+    /// <summary>
+    /// Refreshes week's activity planning factors.
+    /// </summary>
+    public void RefreshHavenActivityPlanning()
+    {
+        havenData.ResetAllPlanning(GetAllPartyMembersExcludingMC());
+    }
+
+    /// <summary>
+    /// Adds haven activity points to the given character's progression stats based on given activity.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="activityArg"></param>
+    public void AddHavenActivityPoints(string charIdArg, HavenActivityData activityArg)
+    {
+        havenData.havenProgression.AddActivityPoints(charIdArg, activityArg);
+    }
+
+    /// <summary>
+    /// Adds given dialogue to list of completed dialogue to denote it's completion.
+    /// </summary>
+    /// <param name="dialogueArg"></param>
+    public void AddDialogueToCompletedDialogues(string dialogueArg)
+    {
+        havenData.havenDialogue.AddDialogueToCompletedDialogues(dialogueArg);
+    }
+
     #endregion
 
 
@@ -1042,7 +1168,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void OnMMEvent(PartyWipeEvent eventType)
     {
         // reduces current amount of external resources by the party wipe penalty.
-        havenData.havenProgression.InflictPartyWipePenalty();
+        //havenData.havenProgression.InflictPartyWipePenalty();
     }
 
     public void OnMMEvent(DayAdvanceEvent eventType)
@@ -1050,10 +1176,19 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // advance calendar date by one day
         havenData.AdvanceOneDay();
 
-        // refreshes week's activity planning factors
-        havenData.ResetAllPlanning(GetAllPartyMembersExcludingMC());
-        
-        Debug.Log("NEED IMPL: ensure switched to visualnovel game mode"); // NEED IMPL!!!
+        // if new day is day of shooter section
+        if (havenData.IsTodayShooterSectionDay())
+        {
+            // trigger event to start shooter game mode state
+            GameStateModeTransitionEvent.Trigger(GameStateMode.Shooter,
+                ActionProgressType.Started);
+        }
+        // else new day is just a VN day
+        else
+        {
+            // refreshes week's activity planning factors
+            RefreshHavenActivityPlanning();
+        }
     }
 
     public void OnMMEvent(EnterGameSessionEvent eventType)
@@ -1064,10 +1199,22 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // if tutorial is already complete
         if (IsTutorialComplete())
         {
-            // trigger event to start VN game mode state
-            GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel, 
-                ActionProgressType.Started);
+            // if today is day of shooter section
+            if (havenData.IsTodayShooterSectionDay())
+            {
+                // trigger event to start shooter game mode state
+                GameStateModeTransitionEvent.Trigger(GameStateMode.Shooter,
+                    ActionProgressType.Started);
+            }
+            // else today is just a VN day
+            else
+            {
+                // trigger event to start VN game mode state
+                GameStateModeTransitionEvent.Trigger(GameStateMode.VisualNovel,
+                    ActionProgressType.Started);
+            }
         }
+        // else still need to do tutorial
         else
         {
             // trigger event to start shooter game mode state

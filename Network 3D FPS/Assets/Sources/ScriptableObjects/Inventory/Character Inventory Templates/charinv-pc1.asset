@@ -14,7 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponSlotDataTemplates:
   - {fileID: 11400000, guid: bda836136b8162e4d84f1e4037058ba5, type: 2}
-  - {fileID: 11400000, guid: b1762d5fb2a27464196fe54e12b6e6f0, type: 2}
-  - {fileID: 11400000, guid: b7b9e63a579760e41956901e79639c9b, type: 2}
-  - {fileID: 11400000, guid: 19e7bab94aebf7641899c7c4fa7bd36a, type: 2}
   inventoryAmmoTemplate: {fileID: 11400000, guid: c8b746a1f77ac784fa8d473356b3d281, type: 2}

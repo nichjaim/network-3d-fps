@@ -91,44 +91,38 @@ public class WeaponStats
         shotSpread = templateArg.shotSpread;
     }
 
-    /*public void SetupRarityModifiers(RarityTier rarityTierArg)
+    /// <summary>
+    /// Sets the rarity modified values based on the given rarity.
+    /// </summary>
+    /// <param name="rarityTierArg"></param>
+    public void SetupRarityModifiers(RarityTier rarityTierArg)
     {
-        //initalize rarity multipler var
-        float randomRarityMultiplier;
+        // get a random stat multiplier for the damage stat from the given rarity
+        /*float randomRarityMultiplier = Random.Range(rarityTierArg.statMultiplierBoundaryLow,
+            rarityTierArg.statMultiplierBoundaryHigh);*/
+        // TEMP LINE!!! Apparently, Random cannot be called during serilization so just doing this for now...
+        float randomRarityMultiplier = (rarityTierArg.statMultiplierBoundaryLow + rarityTierArg.statMultiplierBoundaryHigh) / 2f;
 
-        //get a random stat multiplier for the damage stat from the given rarity
-        randomRarityMultiplier = Random.Range(rarityTierArg.statMultiplierBoundaryLow,
-            rarityTierArg.statMultiplierBoundaryHigh);
-        //set the rarity modified damage boundary stats using the retrieved modifier
+        // set the rarity modified damage boundary stats using the retrieved modifier
         damageBoundaryLowRarityModified = Mathf.RoundToInt(damageBoundaryLowBase * randomRarityMultiplier);
         damageBoundaryHighRarityModified = Mathf.RoundToInt(damageBoundaryHighBase * randomRarityMultiplier);
 
-        //if rarity modified damage LOW boundary is an invalid value
-        if (damageBoundaryLowRarityModified < 0)
-        {
-            //set the rarity modified damage LOW boundary to the default valid value
-            damageBoundaryLowRarityModified = 0;
-        }
-        //if rarity modified damage HIGH boundary is an invalid value
-        if (damageBoundaryHighRarityModified < 0)
-        {
-            //set the rarity modified HIGH damage boundary to the default valid value
-            damageBoundaryHighRarityModified = 0;
-        }
+        // ensure rarity modified damage boundaries are valid values
+        damageBoundaryLowRarityModified = Mathf.Max(damageBoundaryLowRarityModified, 0);
+        damageBoundaryHighRarityModified = Mathf.Max(damageBoundaryHighRarityModified, 0);
 
-        //get a random stat multiplier for the attack rate stat from the given rarity
-        randomRarityMultiplier = Random.Range(rarityTierArg.statMultiplierBoundaryLow,
-            rarityTierArg.statMultiplierBoundaryHigh);
-        //set the rarity modified attack rate stat using the retrieved modifier
+        // get a random stat multiplier for the attack rate stat from the given rarity
+        /*randomRarityMultiplier = Random.Range(rarityTierArg.statMultiplierBoundaryLow,
+            rarityTierArg.statMultiplierBoundaryHigh);*/
+        // TEMP LINE!!! Apparently, Random cannot be called during serilization so just doing this for now...
+        randomRarityMultiplier = (rarityTierArg.statMultiplierBoundaryLow + rarityTierArg.statMultiplierBoundaryHigh) / 2f;
+
+        // set the rarity modified attack rate stat using the retrieved modifier
         attackRateRarityModified = attackRateBase / randomRarityMultiplier;
 
-        //if rarity modified attack rate is an invalid value
-        if (attackRateRarityModified < 0f)
-        {
-            //set the rarity modified attack rate to the default valid value
-            attackRateRarityModified = 0f;
-        }
-    }*/
+        // ensure rarity modified attack rate is a valid value
+        attackRateRarityModified = Mathf.Max(attackRateRarityModified, 0f);
+    }
 
     #endregion
 

@@ -155,6 +155,29 @@ public class HavenProgressionStatsSet
         return totalPts;
     }
 
+    /// <summary>
+    /// Adds activity points based on the given activity.
+    /// </summary>
+    /// <param name="activityArg"></param>
+    public void AddActivityPoints(HavenActivityData activityArg)
+    {
+        // if stat data list does NOT have the correct length
+        if (statTypesToStatData.Count != 4)
+        {
+            // print warning to console
+            Debug.LogWarning("Problem in AddActivityPoints(), statTypesToStatData does NOT have the necessary length!");
+
+            // DONT continue code
+            return;
+        }
+
+        // add activity points to the stat types
+        statTypesToStatData[0].AddActivityPoints(activityArg.trait1ActivityPoints);
+        statTypesToStatData[1].AddActivityPoints(activityArg.trait2ActivityPoints);
+        statTypesToStatData[2].AddActivityPoints(activityArg.trait3ActivityPoints);
+        statTypesToStatData[3].AddActivityPoints(activityArg.trait4ActivityPoints);
+    }
+
     #endregion
 
 

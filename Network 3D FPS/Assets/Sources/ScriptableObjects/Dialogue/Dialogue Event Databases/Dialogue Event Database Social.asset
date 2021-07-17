@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Dialogue Event Database Social
   m_EditorClassIdentifier: 
   dialogueSets:
-    array: []
+    array:
+    - {fileID: 11400000, guid: 8d18cc3d22ebf02459c59bbf533d445e, type: 2}

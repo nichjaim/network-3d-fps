@@ -15,3 +15,5 @@ MonoBehaviour:
   progressionTypeAndProgressionAmount:
   - typeValue: 1
     floatValue: 2
+  - typeValue: 5
+    floatValue: 1

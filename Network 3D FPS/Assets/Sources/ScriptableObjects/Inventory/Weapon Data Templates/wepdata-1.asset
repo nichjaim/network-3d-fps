@@ -16,9 +16,9 @@ MonoBehaviour:
   template:
     itemInfo:
       itemId: 1
-      itemName: Peashooter
-      itemDescription: DESCRIPTION
-      itemPrefixName: PREFIX-NAME
+      itemName: Handgun
+      itemDescription: A sem-automatic pistol.
+      itemPrefixName: Rusty
       itemRarity:
         rarityId: 0
         rarityName: NAME
@@ -30,12 +30,14 @@ MonoBehaviour:
     weaponType: 2
     fireMethod: 1
     weaponStats:
-      damageBoundaryLowBase: 1
-      damageBoundaryHighBase: 1
+      damageBoundaryLowBase: 8
+      damageBoundaryHighBase: 12
       damageBoundaryLowRarityModified: 1
       damageBoundaryHighRarityModified: 1
-      attackRateBase: 1
+      attackRateBase: 0.8
       attackRateRarityModified: 1
       ammoPerUse: 1
       projectileSpeed: 15
-      raycastRange: 10
+      raycastRange: 15
+      projectilesPerShot: 1
+      shotSpread: 0

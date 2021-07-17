@@ -190,6 +190,17 @@ public class HavenProgressionStatData
         return progressPointsCurrent + progressPointsUsed;
     }
 
+    /// <summary>
+    /// Adds to the currently held activity points.
+    /// </summary>
+    /// <param name="activityPointsArg"></param>
+    public void AddActivityPoints(int activityPointsArg)
+    {
+        /// add the given poionts to current activity points while also ensuring it does 
+        /// NOT fall below zero
+        activityPoints = Mathf.Max(0, activityPoints + activityPointsArg);
+    }
+
     #endregion
 
 

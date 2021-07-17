@@ -84,7 +84,7 @@ public class HavenProgressionData
         externalExp = Mathf.Max(reducedAmount, 0);
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Reduces current amount by the party wipe penalty.
     /// </summary>
     public void InflictPartyWipePenalty()
@@ -94,7 +94,7 @@ public class HavenProgressionData
 
         // set current amount based on penalty value
         SetExternalExpFromPercentage(PERCENTAGE_TO_KEEP);
-    }
+    }*/
 
     /// <summary>
     /// Resets the external exp amount to zero.
@@ -347,6 +347,31 @@ public class HavenProgressionData
         {
             charIdToProgressionStats.Add(new SerializableDataStringAndHavenProgressionStatsSet(
                 charIdArg, new HavenProgressionStatsSet()));
+        }
+    }
+
+    /// <summary>
+    /// Adds activity points to the given character's progression stats based on given activity.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="activityArg"></param>
+    public void AddActivityPoints(string charIdArg, HavenActivityData activityArg)
+    {
+        // get prog stat set associated with given character ID
+        HavenProgressionStatsSet statSet = GetCharProgressStatsSet(charIdArg);
+
+        // if stat set was found
+        if (statSet != null)
+        {
+            // adds activity points based on the given activity
+            statSet.AddActivityPoints(activityArg);
+        }
+        // else no such stat set could be found
+        else
+        {
+            // print warning to console
+            Debug.LogWarning("Problem in AddActivityPoints(), NO prog stat set associated with " +
+                $"given char ID: {charIdArg}");
         }
     }
 

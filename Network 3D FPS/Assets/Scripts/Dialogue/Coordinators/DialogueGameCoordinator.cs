@@ -39,7 +39,23 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
     [ConversationPopup(true)]
     [SerializeField]
-    private string restDayDialogueConvo = string.Empty;
+    private string newRunDialogueConvo = string.Empty;
+
+    /*[ConversationPopup(true)]
+    [SerializeField]
+    private string restDayDialogueConvo = string.Empty;*/
+
+    [ConversationPopup(true)]
+    [SerializeField]
+    private string levelingStartDialogueConvo = string.Empty;
+
+    [ConversationPopup(true)]
+    [SerializeField]
+    private string levelingEndDialogueConvo = string.Empty;
+
+    [ConversationPopup(true)]
+    [SerializeField]
+    private string levelingInfoDialogueConvo = string.Empty;
 
 
     private string currentActivityPartnerCharId = string.Empty;
@@ -56,10 +72,12 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
     /// the phases in which certain actions should attempt to occur after a dialogue ends. 
     /// (dialogues chained together upon each ending)
+    private bool inDialogueChainPhaseActivity = false;
     private bool inDialogueChainPhaseSocialEvents = false;
     private bool inDialogueChainPhasePassTime = false;
 
-    private bool inDialogueChainPhaseRestDay = false;
+    //private bool inDialogueChainPhaseRestDay = false;
+    private bool inDialogueChainPhaseHavenReturn = false;
     private bool inDialogueChainPhaseArena = false;
 
     // the arena-related dialogues that have already been used in the current run
@@ -230,6 +248,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     /// </summary>
     private void PlayNextChainedDialogueIfAppropriate()
     {
+        // if while processing the activity event chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhaseActivity())
+        {
+            // DONT continue code
+            return;
+        }
+
         // if while processing the social event chain phase it's denoted that this phase is NOT done
         if (!ProcessDialogueChainPhaseSocialEvents())
         {
@@ -244,8 +269,15 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             return;
         }
 
-        // if while processing the rest day chain phase it's denoted that this phase is NOT done
+        /*// if while processing the rest day chain phase it's denoted that this phase is NOT done
         if (!ProcessDialogueChainPhaseRestDay())
+        {
+            // DONT continue code
+            return;
+        }*/
+
+        // if while processing the haven return chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhaseHavenReturn())
         {
             // DONT continue code
             return;
@@ -264,6 +296,30 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             // DONT continue code
             return;
         }
+    }
+
+    /// <summary>
+    /// Plays activity event dialogue that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhaseActivity()
+    {
+        // if player should be put in arena after dialogue is done
+        if (inDialogueChainPhaseActivity)
+        {
+            // starts haven activity dialogue and all associated procceses
+            StartHavenActivity();
+
+            // denote that done doing activity stuff for this chain
+            inDialogueChainPhaseActivity = false;
+
+            // return that phase is NOT done
+            return false;
+        }
+
+        // return that phase IS done
+        return true;
     }
 
     /// <summary>
@@ -318,8 +374,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                 if (shouldPlayDialogue)
                 {
                     // denote dialogue to play as now completed
-                    _gameManager.HavenData.havenDialogue.AddDialogueToCompletedDialogues(
-                        todaySocialDialgEvent.dialogueName);
+                    _gameManager.AddDialogueToCompletedDialogues(todaySocialDialgEvent.dialogueName);
 
                     // play dialogue event
                     PlayDialogue(todaySocialDialgEvent.dialogueName);
@@ -371,7 +426,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         return true;
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Plays rest day event dialogue that is next in chain. 
     /// Returns whether this phase is complete or not.
     /// </summary>
@@ -414,10 +469,31 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // return that phase IS done
         return true;
+    }*/
+
+    /// <summary>
+    /// Plays haven return event dialogue that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhaseHavenReturn()
+    {
+        // if player should start level up stuff after dialogue is done
+        if (inDialogueChainPhaseHavenReturn)
+        {
+            // denote that done doing haven return stuff for this chain
+            inDialogueChainPhaseHavenReturn = false;
+
+            // start leveling up process
+            _gameManager.ExecuteLevelingProcess();
+        }
+
+        // return that phase IS done
+        return true;
     }
 
     /// <summary>
-    /// Plays pass time event dialogue that is next in chain. 
+    /// Plays arena event dialogue that is next in chain. 
     /// Returns whether this phase is complete or not.
     /// </summary>
     /// <returns></returns>
@@ -447,18 +523,22 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         // if player should give level up info once dialogue is done
         if (inDialogueChainPhaseLevelUp)
         {
-            // if have more level up info to show
-            if (currentIndexLevelUpChain < charIdsToLevelUpInfo.Count)
+            // if have more level up info to show AND there actually is level-up info
+            if ((currentIndexLevelUpChain < charIdsToLevelUpInfo.Count) && (charIdsToLevelUpInfo.Count != 0))
             {
+                // increment level up chain's index
+                currentIndexLevelUpChain++;
+
                 // get char and level up info of current chain link
-                (string, CharacterProgressionInfoSet) charIdToProgInfo = charIdsToLevelUpInfo[currentIndexLevelUpChain];
+                //(string, CharacterProgressionInfoSet) charIdToProgInfo = charIdsToLevelUpInfo[currentIndexLevelUpChain];
 
                 Debug.Log("NEED IMPL: Set level up info's char as only portrait in dialogue scene."); // NEED IMPL!!!
 
-                Debug.Log("NEED IMPL: Play dialogue based on current level up chain link."); // NEED IMPL!!!
+                // play dialogue that tells player the current level-up info
+                PlayDialogue(levelingInfoDialogueConvo);
 
                 // increment level up chain's index
-                currentIndexLevelUpChain++;
+                //currentIndexLevelUpChain++;
             }
             // else shown all level up info
             else
@@ -466,7 +546,8 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                 // denote that done doing level up stuff for this chain
                 inDialogueChainPhaseLevelUp = false;
 
-                Debug.Log("NEED IMPL: Play ending level up phase dialogue."); // NEED IMPL!!!
+                // play ending level up phase dialogue
+                PlayDialogue(levelingEndDialogueConvo);
             }
 
             // return that phase is NOT done
@@ -482,9 +563,11 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     /// </summary>
     private void DeactivateAllDialogueChainPhases()
     {
+        inDialogueChainPhaseActivity = false;
         inDialogueChainPhaseSocialEvents = false;
         inDialogueChainPhasePassTime = false;
-        inDialogueChainPhaseRestDay = false;
+        //inDialogueChainPhaseRestDay = false;
+        inDialogueChainPhaseHavenReturn = false;
         inDialogueChainPhaseArena = false;
         inDialogueChainPhaseLevelUp = false;
     }
@@ -497,9 +580,32 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     #region Activity Functions
 
     /// <summary>
-    /// Start the activity convo that is currently being targeted.
+    /// Set the activity convo that is currently being targeted to start on dialogue end.
     /// </summary>
-    public void StartTargetedActivityDialogue()
+    public void SetTargetedActivityDialogueStart()
+    {
+        // enter activitry chain pahse to ensure activity dialogue starts after current dialogue finishes
+        inDialogueChainPhaseActivity = true;
+
+        /*// enter dialogue chain phases (dialogues will occur after the activity dialogue ends)
+        inDialogueChainPhaseSocialEvents = true;
+        inDialogueChainPhasePassTime = true;
+
+        // get appropriate activity dialogue
+        string activityConvo = GetDialogueActivityConversationPrefix() + currentActivityId;
+
+        /// adds haven activity points to the current activity partner being targeted based on 
+        /// the current activity being targeted.
+        AddHavenActivityPoints();
+
+        // play activity conversation
+        PlayDialogue(activityConvo);*/
+    }
+
+    /// <summary>
+    /// Starts haven activity dialogue and all associated procceses.
+    /// </summary>
+    private void StartHavenActivity()
     {
         // enter dialogue chain phases (dialogues will occur after the activity dialogue ends)
         inDialogueChainPhaseSocialEvents = true;
@@ -508,8 +614,40 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         // get appropriate activity dialogue
         string activityConvo = GetDialogueActivityConversationPrefix() + currentActivityId;
 
+        /// adds haven activity points to the current activity partner being targeted based on 
+        /// the current activity being targeted.
+        AddHavenActivityPoints();
+
         // play activity conversation
         PlayDialogue(activityConvo);
+    }
+
+    /// <summary>
+    /// Adds haven activity points to the current activity partner being targeted based on 
+    /// the current activity being targeted.
+    /// </summary>
+    private void AddHavenActivityPoints()
+    {
+        // load the non-unique activity based on the current activity being targeted
+        HavenActivityDataTemplate loadedActivityTemplate = AssetRefMethods.
+            LoadBundleAssetHavenActivityTemplate(currentActivityId);
+
+        // if an activity template was loaded
+        if (loadedActivityTemplate != null)
+        {
+            // get activity data from loaded template
+            HavenActivityData loadedActivity = new HavenActivityData(loadedActivityTemplate);
+
+            // add activity points based on targeteted partner and targeted activity
+            _gameManager.AddHavenActivityPoints(currentActivityPartnerCharId, loadedActivity);
+        }
+        // else activity could NOT be found
+        else
+        {
+            // print warning to console
+            Debug.LogWarning("Problem in AddHavenActivityPoints(), No activity template could " +
+                $"be found from activity ID: {currentActivityId}");
+        }
     }
 
     private string GetDialogueActivityConversationPrefix()
@@ -543,7 +681,10 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         PlayDialogue(returnToHavenDialogueConvo);
 
         // prep story events for dialogue chain
-        inDialogueChainPhaseRestDay = true;
+        //inDialogueChainPhaseRestDay = true;
+
+        // prep return haven events for dialogue chain
+        inDialogueChainPhaseHavenReturn = true;
     }
 
     /// <summary>
@@ -555,7 +696,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         PlayDialogue(partyWipeDialogueConvo);
 
         // prep story events for dialogue chain
-        inDialogueChainPhaseRestDay = true;
+        //inDialogueChainPhaseRestDay = true;
     }
 
     private string GetDialogueHavenLocationConversationPrefix()
@@ -588,6 +729,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // turns off all dialogue chain phases
         DeactivateAllDialogueChainPhases();
+
+        // refreshes week's activity planning factors
+        _gameManager.RefreshHavenActivityPlanning();
     }
 
     #endregion
@@ -601,18 +745,28 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     /// Begins the leveling up dialogue chain.
     /// </summary>
     /// <param name="charIdsToLevelUpInfoArg"></param>
-    private void StartLevelingChain(List<(string, CharacterProgressionInfoSet)> charIdsToLevelUpInfoArg)
+    public void StartLevelingChain(List<(string, CharacterProgressionInfoSet)> charIdsToLevelUpInfoArg)
     {
         // set leveling info to given info
         charIdsToLevelUpInfo = charIdsToLevelUpInfoArg;
 
         // reset chain index to zero
-        currentIndexLevelUpChain = 0;
+        //currentIndexLevelUpChain = 0;
+        /// reset chain index to -1, needs to be negative one as index needs to be incremented 
+        /// first before doing level up stuff is checked as the correct index is needed shortly 
+        /// after that.
+        currentIndexLevelUpChain = -1;
 
         // denote that now in leveling chain
         inDialogueChainPhaseLevelUp = true;
 
-        Debug.Log("NEED IMPL: Play starting leveling chain dialogue"); // NEED IMPL!!!
+        // play starting level-up chain dialogue
+        PlayDialogue(levelingStartDialogueConvo);
+    }
+
+    public (string, CharacterProgressionInfoSet) GetCurrentCharToLevelUpInfo()
+    {
+        return charIdsToLevelUpInfo[currentIndexLevelUpChain];
     }
 
     #endregion
@@ -747,7 +901,8 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                         // if the tutorial HAS been completed
                         if (_gameManager.IsTutorialComplete())
                         {
-                            Debug.Log("NEED IMPL: play dialogue associated with starting a new run."); // NEED IMPL
+                            // play dialogue associated with starting a new run
+                            PlayDialogue(newRunDialogueConvo);
                         }
                         // else still need to do tutorial
                         else

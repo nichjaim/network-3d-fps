@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   template:
     activityId: 3
-    activityName: Fortify Barricade
-    activityDescription: Fortifies the main barricade.
+    activityName: Track
+    activityDescription: Go for a jog around the track.
     trait1ActivityPoints: 0
-    trait2ActivityPoints: 1
-    trait3ActivityPoints: 0
-    trait4ActivityPoints: 1
+    trait2ActivityPoints: 0
+    trait3ActivityPoints: 2
+    trait4ActivityPoints: 0

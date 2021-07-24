@@ -52,12 +52,49 @@ public struct ReturnToHavenEvent
 	}
 }
 
-/// <summary>
+/*/// <summary>
 /// An event fired when a calendar date advances by one day.
 /// </summary>
 public struct DayAdvanceEvent
 {
 	static DayAdvanceEvent e;
+	public static void Trigger()
+	{
+		MMEventManager.TriggerEvent(e);
+	}
+}*/
+
+/// <summary>
+/// An event fired when a calendar date advances by certain number of days.
+/// </summary>
+public struct DaysAdvanceEvent
+{
+	public int daysToAdvance;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="daysArg"></param>
+	public DaysAdvanceEvent(int daysToAdvanceArg)
+	{
+		daysToAdvance = daysToAdvanceArg;
+	}
+
+	static DaysAdvanceEvent e;
+	public static void Trigger(int daysToAdvanceArg)
+	{
+		e.daysToAdvance = daysToAdvanceArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when a calendar date has changed.
+/// </summary>
+public struct HavenCalendarTimeChangedEvent
+{
+	static HavenCalendarTimeChangedEvent e;
 	public static void Trigger()
 	{
 		MMEventManager.TriggerEvent(e);
@@ -115,6 +152,31 @@ public struct SpawnedCharacterDeathEvent
 	public static void Trigger(CharacterMasterController charMasterArg)
 	{
 		e.charMaster = charMasterArg;
+
+		MMEventManager.TriggerEvent(e);
+	}
+}
+
+/// <summary>
+/// An event fired when exp should be gained.
+/// </summary>
+public struct ExperienceGainEvent
+{
+	public int expAmount;
+
+	/// <summary>
+	/// Initializes a new instance of the struct.
+	/// </summary>
+	/// <param name="expAmountArg"></param>
+	public ExperienceGainEvent(int expAmountArg)
+	{
+		expAmount = expAmountArg;
+	}
+
+	static ExperienceGainEvent e;
+	public static void Trigger(int expAmountArg)
+	{
+		e.expAmount = expAmountArg;
 
 		MMEventManager.TriggerEvent(e);
 	}

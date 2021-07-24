@@ -467,6 +467,7 @@ MonoBehaviour:
   syncInterval: 0.1
   _charMaster: {fileID: 4562580430550155782}
   _objActivation: {fileID: 8844675184712745560}
+  expDrop: 1
 --- !u!114 &8844675184712745560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,7 +763,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0.6, z: 0}

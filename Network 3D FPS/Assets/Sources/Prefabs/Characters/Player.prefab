@@ -406,7 +406,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   characterTemplate: {fileID: 0}
-  _charHealth: {fileID: 1967887725619217795}
+  _charHealth: {fileID: 6152107859756186034}
   _charModel: {fileID: 1387635383925545050}
   _charStatus: {fileID: 2371009675761868360}
   _charMovement: {fileID: 1155702854681754698}
@@ -1377,9 +1377,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2287944089310776531}
-  - component: {fileID: 1967887725619217795}
+  - component: {fileID: 6152107859756186034}
   m_Layer: 0
-  m_Name: Health
+  m_Name: PlayerHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1400,7 +1400,7 @@ Transform:
   m_Father: {fileID: 1155702854745451267}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1967887725619217795
+--- !u!114 &6152107859756186034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1409,9 +1409,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8823953822900915047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8bc4a7c87775bf4fbf562fe6ff8a2c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ab2171263fdeac43b34a6b5d8aa2774, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _characterMasterController: {fileID: 7713174688871147706}
   _characterSwapController: {fileID: 7739512234874481268}
   defaultActionTextPopupPointArg: {fileID: 1472180456082075741}
+  _objectActivation: {fileID: 8369398131082492372}

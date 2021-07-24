@@ -49,9 +49,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     [SerializeField]
     private string levelingStartDialogueConvo = string.Empty;
 
-    [ConversationPopup(true)]
+    /*[ConversationPopup(true)]
     [SerializeField]
-    private string levelingEndDialogueConvo = string.Empty;
+    private string levelingEndDialogueConvo = string.Empty;*/
 
     [ConversationPopup(true)]
     [SerializeField]
@@ -61,6 +61,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     private string currentActivityPartnerCharId = string.Empty;
     public string CurrentActivityPartnerCharId
     {
+        get { return currentActivityPartnerCharId; }
         set { currentActivityPartnerCharId = value; }
     }
 
@@ -77,6 +78,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     private bool inDialogueChainPhasePassTime = false;
 
     //private bool inDialogueChainPhaseRestDay = false;
+    private bool inDialogueChainPhasePartyWipe = false;
     private bool inDialogueChainPhaseHavenReturn = false;
     private bool inDialogueChainPhaseArena = false;
 
@@ -276,6 +278,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             return;
         }*/
 
+        // if while processing the party wipe chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhasePartyWipe())
+        {
+            // DONT continue code
+            return;
+        }
+
         // if while processing the haven return chain phase it's denoted that this phase is NOT done
         if (!ProcessDialogueChainPhaseHavenReturn())
         {
@@ -332,6 +341,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         // if should do a dialogue event (if any available) after dialogues done
         if (inDialogueChainPhaseSocialEvents)
         {
+            // will only ever do one social event per chain, so just stop it here
+            inDialogueChainPhaseSocialEvents = false;
+
             // get today's social dialogue event
             DialogueEventData todaySocialDialgEvent = _gameManager.HavenData.
                 GetTodaySocialDialogueEvent();
@@ -383,9 +395,6 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                     return false;
                 }
             }
-
-            // denote that done doing social events for this chain
-            inDialogueChainPhaseSocialEvents = false;
         }
 
         // return that phase IS done
@@ -406,7 +415,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
             inDialogueChainPhasePassTime = false;
 
             // go to next time slot and get if should be entering a new day
-            bool shouldGoToNextDay = _gameManager.HavenData.calendarSystem.GoToNextTimeSlot();
+            bool shouldGoToNextDay = _gameManager.GoToNextTimeSlot();
 
             // if should be entering a new day
             if (shouldGoToNextDay)
@@ -415,8 +424,19 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                 PlayDialogue(goToBedDialogueConvo);
 
                 // trigger event to denote that new day
-                DayAdvanceEvent.Trigger();
+                DaysAdvanceEvent.Trigger(1);
+
+                // if entered the shooter section day
+                if (_gameManager.HavenData.IsTodayShooterSectionDay())
+                {
+                    Debug.Log("NEED IMPL: Enter start run dialogue chain so that " +
+                        "run dialogue will play after go to bed dialogue, maybe only " +
+                        "have arenas get created when new un dialogue compeltes??");
+                }
             }
+
+            // denote that calendar time has changed
+            HavenCalendarTimeChangedEvent.Trigger();
 
             // return that phase is NOT done
             return false;
@@ -472,6 +492,30 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     }*/
 
     /// <summary>
+    /// Does party wipe stuff that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhasePartyWipe()
+    {
+        // if player should start party wipe stuff after dialogue is done
+        if (inDialogueChainPhasePartyWipe)
+        {
+            // denote that done doing party wipe stuff for this chain
+            inDialogueChainPhasePartyWipe = false;
+
+            // trigger event to denote returning to haven
+            ReturnToHavenEvent.Trigger();
+
+            // return that should stop chain here
+            return false;
+        }
+
+        // return that phase IS done
+        return true;
+    }
+
+    /// <summary>
     /// Plays haven return event dialogue that is next in chain. 
     /// Returns whether this phase is complete or not.
     /// </summary>
@@ -486,6 +530,18 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
             // start leveling up process
             _gameManager.ExecuteLevelingProcess();
+
+            // resets the haven location events used in the week
+            _gameManager.ResetLocationEventCurrentWeekPlan();
+
+            // setup the week's planned social dialogue events
+            _gameManager.PlanWeekSocialDialogueEvents();
+
+            // advance two days so that both weekend days are past and player starts on monday of new week
+            DaysAdvanceEvent.Trigger(2);
+
+            // return that should stop chain here
+            return false;
         }
 
         // return that phase IS done
@@ -547,7 +603,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                 inDialogueChainPhaseLevelUp = false;
 
                 // play ending level up phase dialogue
-                PlayDialogue(levelingEndDialogueConvo);
+                //PlayDialogue(levelingEndDialogueConvo);
+                // play end of day dialogue
+                PlayDialogue(goToBedDialogueConvo);
             }
 
             // return that phase is NOT done
@@ -567,6 +625,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         inDialogueChainPhaseSocialEvents = false;
         inDialogueChainPhasePassTime = false;
         //inDialogueChainPhaseRestDay = false;
+        inDialogueChainPhasePartyWipe = false;
         inDialogueChainPhaseHavenReturn = false;
         inDialogueChainPhaseArena = false;
         inDialogueChainPhaseLevelUp = false;
@@ -617,6 +676,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         /// adds haven activity points to the current activity partner being targeted based on 
         /// the current activity being targeted.
         AddHavenActivityPoints();
+
+        // remove the availability of used activity and partner
+        _gameManager.RemoveActivityAvailability(currentActivityId, currentActivityPartnerCharId);
 
         // play activity conversation
         PlayDialogue(activityConvo);
@@ -695,6 +757,9 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         // play party wipe dialogue
         PlayDialogue(partyWipeDialogueConvo);
 
+        // enter party wipe dialogue chain
+        inDialogueChainPhasePartyWipe = true;
+
         // prep story events for dialogue chain
         //inDialogueChainPhaseRestDay = true;
     }
@@ -732,6 +797,38 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // refreshes week's activity planning factors
         _gameManager.RefreshHavenActivityPlanning();
+
+        // resets the haven location events used in the week
+        _gameManager.ResetLocationEventCurrentWeekPlan();
+        // plans the days haven location events
+        _gameManager.PlanTodaysLocationEvents();
+
+        // sets up the week's planned social dialogue events
+        _gameManager.PlanWeekSocialDialogueEvents();
+
+        // trigger event to save game progress
+        SaveGameProgressEvent.Trigger();
+    }
+
+    /// <summary>
+    /// Starts dialogue conversation associated with given have location event.
+    /// </summary>
+    /// <param name="eventArg"></param>
+    public void PlayHavenLocationEventDialogue(HavenLocationEvent eventArg)
+    {
+        // get appropriate location conversation
+        string locationConvo = GetDialogueHavenLocationEventConversationPrefix() + eventArg.eventId;
+
+        // play dialogue conversation
+        PlayDialogue(locationConvo);
+
+        // removes event from active list and adds to watched non-repeatable event list if appropriate
+        _gameManager.AddHavenLocationEventToSeen(eventArg);
+    }
+
+    private string GetDialogueHavenLocationEventConversationPrefix()
+    {
+        return "HavenLocationEvent/Event-";
     }
 
     #endregion

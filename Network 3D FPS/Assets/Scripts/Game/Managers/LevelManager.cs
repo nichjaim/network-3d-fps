@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransitionEvent>,*/
-    MMEventListener<LevelArenaExitEvent>
+    MMEventListener<LevelArenaExitEvent>, MMEventListener<ReturnToHavenEvent>
 {
     #region Class Variables
 
@@ -46,6 +46,9 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
 
     #region Arena Functions
 
+    /// <summary>
+    /// Resets all arena run's progress data to new run.
+    /// </summary>
     public void ResetArenaProgress()
     {
         arenaCoordinator.ResetRunProgress();
@@ -113,6 +116,7 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
     {
         //this.MMEventStartListening<GameStateModeTransitionEvent>();
         this.MMEventStartListening<LevelArenaExitEvent>();
+        this.MMEventStartListening<ReturnToHavenEvent>();
     }
 
     /// <summary>
@@ -123,6 +127,7 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
     {
         //this.MMEventStopListening<GameStateModeTransitionEvent>();
         this.MMEventStopListening<LevelArenaExitEvent>();
+        this.MMEventStopListening<ReturnToHavenEvent>();
     }
 
     /*public void OnMMEvent(GameStateModeTransitionEvent eventType)
@@ -165,6 +170,15 @@ public class LevelManager : MonoBehaviour, /*MMEventListener<GameStateModeTransi
 
         // trigger event to denote that arena progress has been advanced
         ArenaProgressionAdvancedEvent.Trigger(arenaCoordinator);
+    }
+
+    public void OnMMEvent(ReturnToHavenEvent eventType)
+    {
+        // destroy the currenly instantiated level arena
+        arenaCoordinator.DestoryArena();
+
+        // resets all arena run's progress data to new run
+        ResetArenaProgress();
     }
 
     #endregion

@@ -13,7 +13,7 @@ public class CharacterHealthController : MonoBehaviour
     [Header("Component References")]
 
     [SerializeField]
-    private CharacterMasterController _characterMasterController = null;
+    protected CharacterMasterController _characterMasterController = null;
 
     [SerializeField]
     private CharacterSwapController _characterSwapController = null;
@@ -68,7 +68,7 @@ public class CharacterHealthController : MonoBehaviour
     /// Setup all variables that reference singleton instance related components. 
     /// Call in Start(), needs to be start to give the instances time to be created.
     /// </summary>
-    private void InitializeSingletonReferences()
+    protected virtual void InitializeSingletonReferences()
     {
         _spawnManager = GameManager.Instance.SpawnManager;
     }
@@ -188,11 +188,21 @@ public class CharacterHealthController : MonoBehaviour
         // call health change actions if NOT null
         OnHealthChangedAction?.Invoke();
 
+        // if character has run out of health
         if (charFrontFacingData.characterStats.IsOutOfHealth())
         {
-            // call out-of-health change actions if NOT null
-            OnOutOfHealthAction?.Invoke();
+            // performs the necessary operations when the character loses all their health
+            ProcessDeath();
         }
+    }
+
+    /// <summary>
+    /// Performs the necessary operations when the character loses all their health.
+    /// </summary>
+    protected virtual void ProcessDeath()
+    {
+        // call out-of-health change actions if NOT null
+        OnOutOfHealthAction?.Invoke();
     }
 
     /// <summary>
@@ -204,13 +214,18 @@ public class CharacterHealthController : MonoBehaviour
         CharacterData charFrontFacingData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
             _characterMasterController);
 
+        // if no char data set yet
+        if (charFrontFacingData == null)
+        {
+            // DONT continue code
+            return;
+        }
+
         // remove all char's health fatigue
         charFrontFacingData.characterStats.RemoveAllHealthFatigue();
         // have the surface level char recover all health
         charFrontFacingData.characterStats.FillHealthToMax();
 
-        // call health healed actions if NOT null
-        OnHealthHealed?.Invoke();
         // call health change actions if NOT null
         OnHealthChangedAction?.Invoke();
     }

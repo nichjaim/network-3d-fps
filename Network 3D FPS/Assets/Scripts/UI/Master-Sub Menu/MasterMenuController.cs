@@ -21,6 +21,9 @@ namespace Nichjaim.MasterSubMenu
         // sub menu controllers held by the sub menu controller parent
         protected List<SubMenuController> _subMenuControllers;
 
+        // is this the first time the menu is being opened
+        protected bool isFirstMenuOpening = true;
+
         #endregion
 
 
@@ -116,8 +119,10 @@ namespace Nichjaim.MasterSubMenu
                 /// capitalization doesn't affect comparison)
                 if (iterContr.GetMenuId().ToLower() == subMenuIdArg.ToLower())
                 {
-                    // if iterating menu is closed
-                    if (!iterContr.IsMenuOpen())
+                    /// if iterating menu is closed OR if first time sub-menus being opened. 
+                    /// NOTE: need to check if first time because otherwise this menu will 
+                    /// likely already be on and thus OnMenuOpen will NOT be called.
+                    if (!iterContr.IsMenuOpen() || isFirstMenuOpening)
                     {
                         // open iterating menu
                         iterContr.SetMenuObjectActive(true);
@@ -137,6 +142,13 @@ namespace Nichjaim.MasterSubMenu
                         iterContr.OnMenuClose();
                     }
                 }
+            }
+
+            // if this was first menu switching
+            if (isFirstMenuOpening)
+            {
+                // denote that NO longer on first menu opening
+                isFirstMenuOpening = false;
             }
         }
 

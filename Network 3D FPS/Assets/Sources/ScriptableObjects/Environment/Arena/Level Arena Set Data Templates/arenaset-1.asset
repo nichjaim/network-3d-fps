@@ -15,4 +15,4 @@ MonoBehaviour:
   template:
     setNum: 1
     setName: Residential
-    totalArenasInSet: 7
+    totalArenasInSet: 3

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -18,6 +19,8 @@ public class HavenData
     public HavenDialogueData havenDialogue;
 
     public HavenActivityPlanningData activityPlanning;
+
+    public HavenLocationEventPlanningData locationEventPlanning;
 
     #endregion
 
@@ -52,6 +55,8 @@ public class HavenData
         havenDialogue = new HavenDialogueData();
 
         activityPlanning = new HavenActivityPlanningData();
+
+        locationEventPlanning = new HavenLocationEventPlanningData();
     }
 
     private void Setup(HavenData templateArg)
@@ -63,6 +68,8 @@ public class HavenData
         havenDialogue = new HavenDialogueData(templateArg.havenDialogue);
 
         activityPlanning = new HavenActivityPlanningData(templateArg.activityPlanning);
+
+        locationEventPlanning = new HavenLocationEventPlanningData(templateArg.locationEventPlanning);
     }
 
     #endregion
@@ -73,7 +80,7 @@ public class HavenData
     #region Haven Functions
 
     /// <summary>
-    /// Refreshes all week's factors that require player planning.
+    /// Refreshes all days' factors that require player planning.
     /// </summary>
     public void ResetAllPlanning(List<CharacterData> allActivityPartnersArg)
     {
@@ -94,12 +101,12 @@ public class HavenData
     }*/
 
     /// <summary>
-    /// Advance calendar date by one day.
+    /// Advance calendar date by given number of days day.
     /// </summary>
-    public void AdvanceOneDay()
+    public void AdvanceDays(int daysArg)
     {
-        // advance one day
-        calendarSystem.AdvanceCalendarDays(1);
+        // advance given number of days
+        calendarSystem.AdvanceCalendarDays(daysArg);
 
         // set time to morning
         calendarSystem.currentTimeSlot = TimeSlotType.Morning;
@@ -146,20 +153,62 @@ public class HavenData
             havenProgression.GetAverageForAllCumulativeStatPoints(), setFlagsArg, 
             canHcontentBeViewedArg, MAX_SOCIAL_DIALOGUE_EVENTS_PER_WEEK);
 
-        // get weekdays in a random order
-        List<DayOfWeek> randomWeekdays = GetWeekdaysInRandomOrder();
+        // get random weekdays in the proper weekly order
+        List<DayOfWeek> orderedRandomWeekdays = GetRandomWeekdaysInWeeklyOrder(nextDialogueEvents.Count);
 
         // loop through all social dialogue events that were retreived
         for (int i = 0; i < nextDialogueEvents.Count; i++)
         {
             // add the random day of week and iterating dialogue event to week's plan
             weekPlan.Add(new 
-                SerializableDataDayOfWeekAndDialogueEventData(randomWeekdays[i], 
+                SerializableDataDayOfWeekAndDialogueEventData(orderedRandomWeekdays[i], 
                 nextDialogueEvents[i]));
         }
 
         // set planner's weekly social dialogue plan to setup plan
         activityPlanning.dowToSocialDialogueEvent = weekPlan;
+    }
+
+    /// <summary>
+    /// Returns a few randomly chosen weekdays in the proper weekly order.
+    /// </summary>
+    /// <param name="numOfDaysArg"></param>
+    /// <returns></returns>
+    private List<DayOfWeek> GetRandomWeekdaysInWeeklyOrder(int numOfDaysArg)
+    {
+        // get all the weekdays in a random order
+        List<DayOfWeek> randomWeekdays = GetWeekdaysInRandomOrder();
+
+        // if given inavlid argument value
+        if (numOfDaysArg < 1 || numOfDaysArg > randomWeekdays.Count)
+        {
+            // print warning to console
+            Debug.LogWarning("Problem in GetRandomWeekdaysInWeeklyOrder(), " +
+                $"given invalid numOfDaysArg: {numOfDaysArg}");
+        }
+
+        // ensure the number of days to get is a valid number
+        int clampedNumOfDays = Mathf.Clamp(numOfDaysArg, 1, randomWeekdays.Count);
+
+        // get a select number of the randomized weekdays based on given number of days needed
+        List<DayOfWeek> selectedWeekdays = new List<DayOfWeek>();
+        for (int i = 0; i < clampedNumOfDays; i++)
+        {
+            selectedWeekdays.Add(randomWeekdays[i]);
+        }
+
+        // return list of selected weekdays in the proper weekly order
+        return GetDaysOfWeekInWeeklyOrder(selectedWeekdays);
+    }
+
+    /// <summary>
+    /// Returns the given days of week in the proper weekly order.
+    /// </summary>
+    /// <param name="daysOfWeekArg"></param>
+    /// <returns></returns>
+    private List<DayOfWeek> GetDaysOfWeekInWeeklyOrder(List<DayOfWeek> daysOfWeekArg)
+    {
+        return daysOfWeekArg.OrderBy(iterDay => (int) iterDay).ToList();
     }
 
     /// <summary>
@@ -190,6 +239,19 @@ public class HavenData
     public DialogueEventData GetTodaySocialDialogueEvent()
     {
         return activityPlanning.GetDialogueSocialEvent(calendarSystem.GetCurrentDayOfWeek());
+    }
+
+    /// <summary>
+    /// Plans the days location events. Call when entering a new day.
+    /// </summary>
+    /// <param name="gameFlagsArg"></param>
+    /// <param name="canHcontentBeViewedArg"></param>
+    /// <param name="maxNumEventsToPlanArg"></param>
+    public void PlanTodaysLocationEvents(GameFlags gameFlagsArg, bool canHcontentBeViewedArg, 
+        int maxNumEventsToPlanArg)
+    {
+        locationEventPlanning.PlanTodaysEvents(gameFlagsArg, calendarSystem.GetCurrentDayOfWeek(), 
+            canHcontentBeViewedArg, maxNumEventsToPlanArg);
     }
 
     #endregion

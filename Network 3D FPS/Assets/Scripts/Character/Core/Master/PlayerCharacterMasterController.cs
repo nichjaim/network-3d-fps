@@ -242,6 +242,7 @@ public class PlayerCharacterMasterController : CharacterMasterController, MMEven
                     case ActionProgressType.Started:
                     case ActionProgressType.InProgress:
                         _objectActivationController.SetObjectActivation(true);
+                        Debug.Log("Got here"); // DEBUG LINE!!!
                         break;
                     case ActionProgressType.Finished:
                         _objectActivationController.SetObjectActivation(false);

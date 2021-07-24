@@ -2,6 +2,7 @@
 [System.Serializable]
 public enum HavenLocation
 {
+    None,
     Rooftops,
     NurseOffice,
     MCRoom,

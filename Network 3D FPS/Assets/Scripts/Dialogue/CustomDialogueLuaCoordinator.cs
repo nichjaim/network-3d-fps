@@ -226,6 +226,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // ===DIALOGUE TAG FUNCTIONS===
 
         Lua.RegisterFunction("LevelingInfo", this, SymbolExtensions.GetMethodInfo(() => LevelingInfo()));
+
+        Lua.RegisterFunction("CharNameActPartner", this, SymbolExtensions.GetMethodInfo(() => CharNameActPartner()));
+        Lua.RegisterFunction("CharNameWaifu1", this, SymbolExtensions.GetMethodInfo(() => CharNameWaifu1()));
+        Lua.RegisterFunction("CharNameWaifu2", this, SymbolExtensions.GetMethodInfo(() => CharNameWaifu2()));
+        Lua.RegisterFunction("CharNameWaifu3", this, SymbolExtensions.GetMethodInfo(() => CharNameWaifu3()));
     }
 
     /// <summary>
@@ -329,6 +334,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         // ===DIALOGUE TAG FUNCTIONS===
 
         Lua.UnregisterFunction("LevelingInfo");
+
+        Lua.UnregisterFunction("CharNameActPartner");
+        Lua.UnregisterFunction("CharNameWaifu1");
+        Lua.UnregisterFunction("CharNameWaifu2");
+        Lua.UnregisterFunction("CharNameWaifu3");
     }
 
     #endregion
@@ -872,6 +882,27 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
                 // return some default value
                 return string.Empty;
         }
+    }
+
+    private string CharNameActPartner()
+    {
+        return GetCharacterName(
+            _uiManager.DialgGameCoordr.CurrentActivityPartnerCharId);
+    }
+
+    private string CharNameWaifu1()
+    {
+        return GetCharacterName(CHAR_ID_WAIFU_1);
+    }
+
+    private string CharNameWaifu2()
+    {
+        return GetCharacterName(CHAR_ID_WAIFU_2);
+    }
+
+    private string CharNameWaifu3()
+    {
+        return GetCharacterName(CHAR_ID_WAIFU_3);
     }
 
     #endregion

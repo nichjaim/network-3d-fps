@@ -628,4 +628,33 @@ public static class GeneralMethods
                 return string.Empty;
         }
     }
+
+    /*/// <summary>
+    /// Returns the flag that denotes if the given waifu is sexually comftorble with the MC. 
+    /// Returns empty string if invalid enum given.
+    /// </summary>
+    /// <param name="waifuArg"></param>
+    /// <returns></returns>
+    public static string GetWaifuSexuallyComfortableFlag(WaifuCharacterType waifuArg)
+    {
+        switch (waifuArg)
+        {
+            case WaifuCharacterType.Waifu1:
+                return "wew";
+
+            case WaifuCharacterType.Waifu2:
+                return "weww";
+
+            case WaifuCharacterType.Waifu3:
+                return "wewww";
+
+            case WaifuCharacterType.None:
+                return string.Empty;
+
+            default:
+                Debug.LogWarning("In GetWaifuSexuallyComfortableFlag(), given " +
+                    $"unknown enum: {waifuArg.ToString()}");
+                return string.Empty;
+        }
+    }*/
 }

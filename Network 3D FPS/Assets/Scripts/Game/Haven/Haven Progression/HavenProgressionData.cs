@@ -104,6 +104,15 @@ public class HavenProgressionData
         externalExp = 0;
     }
 
+    /// <summary>
+    /// Adds exp to current amount held.
+    /// </summary>
+    /// <param name="addAmountArg"></param>
+    public void AddExternalExp(int addAmountArg)
+    {
+        externalExp += addAmountArg;
+    }
+
     #endregion
 
 

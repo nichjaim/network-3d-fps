@@ -9,6 +9,18 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
 {
     #region Class Variables
 
+    private GameManager _gameManager = null;
+    public GameManager _GameManager
+    {
+        get { return _gameManager; }
+    }
+
+    private UIManager _uiManager = null;
+    public UIManager _UiManager
+    {
+        get { return _uiManager; }
+    }
+
     [Header("Menu Specialist Properties")]
 
     [Tooltip("Button that switches to multiplayer sub-menu")]
@@ -35,6 +47,12 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
 
     #region MonoBehaviour Functions
 
+    private void Start()
+    {
+        // setup vars that hold reference to singletons
+        InitializeSingletonReferences();
+    }
+
     private void OnEnable()
     {
         // starts listening for all relevant events
@@ -45,6 +63,23 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     {
         // stops listening for all relevant events
         StopAllEventListening();
+    }
+
+    #endregion
+
+
+
+
+    #region Initialization Functions
+
+    /// <summary>
+    /// Sets up vars that hold reference to singletons. 
+    /// Call in Start(), to give time for singletons to instantiate.
+    /// </summary>
+    private void InitializeSingletonReferences()
+    {
+        _gameManager = GameManager.Instance;
+        _uiManager = UIManager.Instance;
     }
 
     #endregion

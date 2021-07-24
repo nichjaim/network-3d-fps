@@ -99,7 +99,7 @@ public class HavenDialogueData
             }
 
             // if given progression does NOT meet the currently required progression amount
-            if (currentGroupTraitProgressionArg <= currentProgRequirement)
+            if (currentGroupTraitProgressionArg < currentProgRequirement)
             {
                 // skip to next loop iteration
                 continue;

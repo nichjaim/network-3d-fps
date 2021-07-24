@@ -5,8 +5,8 @@ using Nichjaim.MasterSubMenu;
 
 public class HavenMenuMainMenuController : HavenSubMenuController
 {
-    [SerializeField]
-    private DialogueGameCoordinator dialgGameCoordr = null; // TESTING VAR!!!
+    /*[SerializeField]
+    private DialogueGameCoordinator dialgGameCoordr = null; // TESTING VAR!!!*/
 
     #region Button Press Functions
 
@@ -18,37 +18,37 @@ public class HavenMenuMainMenuController : HavenSubMenuController
 
     public void ButtonPressGoToRooftops()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Rooftops);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Rooftops);
     }
 
     public void ButtonPressGoToLibrary()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Library);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Library);
     }
 
     public void ButtonPressGoToGym()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Gym);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Gym);
     }
 
     public void ButtonPressGoToField()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Field);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Field);
     }
 
     public void ButtonPressGoToCafeteria()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Cafeteria);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Cafeteria);
     }
 
     public void ButtonPressGoToPool()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.Pool);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.Pool);
     }
 
     public void ButtonPressGoToClubroomFloor()
     {
-        dialgGameCoordr.PlayHavenLocationDialogue(HavenLocation.ClubroomFloor);
+        _dialgGameCoord.PlayHavenLocationDialogue(HavenLocation.ClubroomFloor);
     }
 
     #endregion

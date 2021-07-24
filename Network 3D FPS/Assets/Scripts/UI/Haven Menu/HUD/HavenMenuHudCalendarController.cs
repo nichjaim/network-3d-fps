@@ -6,7 +6,8 @@ using UnityEngine.UI;
 using System;
 using MoreMountains.Tools;
 
-public class HavenMenuHudCalendarController : MonoBehaviour, MMEventListener<DayAdvanceEvent>
+public class HavenMenuHudCalendarController : MonoBehaviour, MMEventListener<HavenCalendarTimeChangedEvent>, 
+    MMEventListener<GameStateModeTransitionEvent>
 {
     #region Class Variables
 
@@ -144,7 +145,8 @@ public class HavenMenuHudCalendarController : MonoBehaviour, MMEventListener<Day
     /// </summary>
     private void StartAllEventListening()
     {
-        this.MMEventStartListening<DayAdvanceEvent>();
+        this.MMEventStartListening<HavenCalendarTimeChangedEvent>();
+        this.MMEventStartListening<GameStateModeTransitionEvent>();
     }
 
     /// <summary>
@@ -153,13 +155,24 @@ public class HavenMenuHudCalendarController : MonoBehaviour, MMEventListener<Day
     /// </summary>
     private void StopAllEventListening()
     {
-        this.MMEventStopListening<DayAdvanceEvent>();
+        this.MMEventStopListening<HavenCalendarTimeChangedEvent>();
+        this.MMEventStopListening<GameStateModeTransitionEvent>();
     }
 
-    public void OnMMEvent(DayAdvanceEvent eventType)
+    public void OnMMEvent(HavenCalendarTimeChangedEvent eventType)
     {
         // sets all the HUD calendar properties appropriately
         RefreshHudCalendar();
+    }
+
+    public void OnMMEvent(GameStateModeTransitionEvent eventType)
+    {
+        // if new game mode in some way has to do with the VN section
+        if (eventType.gameMode == GameStateMode.VisualNovel)
+        {
+            // sets all the HUD calendar properties appropriately
+            RefreshHudCalendar();
+        }
     }
 
     #endregion

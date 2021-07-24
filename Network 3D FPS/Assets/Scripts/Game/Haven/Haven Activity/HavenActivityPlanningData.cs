@@ -94,15 +94,15 @@ public class HavenActivityPlanningData
     /// This used when player does an activity and so don't want them to be able to 
     /// do the activity again or use same person in different activity.
     /// </summary>
-    /// <param name="activityArg"></param>
+    /// <param name="activityIdArg"></param>
     /// <param name="activityPartnerIdArg"></param>
-    public void RemoveActivityAvailability(HavenActivityData activityArg, 
+    public void RemoveActivityAvailability(string activityIdArg, 
         string activityPartnerIdArg)
     {
         // remove given activity and partner from availability
 
         availableActivities.RemoveAll(
-            iterActivity => iterActivity.activityId == activityArg.activityId);
+            iterActivity => iterActivity.activityId == activityIdArg);
 
         availableActivityPartnerIds.Remove(activityPartnerIdArg);
     }
@@ -222,12 +222,12 @@ public class HavenActivityPlanningData
         switch (currentTimeCalendarArg.GetCurrentDayOfWeek())
         {
             case DayOfWeek.Tuesday:
-                uniqueActivityTemplates.Add(AssetRefMethods.
-                    LoadBundleAssetUniqueHavenActivityTemplate("1"));
+                /*uniqueActivityTemplates.Add(AssetRefMethods.
+                    LoadBundleAssetUniqueHavenActivityTemplate("1"));*/
                 break;
             case DayOfWeek.Thursday:
-                uniqueActivityTemplates.Add(AssetRefMethods.
-                    LoadBundleAssetUniqueHavenActivityTemplate("1"));
+                /*uniqueActivityTemplates.Add(AssetRefMethods.
+                    LoadBundleAssetUniqueHavenActivityTemplate("1"));*/
                 break;
         }
 

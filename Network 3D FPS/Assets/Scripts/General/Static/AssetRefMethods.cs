@@ -376,19 +376,6 @@ public static class AssetRefMethods
         return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
     }
 
-    public static Sprite LoadBundleAssetWeaponTypeSetIcon(string setIdArg)
-    {
-        // initialize bundle properties
-        string BUNDLE_NAME = "WepTypeSetIcon";
-        string ASSET_NAME_PREFIX = "seticon-";
-
-        // get name of asset to load
-        string loadAssetName = ASSET_NAME_PREFIX + setIdArg;
-
-        // load and return asset
-        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
-    }
-
     public static Sprite LoadBundleAssetActiveAbilityIcon(string abilityIdArg)
     {
         // initialize bundle properties
@@ -482,6 +469,32 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadBundleAsset<WeaponSlotDataTemplate>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetWeaponTypeSetIcon(string setIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "WepTypeSetIcon";
+        string ASSET_NAME_PREFIX = "seticon-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + setIdArg;
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetWeaponTypeReticle(WeaponType wepTypeArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "AimReticle";
+        string ASSET_NAME_PREFIX = "reticle-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + wepTypeArg.ToString();
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
     }
 
     #endregion
@@ -665,6 +678,15 @@ public static class AssetRefMethods
     public static CharacterProgressionInfoSet LoadBundleAssetProgressionInfoLeveling(int havenStatNumArg, string charIdArg)
     {
         return LoadBundleAssetProgressionInfoLeveling(havenStatNumArg, charIdArg, 0);
+    }
+
+    public static HavenLocationEventTemplate[] LoadAllBundleAssetHavenLocationEventTemplates()
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenLocationEvent";
+
+        // load and return asset
+        return LoadAllBundleAsset<HavenLocationEventTemplate>(BUNDLE_NAME);
     }
 
     #endregion

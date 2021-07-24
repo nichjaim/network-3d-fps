@@ -10,8 +10,9 @@ using System.Linq;
 public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEvent>, 
     MMEventListener<NewSaveCreatedEvent>, MMEventListener<LoadSaveEvent>,
     MMEventListener<SaveGameProgressEvent>, MMEventListener<NetworkGameLocalJoinedEvent>, 
-    MMEventListener<PartyWipeEvent>, MMEventListener<DayAdvanceEvent>, 
-    MMEventListener<EnterGameSessionEvent>
+    MMEventListener<PartyWipeEvent>, MMEventListener<ReturnToHavenEvent>, 
+    MMEventListener<DaysAdvanceEvent>, MMEventListener<EnterGameSessionEvent>, 
+    MMEventListener<ExperienceGainEvent>
 {
     #region Class Variables
 
@@ -378,6 +379,9 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // performs Level-up process for all party members on their haven stats
         List<(string, CharacterProgressionInfoSet)> charIdToLevelInfo = LevelUpHavenStatProperties();
 
+        // reset the currently held haven external exp
+        havenData.havenProgression.ResetExternalExpAmount();
+
         // improves party member attributes based on the retrieved level-up info
         ImprovePartyCharacterAttributes(charIdToLevelInfo);
 
@@ -385,8 +389,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         _uiManager.DialgGameCoordr.StartLevelingChain(charIdToLevelInfo);
 
         // advance two days so that both weekend days are past and player starts on monday of new week
-        DayAdvanceEvent.Trigger();
-        DayAdvanceEvent.Trigger();
+        //DaysAdvanceEvent.Trigger(2);
     }
 
     /// <summary>
@@ -442,9 +445,6 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
                     charIdToLevelInfo.Add((charId, levelUpInfo));
                 }
             }
-
-            // reset the iterating char's haven external exp
-            havenData.havenProgression.ResetExternalExpAmount();
         }
 
         // return the populated list
@@ -872,7 +872,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     /// <summary>
     /// Sets up the week's planned social dialogue events.
     /// </summary>
-    private void PlanWeekSocialDialogueEvents()
+    public void PlanWeekSocialDialogueEvents()
     {
         // get all SOCIAL dialogue events that can potentially be accessed by player
         List<DialogueEventData> potentialSocialDialogues =
@@ -919,7 +919,7 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     }
 
     /// <summary>
-    /// Refreshes week's activity planning factors.
+    /// Refreshes days' activity planning factors.
     /// </summary>
     public void RefreshHavenActivityPlanning()
     {
@@ -943,6 +943,66 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void AddDialogueToCompletedDialogues(string dialogueArg)
     {
         havenData.havenDialogue.AddDialogueToCompletedDialogues(dialogueArg);
+    }
+
+    /// <summary>
+    /// Sets the current time slot to the next time slot. 
+    /// Returns whether next time slot is in a new day.
+    /// </summary>
+    /// <returns></returns>
+    public bool GoToNextTimeSlot()
+    {
+        return havenData.calendarSystem.GoToNextTimeSlot();
+    }
+
+    /// <summary>
+    /// Removes the availability of given activity and partner. 
+    /// This used when player does an activity and so don't want them to be able to 
+    /// do the activity again or use same person in different activity.
+    /// </summary>
+    /// <param name="activityIdArg"></param>
+    /// <param name="activityPartnerIdArg"></param>
+    public void RemoveActivityAvailability(string activityIdArg,
+        string activityPartnerIdArg)
+    {
+        havenData.activityPlanning.RemoveActivityAvailability(activityIdArg, activityPartnerIdArg);
+    }
+
+    /// <summary>
+    /// Plans the days haven location events. Call when entering a new day.
+    /// </summary>
+    public void PlanTodaysLocationEvents()
+    {
+        havenData.PlanTodaysLocationEvents(gameFlags, 
+            _networkManagerCustom.CanHcontentBeViewed(), 3);
+    }
+
+    /// <summary>
+    /// Resets the haven location events used in the week. Call when entering a new week.
+    /// </summary>
+    public void ResetLocationEventCurrentWeekPlan()
+    {
+        havenData.locationEventPlanning.ResetCurrentWeekPlan();
+    }
+
+    /// <summary>
+    /// Returns whether the given event is active today.
+    /// </summary>
+    /// <param name="eventArg"></param>
+    /// <returns></returns>
+    public bool IsHavenLocationEventActiveToday(HavenLocationEvent eventArg)
+    {
+        return havenData.locationEventPlanning.IsEventActive(eventArg);
+    }
+
+    /// <summary>
+    /// Removes event from active list and adds to watched non-repeatable event list if appropriate.
+    /// Call after an event's dialogue has been played.
+    /// </summary>
+    /// <param name="eventArg"></param>
+    public void AddHavenLocationEventToSeen(HavenLocationEvent eventArg)
+    {
+        havenData.locationEventPlanning.AddEventToSeen(eventArg);
     }
 
     #endregion
@@ -1112,8 +1172,10 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStartListening<SaveGameProgressEvent>();
         this.MMEventStartListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStartListening<PartyWipeEvent>();
-        this.MMEventStartListening<DayAdvanceEvent>();
+        this.MMEventStartListening<ReturnToHavenEvent>();
+        this.MMEventStartListening<DaysAdvanceEvent>();
         this.MMEventStartListening<EnterGameSessionEvent>();
+        this.MMEventStartListening<ExperienceGainEvent>();
 
         //partyCharacters.Callback += OnPartyCharactersChanged;
     }
@@ -1130,8 +1192,10 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         this.MMEventStopListening<SaveGameProgressEvent>();
         this.MMEventStopListening<NetworkGameLocalJoinedEvent>();
         this.MMEventStopListening<PartyWipeEvent>();
-        this.MMEventStopListening<DayAdvanceEvent>();
+        this.MMEventStopListening<ReturnToHavenEvent>();
+        this.MMEventStopListening<DaysAdvanceEvent>();
         this.MMEventStopListening<EnterGameSessionEvent>();
+        this.MMEventStopListening<ExperienceGainEvent>();
 
         //partyCharacters.Callback -= OnPartyCharactersChanged;
     }
@@ -1156,7 +1220,8 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     public void OnMMEvent(SaveGameProgressEvent eventType)
     {
         // saves the current game's progress
-        SaveGameProgress();
+        //SaveGameProgress();
+        Debug.Log("TEMP COMMENT OUT: Game saving. Remember to un-comment later!"); // TEMP LINE!!!
     }
 
     public void OnMMEvent(NetworkGameLocalJoinedEvent eventType)
@@ -1171,10 +1236,19 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         //havenData.havenProgression.InflictPartyWipePenalty();
     }
 
-    public void OnMMEvent(DayAdvanceEvent eventType)
+    public void OnMMEvent(ReturnToHavenEvent eventType)
+    {
+        // resets the haven location events used in the week
+        //ResetLocationEventCurrentWeekPlan();
+    }
+
+    public void OnMMEvent(DaysAdvanceEvent eventType)
     {
         // advance calendar date by one day
-        havenData.AdvanceOneDay();
+        havenData.AdvanceDays(eventType.daysToAdvance);
+
+        // denote that calendar time has changed
+        HavenCalendarTimeChangedEvent.Trigger();
 
         // if new day is day of shooter section
         if (havenData.IsTodayShooterSectionDay())
@@ -1186,9 +1260,15 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
         // else new day is just a VN day
         else
         {
-            // refreshes week's activity planning factors
+            // refreshes days' activity planning factors
             RefreshHavenActivityPlanning();
+
+            // plans the days haven location events
+            PlanTodaysLocationEvents();
         }
+
+        // trigger event to save game progress
+        SaveGameProgressEvent.Trigger();
     }
 
     public void OnMMEvent(EnterGameSessionEvent eventType)
@@ -1221,6 +1301,12 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
             GameStateModeTransitionEvent.Trigger(GameStateMode.Shooter,
                 ActionProgressType.Started);
         }
+    }
+
+    public void OnMMEvent(ExperienceGainEvent eventType)
+    {
+        // add event's given exp amount to player exp
+        havenData.havenProgression.AddExternalExp(eventType.expAmount);
     }
 
     #endregion

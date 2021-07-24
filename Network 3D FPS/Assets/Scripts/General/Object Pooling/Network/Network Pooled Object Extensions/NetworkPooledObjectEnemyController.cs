@@ -14,6 +14,11 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     [SerializeField]
     private ObjectActivationController _objActivation = null;
 
+    [Header("Spawn Data")]
+
+    [SerializeField]
+    private int expDrop = 1;
+
     #endregion
 
 
@@ -47,6 +52,9 @@ public class NetworkPooledObjectEnemyController : NetworkPooledObjectController
     {
         // trigger event to denote that this spawned char died
         SpawnedCharacterDeathEvent.Trigger(_charMaster);
+
+        // trigger event to give players enemies exp drop
+        ExperienceGainEvent.Trigger(expDrop);
 
         Debug.Log("NEED IMPL: Play enemy death effect."); // NEED IMPL!!!
         Debug.Log("NEED IMPL: Play enemy death sound."); // NEED IMPL!!!

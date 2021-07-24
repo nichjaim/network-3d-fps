@@ -361,7 +361,7 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
         newSaveData.havenData = new HavenData();
 
         // save the new save file
-        //SaveLoadSystem.Save(newSaveData, newSaveFile); // TEMP COMMENT OUT FOR TESTING PURPOSES!!!
+        //SaveLoadSystem.Save(newSaveData, newSaveFile); // Shouldn't save file while still in tutorial!!
 
         // return the new save file properties
         return (newSaveData, newSaveFile);

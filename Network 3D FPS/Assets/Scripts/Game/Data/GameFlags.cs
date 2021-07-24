@@ -141,9 +141,14 @@ public class GameFlags
     public bool IsSexuallyComfortableFlagSet(string charIdArg)
     {
         // get appropriate flag name
-        string comfortFlag = GetSexuallyComfortableFlagPrefix() + charIdArg;
+        string comfortFlag = GetSexuallyComfortableFlag(charIdArg);
 
         return IsFlagSet(comfortFlag);
+    }
+
+    public string GetSexuallyComfortableFlag(string charIdArg)
+    {
+        return GetSexuallyComfortableFlagPrefix() + charIdArg;
     }
 
     private string GetSexuallyComfortableFlagPrefix()

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19b0123b454ec8e4b8f2130ec9f0b6da, type: 3}
-  m_Name: outfit-2
+  m_Name: outfit-1
   m_EditorClassIdentifier: 
   defaultExpression: 0
   expressionToPortrait:
   - valueExpression: 0
-    valueSprite: {fileID: 0}
+    valueSprite: {fileID: 21300000, guid: 1136f0cc8840abb4e8cad5dc04b27031, type: 3}
   - valueExpression: 1
-    valueSprite: {fileID: 0}
+    valueSprite: {fileID: 21300000, guid: 007349b1c286c0341ad012cb32db9242, type: 3}

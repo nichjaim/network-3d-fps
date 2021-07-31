@@ -76,6 +76,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     private bool inDialogueChainPhaseActivity = false;
     private bool inDialogueChainPhaseSocialEvents = false;
     private bool inDialogueChainPhasePassTime = false;
+    private bool inDialogueChainPhaseNextDay = false;
 
     //private bool inDialogueChainPhaseRestDay = false;
     private bool inDialogueChainPhasePartyWipe = false;
@@ -157,18 +158,47 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     /// <returns></returns>
     private string GetAppropriateRandomArenaDialogue()
     {
-        // get all dialogue conversations that potentially play between arenas
-        List<Conversation> arenaConvos = GetAllArenaDialogueConversations();
-
-        // get all arena dialogue that has NOT been used in this run yet
-        //List<Conversation> unusedArenaConvos = arenaConvos.Where(iterConvo => arenaDialoguesUsed.All(iterUsedConvo => iterUsedConvo != iterConvo.Name)); // TEMP COMMENT
-        List<Conversation> unusedArenaConvos = new List<Conversation>(); // TEMP LINE
+        // gets all arena dialogues that have NOT been used yet
+        List<Conversation> unusedArenaConvos = GetAllUnusedArenaDialogues();
 
         // get random entry from the unused conversation list
         int randomIndex = Random.Range(0, unusedArenaConvos.Count);
 
         // return random dialogue
-        return unusedArenaConvos[randomIndex].Name;
+        return unusedArenaConvos[randomIndex].Title;
+    }
+
+    /// <summary>
+    /// Returns all arena dialogues that have NOT been used yet.
+    /// </summary>
+    /// <returns></returns>
+    private List<Conversation> GetAllUnusedArenaDialogues()
+    {
+        // get all dialogue conversations that potentially play between arenas
+        List<Conversation> arenaConvos = GetAllArenaDialogueConversations();
+
+        // initialize return list as empty list
+        List<Conversation> unusedArenaConvos = new List<Conversation>();
+
+        // initialize var for upoming loop
+        bool isUsed;
+
+        // loop through all arena convos
+        foreach (Conversation iterAllConvo in arenaConvos)
+        {
+            // check whether the iterating convo has already been used
+            isUsed = arenaDialoguesUsed.Exists(iterUsedConvo => iterAllConvo.Name == iterUsedConvo);
+
+            // if the iterating convo has NOT been used yet
+            if (!isUsed)
+            {
+                // add iterating convo to list of unused convos
+                unusedArenaConvos.Add(iterAllConvo);
+            }
+        }
+
+        // return populated list
+        return unusedArenaConvos;
     }
 
     /// <summary>
@@ -266,6 +296,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // if while processing the pass time chain phase it's denoted that this phase is NOT done
         if (!ProcessDialogueChainPhasePassTime())
+        {
+            // DONT continue code
+            return;
+        }
+
+        // if while processing the next day chain phase it's denoted that this phase is NOT done
+        if (!ProcessDialogueChainPhaseNextDay())
         {
             // DONT continue code
             return;
@@ -423,22 +460,38 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
                 // play bedtime dialogue
                 PlayDialogue(goToBedDialogueConvo);
 
-                // trigger event to denote that new day
-                DaysAdvanceEvent.Trigger(1);
-
-                // if entered the shooter section day
-                if (_gameManager.HavenData.IsTodayShooterSectionDay())
-                {
-                    Debug.Log("NEED IMPL: Enter start run dialogue chain so that " +
-                        "run dialogue will play after go to bed dialogue, maybe only " +
-                        "have arenas get created when new un dialogue compeltes??");
-                }
+                // enable next day dialogue chain phase, so that will go to new day once bed dialogue is done
+                inDialogueChainPhaseNextDay = true;
             }
 
             // denote that calendar time has changed
             HavenCalendarTimeChangedEvent.Trigger();
 
-            // return that phase is NOT done
+            // return that phas is NOT done, as do NOT want to continue to other dialogue chain phases
+            return false;
+        }
+
+        // return that phase IS done
+        return true;
+    }
+
+    /// <summary>
+    /// Plays next day event dialogue that is next in chain. 
+    /// Returns whether this phase is complete or not.
+    /// </summary>
+    /// <returns></returns>
+    private bool ProcessDialogueChainPhaseNextDay()
+    {
+        // if should go to next day after dialogues done
+        if (inDialogueChainPhaseNextDay)
+        {
+            // denote that done doing next day events for this chain
+            inDialogueChainPhaseNextDay = false;
+
+            // trigger event to denote that new day
+            DaysAdvanceEvent.Trigger(1);
+
+            // return that do NOT move onto other chain parts
             return false;
         }
 
@@ -624,6 +677,8 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         inDialogueChainPhaseActivity = false;
         inDialogueChainPhaseSocialEvents = false;
         inDialogueChainPhasePassTime = false;
+        inDialogueChainPhaseNextDay = false;
+
         //inDialogueChainPhaseRestDay = false;
         inDialogueChainPhasePartyWipe = false;
         inDialogueChainPhaseHavenReturn = false;

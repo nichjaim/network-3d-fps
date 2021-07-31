@@ -7,6 +7,8 @@ public class ActiveAbility
 {
     #region Class Variables
 
+    [Header("Info Properties")]
+
     public string abilityId;
     //public string characterIdOfAssociatedCharacter;
 
@@ -16,9 +18,13 @@ public class ActiveAbility
 
     public int abilityRank;
 
+    [Header("Resource Cost Properties")]
+
     public int resourceCostBase;
     public float resourceCostRankIncreasePercentage;
     public int resourceCostCeiling;
+
+    [Header("Cooldown Time Properties")]
 
     public float cooldownTimeBase;
     public float cooldownTimeRankReductionPercentage;

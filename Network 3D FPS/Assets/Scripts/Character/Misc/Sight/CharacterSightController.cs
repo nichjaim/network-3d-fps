@@ -7,7 +7,7 @@ public class CharacterSightController : MonoBehaviour
 {
     #region Class Variables
 
-    private CameraCoordinator _cameraCoordr;
+    protected CameraCoordinator _cameraCoordr;
 
     //private Camera sightCamera = null;
 
@@ -17,7 +17,7 @@ public class CharacterSightController : MonoBehaviour
     private NetworkIdentity _networkIdentity = null;
 
     [SerializeField]
-    private PlayerCharacterMasterController _playerCharacterMasterController = null;
+    protected PlayerCharacterMasterController _playerCharacterMasterController = null;
 
     [Header("Sight Components")]
 
@@ -213,7 +213,7 @@ public class CharacterSightController : MonoBehaviour
     /// Starts listening for all relevant events. 
     /// Call in OnEnable().
     /// </summary>
-    private void StartAllEventListening()
+    protected virtual void StartAllEventListening()
     {
         _playerCharacterMasterController.OnCharDataSecondaryChangedAction += RefreshCameraHeight;
     }
@@ -222,7 +222,7 @@ public class CharacterSightController : MonoBehaviour
     /// Stops listening for all relevant events. 
     /// Call in OnDisable().
     /// </summary>
-    private void StopAllEventListening()
+    protected virtual void StopAllEventListening()
     {
         _playerCharacterMasterController.OnCharDataSecondaryChangedAction -= RefreshCameraHeight;
     }

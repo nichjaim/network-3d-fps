@@ -295,6 +295,17 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     }
 
     /// <summary>
+    /// Returns the party member associated with the given ID.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <returns></returns>
+    public CharacterData GetPartyCharacterFromID(string charIdArg)
+    {
+        return partyCharacters.FirstOrDefault(
+            iterChar => iterChar.characterInfo.characterId == charIdArg);
+    }
+
+    /// <summary>
     /// Returns the default party character and makes sure to setup the char 
     /// if not already done.
     /// </summary>

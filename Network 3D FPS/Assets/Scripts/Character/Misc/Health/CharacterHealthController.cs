@@ -35,6 +35,12 @@ public class CharacterHealthController : MonoBehaviour
     /// Used for status effects.
     private List<Color> temporaryDamagePopupColors = new List<Color>();
 
+    // the faction of the char that inflicted the damage healing status effect
+    private FactionReputation damageHealingLeechInflicterFactionRep = null;
+    /// the percentage of damage done to this target will heal the attack.
+    /// Used for status effect.
+    private float damageHealingLeechPercentage = 0f;
+
     //private StopTimer postDamageInvinciblilityTimer = null;
     private bool inPostDamageInvincibility = false;
 
@@ -163,6 +169,9 @@ public class CharacterHealthController : MonoBehaviour
         {
             // have the surface level char take health damage
             actualChangeValue = charFrontFacingData.characterStats.TakeDamage(changeValueArg);
+
+            // heals the damage inflictor if leech is active and attck is allied with leech inflictor
+            ApplyDamageLeechHealingIfAppropriate(changeInflicterArg, changeValueArg);
 
             // call damage taken actions if NOT null
             OnDamageTaken?.Invoke();
@@ -330,6 +339,57 @@ public class CharacterHealthController : MonoBehaviour
         inPostDamageInvincibility = false;
     }
 
+    /// <summary>
+    /// Heals the damage inflictor if leech is active and attck is allied with leech inflictor.
+    /// </summary>
+    /// <param name="dmgInflicterArg"></param>
+    /// <param name="dmgArg"></param>
+    private void ApplyDamageLeechHealingIfAppropriate(CharacterMasterController dmgInflicterArg, 
+        int dmgArg)
+    {
+        // if given damage is ast least one AND some damage leech healing is active
+        if (dmgArg > 0 && damageHealingLeechPercentage > 0f)
+        {
+            // if no health leech inflictor is setup
+            if (damageHealingLeechInflicterFactionRep == null)
+            {
+                // print warning to console
+                Debug.LogWarning("No health leech inflictor was setup!");
+
+                // DONT continue code
+                return;
+            }
+
+            // get char data for surface level properties from the char master
+            CharacterData charFrontFacingData = GeneralMethods.GetFrontFacingCharacterDataFromCharMaster(
+                dmgInflicterArg);
+
+            // if attacker is allied with the leech effect inflictor
+            if (charFrontFacingData.factionReputation.AreFactionAllies(damageHealingLeechInflicterFactionRep))
+            {
+                // heal the attacker by percentage of the damage done
+                dmgInflicterArg.CharHealth.HealHealth(dmgInflicterArg, GetDamageHealingLeechValue(dmgArg));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get the healing leech value from given damage value.
+    /// </summary>
+    /// <param name="dmgArg"></param>
+    /// <returns></returns>
+    private int GetDamageHealingLeechValue(int dmgArg)
+    {
+        // get healing value as a float
+        float healingFloat = (float)dmgArg * damageHealingLeechPercentage;
+
+        // round the healing value to an int
+        int healing = Mathf.RoundToInt(healingFloat);
+
+        // return healing value while ensuring it will heal at least one health
+        return Mathf.Max(1, healing);
+    }
+
     #endregion
 
 
@@ -466,6 +526,17 @@ public class CharacterHealthController : MonoBehaviour
     public void AddDamageTakenChangePercentage(float percentValueArg)
     {
         damageTakenChangePercentage += percentValueArg;
+    }
+
+    public void AddDamageHealingLeechProperties(FactionReputation inflicterFactionRepArg, float dmgHealPercArg)
+    {
+        damageHealingLeechInflicterFactionRep = inflicterFactionRepArg;
+        damageHealingLeechPercentage += dmgHealPercArg;
+    }
+
+    public void RemoveDamageHealingLeechProperties(FactionReputation inflicterFactionRepArg, float dmgHealPercArg)
+    {
+        damageHealingLeechPercentage -= dmgHealPercArg;
     }
 
     #endregion

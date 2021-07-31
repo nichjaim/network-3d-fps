@@ -194,7 +194,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("PartyAddWaifu2", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu2()));
         Lua.RegisterFunction("PartyAddWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddCharacterToPartyWaifu3()));
 
-        Lua.RegisterFunction("AddHealAbilityMC", this, SymbolExtensions.GetMethodInfo(() => AddHealAbilityToCharacterMC()));
+        Lua.RegisterFunction("AddLeechShotAbilityMC", this, SymbolExtensions.GetMethodInfo(() => AddLeechShotAbilityToCharacterMC()));
         Lua.RegisterFunction("AddShieldAbilityWaifu1", this, SymbolExtensions.GetMethodInfo(() => AddShieldAbilityToCharacterWaifu1()));
         Lua.RegisterFunction("AddTrapAbilityWaifu2", this, SymbolExtensions.GetMethodInfo(() => AddTrapAbilityToCharacterWaifu2()));
         Lua.RegisterFunction("AddWeakenAbilityWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddWeakenAbilityToCharacterWaifu3()));
@@ -302,7 +302,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("PartyAddWaifu2");
         Lua.UnregisterFunction("PartyAddWaifu3");
 
-        Lua.UnregisterFunction("AddHealAbilityMC");
+        Lua.UnregisterFunction("AddLeechShotAbilityMC");
         Lua.UnregisterFunction("AddShieldAbilityWaifu1");
         Lua.UnregisterFunction("AddTrapAbilityWaifu2");
         Lua.UnregisterFunction("AddWeakenAbilityWaifu3");
@@ -647,9 +647,14 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         AddAbilityToCharacter(CHAR_ID_WAIFU_3, abilityIdArg);
     }
 
-    private void AddHealAbilityToCharacterMC()
+    /*private void AddHealAbilityToCharacterMC()
     {
         AddAbilityToCharacterMC("1");
+    }*/
+
+    private void AddLeechShotAbilityToCharacterMC()
+    {
+        AddAbilityToCharacterMC("5");
     }
 
     private void AddShieldAbilityToCharacterWaifu1()

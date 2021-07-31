@@ -9,6 +9,8 @@ public class DialogueUiCoordinator : MonoBehaviour
 {
     #region Class Variables
 
+    private GameManager _gameManager = null;
+
     [Header("Component References")]
 
     [SerializeField]
@@ -41,6 +43,9 @@ public class DialogueUiCoordinator : MonoBehaviour
 
     private void Start()
     {
+        // setup reference vars to their respective singletons
+        InitializeSingetonReferences();
+
         // setup the variable that holds all the character portraits
         InitializeCharacterPortraits();
 
@@ -54,6 +59,15 @@ public class DialogueUiCoordinator : MonoBehaviour
 
 
     #region Initialization Functions
+
+    /// <summary>
+    /// Sets up reference vars to their respective singletons. 
+    /// Call in Start() so as to give time for singleton instances to actually instantiate.
+    /// </summary>
+    private void InitializeSingetonReferences()
+    {
+        _gameManager = GameManager.Instance;
+    }
 
     /// <summary>
     /// Sets up the variable that holds all the character portraits. 
@@ -143,15 +157,15 @@ public class DialogueUiCoordinator : MonoBehaviour
                 // activate the portrait
                 unusedPort.gameObject.SetActive(true);
 
-                // set new portrait's position to their appropriate position
+                /*// set new portrait's position to their appropriate position
                 unusedPort.transform.position = GetAppropriateDialoguePortraitPosition(
-                    GetActiveDialoguePortraits().Count, GetDialoguePortaitOrderNumber(charIdArg));
+                    GetActiveDialoguePortraits().Count, GetDialoguePortaitOrderNumber(charIdArg));*/
 
                 // play appear animation for the dialogue portrait
                 unusedPort.PlayAnimationAppear();
 
                 // set the entering character as the character that is currently speaking
-                SetCharSpeaker(charInDialogueScene);
+                //SetCharSpeaker(charInDialogueScene);
             }
         }
 
@@ -374,10 +388,19 @@ public class DialogueUiCoordinator : MonoBehaviour
     /// <returns></returns>
     private CharacterData GetCharacterDataFromId(string charIdArg)
     {
-        // MAYBE IMPL: MAYBE CHECK PARTY MEMBERS FIRST BEFORE LOADING THE STARTING DATA???
+        // get character from party characters
+        CharacterData partyCharData = _gameManager.GetPartyCharacterFromID(charIdArg);
+
+        // if char data was found in the party
+        if (partyCharData != null)
+        {
+            // return party char data
+            return partyCharData;
+        }
 
         // load character data template
-        CharacterDataTemplate charDataTemp = AssetRefMethods.LoadBundleAssetCharacterDataTemplate(charIdArg);
+        CharacterDataTemplate charDataTemp = AssetRefMethods.
+            LoadBundleAssetCharacterDataTemplate(charIdArg);
 
         // if loaded data WAS found
         if (charDataTemp != null)

@@ -175,6 +175,14 @@ public abstract class ActiveAbilityController : NetworkBehaviour
         yield return new WaitForSeconds(abilityDuration);
 
         // despawn the object
+        DespawnObject();
+    }
+
+    /// <summary>
+    /// Despawn this networked object.
+    /// </summary>
+    protected virtual void DespawnObject()
+    {
         _pooledObject.UnspawnObject();
     }
 

@@ -463,6 +463,7 @@ public static class GeneralMethods
             case "neutral":
             case "neut":
             case "neu":
+            case "":
                 return CharacterDialogueExpressionType.Neutral;
 
             case "happy":

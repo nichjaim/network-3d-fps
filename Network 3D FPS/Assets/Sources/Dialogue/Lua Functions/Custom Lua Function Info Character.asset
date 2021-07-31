@@ -23,7 +23,7 @@ MonoBehaviour:
   - functionName: Character/PartyAdd/PartyAddWaifu3
     parameters: 
     returnValue: 0
-  - functionName: Character/AddAbility/AddHealAbilityMC
+  - functionName: Character/AddAbility/AddLeechShotAbilityMC
     parameters: 
     returnValue: 0
   - functionName: Character/AddAbility/AddShieldAbilityWaifu1

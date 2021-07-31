@@ -49,7 +49,7 @@ public class PlayerCharacterHealthController : CharacterHealthController
         base.ProcessDeath();
 
         // trigger event to denote that party has wiped
-        PartyWipeEvent.Trigger();
+        //PartyWipeEvent.Trigger();
 
         // turn off this object
         _objectActivation.SetObjectActivation(false);

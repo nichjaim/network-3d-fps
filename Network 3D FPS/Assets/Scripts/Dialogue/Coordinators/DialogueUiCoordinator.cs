@@ -28,6 +28,9 @@ public class DialogueUiCoordinator : MonoBehaviour
     [SerializeField]
     private Transform dialoguePortraitPositionsHolder = null;
 
+    [SerializeField]
+    private ConversationControl convoControl = null;
+
     /// the character data loaded for the current dialogue, keep them do that don't have to 
     /// repeatedly loading a bunch of character data
     private List<CharacterData> charactersInDialogueScene = new List<CharacterData>();
@@ -115,6 +118,22 @@ public class DialogueUiCoordinator : MonoBehaviour
 
         // set no character as currently speaking
         SetCharSpeaker(null);
+    }
+
+    /// <summary>
+    /// Skips all dialogue text within the current conversation until a player response.
+    /// </summary>
+    public void SkipDialogue()
+    {
+        convoControl.SkipAll();
+    }
+
+    /// <summary>
+    /// Toggles whether to auto-play the dialogue.
+    /// </summary>
+    public void ToggleAutoPlay()
+    {
+        convoControl.ToggleAutoPlay();
     }
 
     #endregion

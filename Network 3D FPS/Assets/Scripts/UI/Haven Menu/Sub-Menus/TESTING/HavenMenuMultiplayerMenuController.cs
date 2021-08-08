@@ -433,7 +433,7 @@ public class HavenMenuMultiplayerMenuController : HavenSubMenuController,
     public void ButtonPressBack()
     {
         // switch to haven menu's main menu
-        ((HavenMenuController)menuMaster).SwitchToMainMenu();
+        ((HavenMenuController)menuMaster).SwitchToStartingMenu();
     }
 
     public void ButtonPressHost()

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a7dc3b36d9d7a44d8a5683b1d9af06a, type: 3}
-  m_Name: activity-1
+  m_Name: activity-20
   m_EditorClassIdentifier: 
   template:
-    activityId: 1
-    activityName: Weapon Repair
-    activityDescription: Repair weapons that the group has found on thier last run.
-    trait1ActivityPoints: 0
-    trait2ActivityPoints: 0
+    activityId: 20
+    activityName: Trim Garden
+    activityDescription: Perform the necessary trimming on the garden's plants.
+    trait1ActivityPoints: 1
+    trait2ActivityPoints: 1
     trait3ActivityPoints: 0
     trait4ActivityPoints: 0

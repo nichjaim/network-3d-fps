@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   template:
     activityId: 5
-    activityName: Maintain Solar Panel
-    activityDescription: Maintains the school's solar panel.
+    activityName: Music Practice
+    activityDescription: Practice music ability with instruments.
     trait1ActivityPoints: 0
-    trait2ActivityPoints: 1
+    trait2ActivityPoints: 2
     trait3ActivityPoints: 0
-    trait4ActivityPoints: 1
+    trait4ActivityPoints: 0

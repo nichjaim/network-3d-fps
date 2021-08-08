@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   template:
     activityId: 2
-    activityName: Study
-    activityDescription: Study up on survival tricks and methods.
-    trait1ActivityPoints: 0
+    activityName: Patrol Perimeter
+    activityDescription: Patrols the school perimeter.
+    trait1ActivityPoints: 1
     trait2ActivityPoints: 0
-    trait3ActivityPoints: 0
-    trait4ActivityPoints: 2
+    trait3ActivityPoints: 1
+    trait4ActivityPoints: 0

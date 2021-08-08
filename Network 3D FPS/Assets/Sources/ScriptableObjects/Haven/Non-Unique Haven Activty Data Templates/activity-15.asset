@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a7dc3b36d9d7a44d8a5683b1d9af06a, type: 3}
-  m_Name: activity-4
+  m_Name: activity-15
   m_EditorClassIdentifier: 
   template:
-    activityId: 4
-    activityName: Read Manga
-    activityDescription: Read some exciting and lewd manga.
+    activityId: 15
+    activityName: Track
+    activityDescription: Run some laps on the track.
     trait1ActivityPoints: 0
-    trait2ActivityPoints: 1
-    trait3ActivityPoints: 1
+    trait2ActivityPoints: 0
+    trait3ActivityPoints: 2
     trait4ActivityPoints: 0

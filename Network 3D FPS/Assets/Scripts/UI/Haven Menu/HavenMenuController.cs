@@ -132,7 +132,7 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
         if (joiningCharArg.GetPlayerNumber() != 1)
         {
             // open haven menu's main menu
-            SwitchToMainMenu();
+            SwitchToStartingMenu();
             // turn off multiplayer button to prevent access
             multiplayerMenuButton.SetActive(false);
         }
@@ -150,14 +150,28 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
 
     #region Menu Switch Controller
 
-    public void SwitchToMainMenu()
+    public void SwitchToStartingMenu()
     {
-        SwitchSubMenu("main");
+        SwitchToHavenLocationMenu(HavenLocation.FrontHallway1F);
     }
 
     public void SwitchToMultiplayerMenu()
     {
         SwitchSubMenu("multiplayer");
+    }
+
+    /// <summary>
+    /// Switch to haven sub-menu associated with given location.
+    /// </summary>
+    /// <param name="locationArg"></param>
+    public void SwitchToHavenLocationMenu(HavenLocation locationArg)
+    {
+        SwitchSubMenu(locationArg.ToString());
+    }
+
+    private void PlayActivitesLocationDialogue(HavenLocation locationArg)
+    {
+        _uiManager.DialgGameCoordr.PlayHavenLocationDialogue(locationArg);
     }
 
     #endregion
@@ -175,6 +189,164 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
     public void BackgroundTransition(Sprite newBgArg, float transitionTimeArg)
     {
         bgFader.BackgroundTransition(newBgArg, transitionTimeArg);
+    }
+
+    #endregion
+
+
+
+
+    #region Switch Location First-Floor Functions
+
+    public void SwitchToHavenLocationMenuFrontHallway1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.FrontHallway1F);
+    }
+
+    public void SwitchToHavenLocationMenuBackHallway1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.BackHallway1F);
+    }
+
+    public void SwitchToHavenLocationMenuRightHallway1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.RightHallway1F);
+    }
+
+    public void SwitchToHavenLocationMenuLeftHallway1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.LeftHallway1F);
+    }
+
+    public void SwitchToHavenLocationMenuFrontRightCorner1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.FrontRightCorner1F);
+    }
+
+    public void SwitchToHavenLocationMenuFrontLeftCorner1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.FrontLeftCorner1F);
+    }
+
+    public void SwitchToHavenLocationMenuBackRightCorner1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.BackRightCorner1F);
+    }
+
+    public void SwitchToHavenLocationMenuBackLeftCorner1F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.BackLeftCorner1F);
+    }
+
+    public void SwitchToHavenLocationMenuCentralCourtyardOuter()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.CentralCourtyardOuter);
+    }
+
+    #endregion
+
+
+
+
+    #region Switch Location Second-Floor Functions
+
+    public void SwitchToHavenLocationMenuFrontHallway2F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.FrontHallway2F);
+    }
+
+    public void SwitchToHavenLocationMenuBackHallway2F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.BackHallway2F);
+    }
+
+    public void SwitchToHavenLocationMenuRightHallway2F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.RightHallway2F);
+    }
+
+    public void SwitchToHavenLocationMenuLeftHallway2F()
+    {
+        SwitchToHavenLocationMenu(HavenLocation.LeftHallway2F);
+    }
+
+    #endregion
+
+
+
+
+    #region Location Dialogue First-Floor Functions
+
+    public void PlayActivitesLocationDialogueMainGate()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.MainGate);
+    }
+
+    public void PlayActivitesLocationDialogueLibrary()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.Library);
+    }
+
+    public void PlayActivitesLocationDialogueArtClubrooms()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.ArtClubrooms);
+    }
+
+    public void PlayActivitesLocationDialogueFacilityRooms()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.FacilityRooms);
+    }
+
+    public void PlayActivitesLocationDialogueCafeteria()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.Cafeteria);
+    }
+
+    public void PlayActivitesLocationDialogueGym()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.Gym);
+    }
+
+    public void PlayActivitesLocationDialoguePool()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.Pool);
+    }
+
+    public void PlayActivitesLocationDialogueField()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.Field);
+    }
+
+    public void PlayActivitesLocationDialogueCourtyardInner()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.CourtyardInner);
+    }
+
+    #endregion
+
+
+
+
+    #region Location Dialogue Second-Floor Functions
+
+    public void PlayActivitesLocationDialogueFrontRooftop()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.FrontRooftop);
+    }
+
+    public void PlayActivitesLocationDialogueBackRooftop()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.BackRooftop);
+    }
+
+    public void PlayActivitesLocationDialogueGameClubrooms()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.GameClubrooms);
+    }
+
+    public void PlayActivitesLocationDialogueTeacherLounge()
+    {
+        PlayActivitesLocationDialogue(HavenLocation.TeacherLounge);
     }
 
     #endregion
@@ -209,7 +381,7 @@ public class HavenMenuController : MasterMenuControllerCustom, MMEventListener<G
         if (eventType.gameMode == GameStateMode.VisualNovel)
         {
             // switch to haven menu's main menu
-            SwitchToMainMenu();
+            SwitchToStartingMenu();
         }
         else
         {

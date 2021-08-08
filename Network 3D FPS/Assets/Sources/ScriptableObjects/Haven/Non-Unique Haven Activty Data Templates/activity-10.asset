@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   template:
     activityId: 10
-    activityName: Clean Pool
-    activityDescription: Clean and scrub the pool interior.
-    trait1ActivityPoints: 1
-    trait2ActivityPoints: 0
-    trait3ActivityPoints: 0
-    trait4ActivityPoints: 1
+    activityName: Ready-Made Snack
+    activityDescription: Eat a quick ready-made snack.
+    trait1ActivityPoints: 0
+    trait2ActivityPoints: 1
+    trait3ActivityPoints: 1
+    trait4ActivityPoints: 0

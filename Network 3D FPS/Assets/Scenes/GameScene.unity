@@ -576,8 +576,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278238736
+  m_fontColor: {r: 0.0627451, g: 0.74509805, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -926,9 +926,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 1
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: c5a11eb20518b9344a715276b51c3f52, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: c5a11eb20518b9344a715276b51c3f52, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: c4e77e84eedde6b4a88b6dbda09aecef, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &44528027
 GameObject:
@@ -1961,9 +1961,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 3
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: aa40941f05b3bfc4ebc2b3bb5496d6ff, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: 585ee8ff0a9689c45aa58312517d60b6, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: cf672aa8bc863b549a991cc21d64430b, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &111789946
 GameObject:
@@ -2867,9 +2867,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 5
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 83b4f978713a98448881cd9f007d6654, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: e8f5c462548f68244bb8fa4969d4e5c7, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: 90d89694eb16a324da1b1b3f2026fb9c, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &161739312
 GameObject:
@@ -3055,9 +3055,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 13
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 2939479d3d7ad9444bc9eb3bd5ce38fd, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: f02382c06594b4a4a9a74e894609edbd, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: 95cf57a31c0ce8f47a45b7bb50b3bf50, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &186465656
 GameObject:
@@ -3682,7 +3682,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load Which?
+  m_text: Load
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
   m_sharedMaterial: {fileID: -7453993583774510254, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
@@ -5568,7 +5568,7 @@ GameObject:
   - component: {fileID: 313669507}
   - component: {fileID: 313669506}
   m_Layer: 5
-  m_Name: BGFade
+  m_Name: BGLayer1Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5979,9 +5979,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 11
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 277e8a6b5ea49904d92cc0b5e73068df, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: e30109a5d96842b40a383e56645d6553, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: f610471a04118ca45b6443da2d10063b, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &337621296
 GameObject:
@@ -7045,6 +7045,81 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &387133290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 387133291}
+  - component: {fileID: 387133292}
+  - component: {fileID: 387133293}
+  m_Layer: 5
+  m_Name: BackgroundL2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &387133291
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387133290}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1447910640}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &387133292
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387133290}
+  m_CullTransparentMesh: 0
+--- !u!114 &387133293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387133290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &390167255
 GameObject:
   m_ObjectHideFlags: 0
@@ -7189,7 +7264,7 @@ GameObject:
   - component: {fileID: 398274708}
   - component: {fileID: 398274707}
   m_Layer: 5
-  m_Name: BackgroundFront
+  m_Name: BackgroundL1Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9954,9 +10029,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 4
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: d4f5ae378ba035c47a90395275a22b7e, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: 684cc444975f77f42aa07a28c5e4996f, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: b59b2205164f53a42a56e7e8c84f0247, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &500118643
 GameObject:
@@ -10825,9 +10900,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 10
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 5df28cb1d43bdaa48b223b66520fa226, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: f28bfff4e4b7bab40addcff0614ef22d, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: f3e9e3c91c6e07442a3c5254dceead20, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &560065452
 GameObject:
@@ -12124,10 +12199,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738758385cdc49d4795ded3e771cb974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgFade: {fileID: 313669506}
+  bgLayer1Fade: {fileID: 313669506}
+  bgLayer2: {fileID: 387133293}
   characterPortraitsParent: {fileID: 1187734586}
-  textSpeakerName: {fileID: 7996487690513322707}
   dialoguePortraitPositionsHolder: {fileID: 1647418342}
+  textSpeakerName: {fileID: 7996487690513322707}
   convoControl: {fileID: 2785489077938579763}
 --- !u!224 &612007721
 RectTransform:
@@ -13095,6 +13171,8 @@ RectTransform:
   - {fileID: 1842550317}
   - {fileID: 353223722}
   - {fileID: 243259332}
+  - {fileID: 1702309608}
+  - {fileID: 1019187428}
   m_Father: {fileID: 2113141288}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15104,7 +15182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This One?
+  m_text: Load This?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
   m_sharedMaterial: {fileID: -7453993583774510254, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
@@ -15231,6 +15309,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuObject: {fileID: 654246121}
   menuId: primary
+  isHcontentNotInstalledIconWarningObject: {fileID: 1702309605}
+  isHcontentDisabledIconWarningObject: {fileID: 1019187425}
 --- !u!1 &757027879
 GameObject:
   m_ObjectHideFlags: 0
@@ -19017,6 +19097,81 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1019187425
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1019187428}
+  - component: {fileID: 1019187427}
+  - component: {fileID: 1019187426}
+  m_Layer: 5
+  m_Name: imgHcontentAccessNotEnabledWarning
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1019187426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019187425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1019187427
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019187425}
+  m_CullTransparentMesh: 0
+--- !u!224 &1019187428
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019187425}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 654246122}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -100, y: -100}
+  m_SizeDelta: {x: 150, y: 150}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1020413840
 GameObject:
   m_ObjectHideFlags: 0
@@ -22354,9 +22509,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 9
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: a0dccdca38b9f9e47888b1090762917b, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: cceaad204e6c6954cabcff729014b562, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: 617ab0976f908c240b901457eafac7d8, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &1224751284
 GameObject:
@@ -22424,8 +22579,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4289226240
+  m_fontColor: {r: 0, g: 0.4, b: 0.65882355, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -24276,9 +24431,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 2
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 9a66df261ea265340a16d0893d752b7e, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: cd12346ec33e21b49886ac790f6bfa42, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: eb656d1f867ffc7498d5136045382391, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!114 &1289795682
 MonoBehaviour:
@@ -26395,8 +26550,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278217906
+  m_fontColor: {r: 0.69803923, g: 0.42352942, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -27405,6 +27560,7 @@ RectTransform:
   m_Children:
   - {fileID: 1520826077}
   - {fileID: 398274709}
+  - {fileID: 387133291}
   m_Father: {fileID: 2785489077952399954}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -27821,9 +27977,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 7
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: ad964f0d04f110345971828781b0b242, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: 93effa71b73d7a5419def865d86acfa5, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: 1c7322eef8ca04846b931bee8f6730e9, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &1476428330
 GameObject:
@@ -28273,8 +28429,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278217906
+  m_fontColor: {r: 0.69803923, g: 0.42352942, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -28476,7 +28632,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play How?
+  m_text: Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
   m_sharedMaterial: {fileID: -7453993583774510254, guid: 8bfaef3c3b5ee3a4a976ede4016cac93, type: 2}
@@ -28833,7 +28989,7 @@ GameObject:
   - component: {fileID: 1520826076}
   - component: {fileID: 1520826075}
   m_Layer: 5
-  m_Name: BackgroundBack
+  m_Name: BackgroundL1Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30739,8 +30895,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278238736
+  m_fontColor: {r: 0.0627451, g: 0.74509805, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -32106,8 +32262,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4289226240
+  m_fontColor: {r: 0, g: 0.4, b: 0.65882355, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -32423,8 +32579,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281328103
+  m_fontColor: {r: 0.90588236, g: 0.88235295, b: 0.18431373, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -32623,6 +32779,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699356823}
   m_CullTransparentMesh: 0
+--- !u!1 &1702309605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1702309608}
+  - component: {fileID: 1702309607}
+  - component: {fileID: 1702309606}
+  m_Layer: 5
+  m_Name: imgHcontentNotInstalledWarning
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1702309606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702309605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1702309607
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702309605}
+  m_CullTransparentMesh: 0
+--- !u!224 &1702309608
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702309605}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 654246122}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -100, y: -100}
+  m_SizeDelta: {x: 150, y: 150}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1711640126
 GameObject:
   m_ObjectHideFlags: 0
@@ -33114,8 +33345,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278217906
+  m_fontColor: {r: 0.69803923, g: 0.42352942, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -34198,8 +34429,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281328103
+  m_fontColor: {r: 0.90588236, g: 0.88235295, b: 0.18431373, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -34318,9 +34549,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 6
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 265a20bda787ef04097114a9afbbce85, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: 8a545af18eb8f2648a0611a92d2391bf, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: 9437e34762510914dbc3ff2c758ce2f2, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &1828727382
 GameObject:
@@ -34906,9 +35137,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 8
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 73e37ece54d523e44872edb50f33aac8, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: dc0943e628a44b54e8059f3e2d1364fa, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: c02f13c404f4eae4d969809bf0ed321d, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &1855923828
 GameObject:
@@ -35078,9 +35309,9 @@ MonoBehaviour:
   menuId: TEMP_ID
   havenSpot: 12
   replaceMenuIdWithLocationName: 1
-  bgSpriteMorning: {fileID: 0}
-  bgSpriteAfternoon: {fileID: 0}
-  bgSpriteEvening: {fileID: 0}
+  bgSpriteMorning: {fileID: 21300000, guid: 8f905c2a93405b14dae508e538300599, type: 3}
+  bgSpriteAfternoon: {fileID: 21300000, guid: 813bfc065331791448741f672d2a25d3, type: 3}
+  bgSpriteEvening: {fileID: 21300000, guid: fc2524a90afe3ea4b9177b3ea048ec19, type: 3}
   havenLocationEventTempToEventObject: []
 --- !u!1 &1864604845
 GameObject:
@@ -36476,8 +36707,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278238736
+  m_fontColor: {r: 0.0627451, g: 0.74509805, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -36686,8 +36917,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281328103
+  m_fontColor: {r: 0.90588236, g: 0.88235295, b: 0.18431373, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -39709,8 +39940,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4289226240
+  m_fontColor: {r: 0, g: 0.4, b: 0.65882355, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

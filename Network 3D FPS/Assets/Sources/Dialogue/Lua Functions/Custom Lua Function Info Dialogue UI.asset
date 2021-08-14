@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conditionFunctions: []
   scriptFunctions:
-  - functionName: DialogueUI/DialogueUIChangeBackground
+  - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL1
     parameters: 02000000
     returnValue: 0
   - functionName: DialogueUI/DialogueUIPortraitEnter/DialogueUIPortraitEnterWaifu1
@@ -58,4 +58,16 @@ MonoBehaviour:
     returnValue: 0
   - functionName: DialogueUI/DialogueUIRemoveSpeaker
     parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL2
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL1FromHavenActivity
+    parameters: 
+    returnValue: 0
+  - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL1FromHavenLocationActivityHub
+    parameters: 02000000
+    returnValue: 0
+  - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL1FromHavenLocationEvent
+    parameters: 02000000
     returnValue: 0

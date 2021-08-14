@@ -15,6 +15,20 @@ MonoBehaviour:
   defaultExpression: 0
   expressionToPortrait:
   - valueExpression: 0
-    valueSprite: {fileID: 21300000, guid: d4b754446c2706e4fa2912d6691dc2d7, type: 3}
+    valueSprite: {fileID: 21300000, guid: 800ab7e099f8b8f4eb3d4ada60361aef, type: 3}
   - valueExpression: 1
-    valueSprite: {fileID: 21300000, guid: af62c4657c62b0d4bbe7165f92b0bed1, type: 3}
+    valueSprite: {fileID: 21300000, guid: 3cf8930ebc68fb84dbc1d4b4a6d3d88a, type: 3}
+  - valueExpression: 2
+    valueSprite: {fileID: 21300000, guid: f7a605ea71c441f47a49aff97b47d533, type: 3}
+  - valueExpression: 3
+    valueSprite: {fileID: 21300000, guid: 786bd63fd86e1f1459f988d303286e30, type: 3}
+  - valueExpression: 4
+    valueSprite: {fileID: 21300000, guid: 98cca9e1a0d73094a8ed3d73e399005f, type: 3}
+  - valueExpression: 5
+    valueSprite: {fileID: 21300000, guid: 9aa5a01c420ea204a87c3ab91a619a82, type: 3}
+  - valueExpression: 6
+    valueSprite: {fileID: 21300000, guid: 20f3f197b2a364140900bfaddc69f5a9, type: 3}
+  - valueExpression: 7
+    valueSprite: {fileID: 21300000, guid: cf34e83dd3732c04eaae0479a790d002, type: 3}
+  - valueExpression: 8
+    valueSprite: {fileID: 21300000, guid: 691f5ddf745d3204cbf8be62410449a9, type: 3}

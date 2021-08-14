@@ -17,6 +17,15 @@ MonoBehaviour:
     parameters: 
     returnValue: 1
   scriptFunctions:
-  - functionName: Hcontent/DialogueUI/DialogueUIChangeHBackground
+  - functionName: Hcontent/DialogueUI/ChangeHBackground/DialogueUIChangeHBackgroundL1
     parameters: 02000000
+    returnValue: 0
+  - functionName: Hcontent/DialogueUI/ChangeHBackground/DialogueUIChangeHBackgroundL2
+    parameters: 02000000
+    returnValue: 0
+  - functionName: Hcontent/DialogueUI/ChangeHBackground/DialogueUIStartHcontentActivityBackground
+    parameters: 
+    returnValue: 0
+  - functionName: Hcontent/DialogueUI/ChangeHBackground/DialogueUINextHcontentActivityBackground
+    parameters: 
     returnValue: 0

@@ -9,5 +9,6 @@ public enum CharacterDialogueExpressionType
     Scared,
     Embarrassed,
     Aroused,
-    Smug
+    Smug,
+    Nervous
 }

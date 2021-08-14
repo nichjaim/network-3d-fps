@@ -36,6 +36,42 @@ public static class AssetRefMethods
 
 
 
+    #region General Functions
+
+    /// <summary>
+    /// Returns ero content sprite from the given folder-based asset locations.
+    /// </summary>
+    /// <param name="folderRootPathArg"></param>
+    /// <param name="folderHPathArg"></param>
+    /// <param name="fileNameArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadFolderBasedSprite(string folderRootPathArg,
+        string folderHPathArg, string fileNameArg)
+    {
+        // get the path to the asset file
+        string filePath = Path.Combine(folderRootPathArg, folderHPathArg, fileNameArg);
+
+        // if asset file actually exists
+        if (File.Exists(filePath))
+        {
+            // return sprite loaded from path
+            return GeneralMethods.GetSpriteFromFilePath(filePath);
+        }
+        // else asset file could NOT be found
+        else
+        {
+            // print warning to console
+            Debug.LogWarning($"Asset file path does not exist: {filePath}");
+            // return null sprite
+            return null;
+        }
+    }
+
+    #endregion
+
+
+
+
     #region H Content Core Functions
 
     /// <summary>
@@ -91,6 +127,15 @@ public static class AssetRefMethods
     private static string GetPersistentDataPathHcontentFolderPath()
     {
         return Path.Combine(Application.persistentDataPath, "hcontent");
+    }
+
+    /// <summary>
+    /// Returns the file extension for the Hcontent sprite files.
+    /// </summary>
+    /// <returns></returns>
+    private static string GetHcontentSpriteFileExtension()
+    {
+        return GeneralMethods.GetPngFileExtension();
     }
 
     #endregion
@@ -171,29 +216,167 @@ public static class AssetRefMethods
     /// <summary>
     /// Returns ero content background sprite from one of the folder-based asset locations.
     /// </summary>
+    /// <param name="folderRootPathArg"></param>
     /// <param name="bgIdArg"></param>
     /// <returns></returns>
-    private static Sprite LoadFolderBasedHcontentBackground(string folderPathArg, string bgIdArg)
+    private static Sprite LoadFolderBasedHcontentBackground(string folderRootPathArg, string bgIdArg)
     {
         // get the asset's file name
-        string fileName = $"bg-{bgIdArg}{GeneralMethods.GetPngFileExtension()}";
-        // get the path to the asset file
-        string filePath = Path.Combine(folderPathArg, "bg", fileName);
+        string fileName = $"bg-{bgIdArg}{GetHcontentSpriteFileExtension()}";
 
-        // if asset file actually exists
-        if (File.Exists(filePath))
+        return LoadFolderBasedSprite(folderRootPathArg, "bg", fileName);
+    }
+
+    #endregion
+
+
+
+
+    #region H-Content Activity Background Functions
+
+    /// <summary>
+    /// Returns the total number of sets related to the Hcontent activity backgrounds for the 
+    /// given character. 
+    /// IMPORTANT: This return value must be set manually as there is no way I'm aware 
+    /// of to reliably check the number of folders in each load method.
+    /// </summary>
+    /// <returns></returns>
+    public static int GetTotalNumberOfHcontentActivityBackgroundSets(string charIdArg)
+    {
+        switch (charIdArg)
         {
-            // return sprite loaded from path
-            return GeneralMethods.GetSpriteFromFilePath(filePath);
+            case "4":
+                return 1;
+
+            case "5":
+                return 1;
+
+            case "6":
+                return 1;
+
+            default:
+                // print wanring to console
+                Debug.LogWarning("Problem in " +
+                    "GetTotalNumberOfHcontentActivityBackgroundSets(). No case for " +
+                    $"charIdArg: {charIdArg}");
+                // return some invalid default value
+                return 0;
         }
-        // else asset file could NOT be found
+    }
+
+    /// <summary>
+    /// Returns an activity background sprite from the hcontent files, wherever they're installed.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    public static Sprite LoadHcontentActivityBackground(string charIdArg, int bgSetArg, int bgIdArg)
+    {
+        // if hcontent is in game files through an asset bundle
+        if (DoesAssetBundleHcontentExist())
+        {
+            return LoadAssetBundleHcontentActivityBackground(charIdArg, bgSetArg, bgIdArg);
+        }
+        // else if hcontent is in game files through the StreamingAssets
+        else if (DoesStreamingAssetsHcontentExist())
+        {
+            return LoadStreamingAssetsHcontentActivityBackground(charIdArg, bgSetArg, bgIdArg);
+        }
+        // else if hcontent is in game files through the PersistentDataPath
+        else if (DoesPersistentDataPathHcontentExist())
+        {
+            return LoadPersistentDataPathHcontentActivityBackground(charIdArg, bgSetArg, bgIdArg);
+        }
+        // else hcontent NOT in game files
         else
         {
-            // print warning to console
-            Debug.LogWarning($"Asset file path does not exist: {filePath}");
             // return null sprite
             return null;
         }
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from an asset bundle.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadAssetBundleHcontentActivityBackground(string charIdArg, 
+        int bgSetArg, int bgIdArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "hcontent";
+        string ASSET_NAME_PREFIX = GetFolderBasedHcontentActivityBackgroundHcontentFolderPath(
+            charIdArg, bgSetArg) + "/bg-";
+
+        // get name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + bgIdArg.ToString();
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from the StreamingAssets.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadStreamingAssetsHcontentActivityBackground(string charIdArg, 
+        int bgSetArg, int bgIdArg)
+    {
+        return LoadFolderBasedHcontentActivityBackground(GetStreamingAssetsHcontentFolderPath(), 
+            charIdArg, bgSetArg, bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from the PersistentDataPath.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadPersistentDataPathHcontentActivityBackground(string charIdArg,
+        int bgSetArg, int bgIdArg)
+    {
+        return LoadFolderBasedHcontentActivityBackground(GetPersistentDataPathHcontentFolderPath(), 
+            charIdArg, bgSetArg, bgIdArg);
+    }
+
+    /// <summary>
+    /// Returns ero content background sprite from one of the folder-based asset locations.
+    /// </summary>
+    /// <param name="folderRootPathArg"></param>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <param name="bgIdArg"></param>
+    /// <returns></returns>
+    private static Sprite LoadFolderBasedHcontentActivityBackground(string folderRootPathArg, 
+        string charIdArg, int bgSetArg, int bgIdArg)
+    {
+        // gets the hcontent activity backgorund folder path starting at the hcontent folder
+        string hFolderPath = GetFolderBasedHcontentActivityBackgroundHcontentFolderPath(charIdArg, 
+            bgSetArg);
+
+        // get the asset's file name
+        string fileName = $"bg-{bgIdArg}{GetHcontentSpriteFileExtension()}";
+
+        return LoadFolderBasedSprite(folderRootPathArg, hFolderPath, fileName);
+    }
+
+    /// <summary>
+    /// Returns the hcontent activity backgorund folder path starting at the hcontent folder.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    /// <param name="bgSetArg"></param>
+    /// <returns></returns>
+    private static string GetFolderBasedHcontentActivityBackgroundHcontentFolderPath(string charIdArg, 
+        int bgSetArg)
+    {
+        return $"activity-bg/char-{charIdArg}/set-{bgSetArg.ToString()}";
     }
 
     #endregion
@@ -707,6 +890,76 @@ public static class AssetRefMethods
 
         // load and return asset
         return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetHavenActivityDialogueBackground(
+        string havenActivityIdArg, TimeSlotType timeSlotArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenActivityDialogueBackground";
+        string ASSET_NAME_PREFIX = $"act-{havenActivityIdArg}/bg-";
+
+        // get start of name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + GetTimeDayIdAppend(timeSlotArg);
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetHavenLocationActivityHubDialogueBackground(
+        HavenLocation locationArg, TimeSlotType timeSlotArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenLocationActivityHubDialogueBackground";
+        string ASSET_NAME_PREFIX = $"loc-{locationArg.ToString()}/bg-";
+
+        // get start of name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + GetTimeDayIdAppend(timeSlotArg);
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    public static Sprite LoadBundleAssetHavenLocationEventDialogueBackground(
+        string eventIdArg, TimeSlotType timeSlotArg)
+    {
+        // initialize bundle properties
+        string BUNDLE_NAME = "HavenLocationEventDialogueBackground";
+        string ASSET_NAME_PREFIX = $"eve-{eventIdArg}/bg-";
+
+        // get start of name of asset to load
+        string loadAssetName = ASSET_NAME_PREFIX + GetTimeDayIdAppend(timeSlotArg);
+
+        // load and return asset
+        return LoadBundleAsset<Sprite>(BUNDLE_NAME, loadAssetName);
+    }
+
+    /// <summary>
+    /// Returns the string ID that should be appeneded onto a load file asscoiated 
+    /// with the given time slot.
+    /// </summary>
+    /// <param name="timeSlotArg"></param>
+    /// <returns></returns>
+    private static string GetTimeDayIdAppend(TimeSlotType timeSlotArg)
+    {
+        // check cases based on given time slot and add a time slot ID appropriately
+        switch (timeSlotArg)
+        {
+            case TimeSlotType.Morning:
+                return "1";
+
+            case TimeSlotType.Afternoon:
+                return "2";
+
+            case TimeSlotType.Evening:
+                return "3";
+
+            default:
+                // print warning to console
+                Debug.LogWarning("In GetTimeDayIdAppend(), invalid " +
+                    $"timeSlotArg: {timeSlotArg.ToString()}");
+                return "0";
+        }
     }
 
     public static CharacterPortraitSet LoadBundleAssetCharacterPortraitSet(string charIdArg, 

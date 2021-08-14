@@ -178,7 +178,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("TutorialDone", this, SymbolExtensions.GetMethodInfo(() => TutorialDone()));
 
         // HContent:
-        Lua.RegisterFunction("DialogueUIChangeHBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeHBackground(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeHBackgroundL1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeHBackgroundL1(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeHBackgroundL2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeHBackgroundL2(string.Empty)));
+
+        Lua.RegisterFunction("DialogueUIStartHcontentActivityBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUIStartHcontentActivityBackground()));
+        Lua.RegisterFunction("DialogueUINextHcontentActivityBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUINextHcontentActivityBackground()));
 
         // activity partner:
         Lua.RegisterFunction("SetActivityPartnerWaifu1", this, SymbolExtensions.GetMethodInfo(() => SetActivityPartnerWaifu1()));
@@ -200,7 +204,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("AddWeakenAbilityWaifu3", this, SymbolExtensions.GetMethodInfo(() => AddWeakenAbilityToCharacterWaifu3()));
 
         // dialogue UI:
-        Lua.RegisterFunction("DialogueUIChangeBackground", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackground(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeBackgroundL1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackgroundL1(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeBackgroundL2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackgroundL2(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeBackgroundL1FromHavenActivity", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackgroundL1FromHavenActivity()));
+        Lua.RegisterFunction("DialogueUIChangeBackgroundL1FromHavenLocationActivityHub", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackgroundL1FromHavenLocationActivityHub(string.Empty)));
+        Lua.RegisterFunction("DialogueUIChangeBackgroundL1FromHavenLocationEvent", this, SymbolExtensions.GetMethodInfo(() => DialogueUIChangeBackgroundL1FromHavenLocationEvent(string.Empty)));
 
         Lua.RegisterFunction("DialogueUIPortraitEnterWaifu1", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitEnterWaifu1(string.Empty)));
         Lua.RegisterFunction("DialogueUIPortraitEnterWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIPortraitEnterWaifu2(string.Empty)));
@@ -286,7 +294,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("TutorialDone");
 
         // HContent:
-        Lua.UnregisterFunction("DialogueUIChangeHBackground");
+        Lua.UnregisterFunction("DialogueUIChangeHBackgroundL1");
+        Lua.UnregisterFunction("DialogueUIChangeHBackgroundL2");
+
+        Lua.UnregisterFunction("DialogueUIStartHcontentActivityBackground");
+        Lua.UnregisterFunction("DialogueUINextHcontentActivityBackground");
 
         // activity partner:
         Lua.UnregisterFunction("SetActivityPartnerWaifu1");
@@ -308,7 +320,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("AddWeakenAbilityWaifu3");
 
         // dialogue UI:
-        Lua.UnregisterFunction("DialogueUIChangeBackground");
+        Lua.UnregisterFunction("DialogueUIChangeBackgroundL1");
+        Lua.UnregisterFunction("DialogueUIChangeBackgroundL2");
+        Lua.UnregisterFunction("DialogueUIChangeBackgroundL1FromHavenActivity");
+        Lua.UnregisterFunction("DialogueUIChangeBackgroundL1FromHavenLocationActivityHub");
+        Lua.UnregisterFunction("DialogueUIChangeBackgroundL1FromHavenLocationEvent");
 
         Lua.UnregisterFunction("DialogueUIPortraitEnterWaifu1");
         Lua.UnregisterFunction("DialogueUIPortraitEnterWaifu2");
@@ -399,9 +415,24 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         return (AssetRefMethods.IsHcontentInstalled()) && (false);
     }
 
-    private void DialogueUIChangeHBackground(string bgIdArg)
+    private void DialogueUIChangeHBackgroundL1(string bgIdArg)
     {
-        _uiManager.DialgUICoordr.ChangeBackground(bgIdArg, true);
+        _uiManager.DialgUICoordr.ChangeBackgroundL1(bgIdArg, true);
+    }
+
+    private void DialogueUIChangeHBackgroundL2(string bgIdArg)
+    {
+        _uiManager.DialgUICoordr.ChangeBackgroundL2(bgIdArg, true);
+    }
+
+    private void DialogueUIStartHcontentActivityBackground()
+    {
+        _uiManager.DialgGameCoordr.StartHcontentActivityBackground();
+    }
+
+    private void DialogueUINextHcontentActivityBackground()
+    {
+        _uiManager.DialgGameCoordr.NextHcontentActivityBackground();
     }
 
     #endregion
@@ -677,12 +708,39 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
 
 
 
-    #region Dialogue UI Functions
+    #region Dialogue UI Change Background Functions
 
-    private void DialogueUIChangeBackground(string bgIdArg)
+    private void DialogueUIChangeBackgroundL1(string bgIdArg)
     {
-        _uiManager.DialgUICoordr.ChangeBackground(bgIdArg, false);
+        _uiManager.DialgUICoordr.ChangeBackgroundL1(bgIdArg, false);
     }
+
+    private void DialogueUIChangeBackgroundL2(string bgIdArg)
+    {
+        _uiManager.DialgUICoordr.ChangeBackgroundL2(bgIdArg, false);
+    }
+
+    private void DialogueUIChangeBackgroundL1FromHavenActivity()
+    {
+        _uiManager.DialgGameCoordr.ChangeBackgroundL1FromHavenActivity();
+    }
+
+    private void DialogueUIChangeBackgroundL1FromHavenLocationActivityHub(string havenLocationStringArg)
+    {
+        _uiManager.DialgGameCoordr.ChangeBackgroundL1FromHavenLocationActivityHub(havenLocationStringArg);
+    }
+
+    private void DialogueUIChangeBackgroundL1FromHavenLocationEvent(string locationEventIdArg)
+    {
+        _uiManager.DialgGameCoordr.ChangeBackgroundL1FromHavenLocationEvent(locationEventIdArg);
+    }
+
+    #endregion
+
+
+
+
+    #region Dialogue UI General Functions
 
     private void DialogueUIPortraitEnter(string charIdArg, string exprAbrvArg)
     {

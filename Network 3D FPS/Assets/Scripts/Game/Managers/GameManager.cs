@@ -967,6 +967,15 @@ public class GameManager : NetworkBehaviour, MMEventListener<GamePausingActionEv
     }
 
     /// <summary>
+    /// Returns the current calendar time slot.
+    /// </summary>
+    /// <returns></returns>
+    public TimeSlotType GetCurrentTimeSlot()
+    {
+        return havenData.calendarSystem.currentTimeSlot;
+    }
+
+    /// <summary>
     /// Removes the availability of given activity and partner. 
     /// This used when player does an activity and so don't want them to be able to 
     /// do the activity again or use same person in different activity.

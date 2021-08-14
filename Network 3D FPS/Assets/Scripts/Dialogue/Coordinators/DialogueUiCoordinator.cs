@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueUiCoordinator : MonoBehaviour
 {
@@ -11,22 +12,31 @@ public class DialogueUiCoordinator : MonoBehaviour
 
     private GameManager _gameManager = null;
 
-    [Header("Component References")]
+    [Header("Background References")]
 
     [SerializeField]
-    private BackgroundFadeController bgFade = null;
+    private BackgroundFadeController bgLayer1Fade = null;
+
+    [Tooltip("The background above the first background, used for transaprent stuff " +
+        "to overlay on top of first BG.")]
+    [SerializeField]
+    private Image bgLayer2 = null;
+
+    [Header("Portrait References")]
 
     [SerializeField]
     private Transform characterPortraitsParent = null;
     private List<DialogueCharacterPortraitController> characterPortraits = new 
         List<DialogueCharacterPortraitController>();
 
-    [SerializeField]
-    private TextMeshProUGUI textSpeakerName = null;
-
     [Tooltip("This object must parent the positions sets which parent the actual positions within those sets.")]
     [SerializeField]
     private Transform dialoguePortraitPositionsHolder = null;
+
+    [Header("Misc References")]
+
+    [SerializeField]
+    private TextMeshProUGUI textSpeakerName = null;
 
     [SerializeField]
     private ConversationControl convoControl = null;
@@ -110,8 +120,8 @@ public class DialogueUiCoordinator : MonoBehaviour
     /// </summary>
     private void ResetDialogueUI()
     {
-        // deactivates the backgrounds
-        bgFade.RemoveBackgrounds();
+        // deactivates all backgrounds
+        RemoveAllBackgrounds();
 
         // turns off all character portraits to denote that none are being used
         DeactivateAllCharacterPortraits();
@@ -534,33 +544,99 @@ public class DialogueUiCoordinator : MonoBehaviour
 
 
 
-    #region Dialogue Misc Functions
+    #region Dialogue Background Functions
 
     /// <summary>
-    /// Transitions dialogue background to new BG sprite.
+    /// Transitions given background to given sprite.
+    /// </summary>
+    /// <param name="bgArg"></param>
+    /// <param name="bgLayerArg"></param>
+    private void ChangeBackground(Sprite bgArg, int bgLayerArg)
+    {
+        switch (bgLayerArg)
+        {
+            case 1:
+                // fade transition to new sprite
+                bgLayer1Fade.BackgroundTransition(bgArg, 1f);
+                break;
+
+            case 2:
+                bgLayer2.sprite = bgArg;
+                bgLayer2.gameObject.SetActive(true);
+                break;
+        }
+    }
+
+    private void ChangeBackground(string bgIdArg, bool isHContentArg, int bgLayerArg)
+    {
+        ChangeBackground(GetDialogueBackground(bgIdArg, isHContentArg), bgLayerArg);
+    }
+
+    /// <summary>
+    /// Returns the dialogue background from the given properties.
     /// </summary>
     /// <param name="bgIdArg"></param>
     /// <param name="isHContentArg"></param>
-    public void ChangeBackground(string bgIdArg, bool isHContentArg)
+    /// <returns></returns>
+    private Sprite GetDialogueBackground(string bgIdArg, bool isHContentArg)
     {
-        // initialize var for upcoming conditionals
-        Sprite bg = null;
-
         // if bg is H-content
         if (isHContentArg)
         {
             // load ERO background sprite based on given ID
-            bg = AssetRefMethods.LoadHcontentBackground(bgIdArg);
+            return AssetRefMethods.LoadHcontentBackground(bgIdArg);
         }
         // else bg is all-ages content
         else
         {
             // load NORMAL background sprite based on given ID
-            bg = AssetRefMethods.LoadBundleAssetDialogueBackground(bgIdArg);
+            return AssetRefMethods.LoadBundleAssetDialogueBackground(bgIdArg);
         }
+    }
 
-        // fade transition to new sprite
-        bgFade.BackgroundTransition(bg, 1f);
+    public void ChangeBackgroundL1(string bgIdArg, bool isHContentArg)
+    {
+        ChangeBackground(bgIdArg, isHContentArg, 1);
+    }
+
+    public void ChangeBackgroundL2(string bgIdArg, bool isHContentArg)
+    {
+        ChangeBackground(bgIdArg, isHContentArg, 2);
+    }
+
+    public void ChangeBackgroundL1FromHavenActivity(string havenActivityIdArg, 
+        TimeSlotType timeSlotArg)
+    {
+        ChangeBackground(AssetRefMethods.LoadBundleAssetHavenActivityDialogueBackground(
+            havenActivityIdArg, timeSlotArg), 1);
+    }
+
+    public void ChangeBackgroundL1FromHavenLocationActivityHub(HavenLocation locationArg,
+        TimeSlotType timeSlotArg)
+    {
+        ChangeBackground(AssetRefMethods.LoadBundleAssetHavenLocationActivityHubDialogueBackground(
+            locationArg, timeSlotArg), 1);
+    }
+
+    public void ChangeBackgroundL1FromHavenLocationEvent(string locationEventIdArg, 
+        TimeSlotType timeSlotArg)
+    {
+        ChangeBackground(AssetRefMethods.LoadBundleAssetHavenLocationEventDialogueBackground(
+            locationEventIdArg, timeSlotArg), 1);
+    }
+
+    public void ChangeBackgroundL2FromHcontentActivityBackground(string charIdArg, int bgSetArg, int bgIdArg)
+    {
+        ChangeBackground(AssetRefMethods.LoadHcontentActivityBackground(charIdArg, bgSetArg, bgIdArg), 2);
+    }
+
+    /// <summary>
+    /// Deactivates all backgrounds.
+    /// </summary>
+    private void RemoveAllBackgrounds()
+    {
+        bgLayer1Fade.RemoveBackgrounds();
+        bgLayer2.gameObject.SetActive(false);
     }
 
     #endregion

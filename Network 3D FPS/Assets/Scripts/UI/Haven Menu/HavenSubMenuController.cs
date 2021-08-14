@@ -67,7 +67,8 @@ public class HavenSubMenuController : SubMenuController
     /// </summary>
     private void InitializeComponentReferences()
     {
-        _gameManager = ((HavenMenuController)menuMaster)._GameManager;
+        //_gameManager = ((HavenMenuController)menuMaster)._GameManager;
+        _gameManager = GameManager.Instance;
 
         // if menu master's UIManager reference has been setup
         if (((HavenMenuController)menuMaster)._UiManager != null)
@@ -183,6 +184,13 @@ public class HavenSubMenuController : SubMenuController
     /// <returns></returns>
     private Sprite GetAppropriateBackgroundSprite()
     {
+        // if singleton references are NOT setup
+        if (_gameManager == null)
+        {
+            // setup vars that hold reference to components
+            InitializeComponentReferences();
+        }
+
         // get game's current calendar data
         TimeCalendarSystem currentCalendar = _gameManager.HavenData.calendarSystem;
 

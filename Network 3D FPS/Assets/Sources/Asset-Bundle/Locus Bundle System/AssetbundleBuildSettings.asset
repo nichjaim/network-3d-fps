@@ -139,6 +139,24 @@ MonoBehaviour:
       guid: d1fe5437672820443a03f4be586a325f
     IncludeSubfolder: 0
     CompressBundle: 1
+  - BundleName: HavenActivityDialogueBackground
+    IncludedInPlayer: 1
+    Folder:
+      guid: 50429a26285181c439f5d0386b3f3f0d
+    IncludeSubfolder: 1
+    CompressBundle: 1
+  - BundleName: HavenLocationActivityHubDialogueBackground
+    IncludedInPlayer: 1
+    Folder:
+      guid: 42d957a289bdcbb44b274740dda1ffbd
+    IncludeSubfolder: 1
+    CompressBundle: 1
+  - BundleName: HavenLocationEventDialogueBackground
+    IncludedInPlayer: 1
+    Folder:
+      guid: 1c8024b016450764eaed0e2a6d22cdb2
+    IncludeSubfolder: 1
+    CompressBundle: 1
   - BundleName: PortraitSet
     IncludedInPlayer: 1
     Folder:

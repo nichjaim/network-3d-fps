@@ -1,5 +1,6 @@
 ﻿using MoreMountains.Tools;
 using PixelCrushers.DialogueSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     #region Class Variables
 
     private GameManager _gameManager = null;
+    private DialogueUiCoordinator _dialgUiCoord = null;
 
     [Header("Component References")]
 
@@ -91,6 +93,13 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         List<(string, CharacterProgressionInfoSet)>();
     private int currentIndexLevelUpChain = 0;
 
+    // the char associated with the current selected hcontent activity BG stuff
+    private string hcontentActivityBackgroundCharId = string.Empty;
+    // the current selected hcontent activity BG set
+    private int hcontentActivityBackgroundSet = 1;
+    // the current num of the currently selected hcontent activity BG set
+    private int hcontentActivityBackgroundSetCurrentBgNum = 1;
+
     #endregion
 
 
@@ -130,6 +139,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
     private void InitializeSingletonReferences()
     {
         _gameManager = GameManager.Instance;
+        _dialgUiCoord = (UIManager.Instance).DialgUICoordr;
     }
 
     #endregion
@@ -162,7 +172,7 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
         List<Conversation> unusedArenaConvos = GetAllUnusedArenaDialogues();
 
         // get random entry from the unused conversation list
-        int randomIndex = Random.Range(0, unusedArenaConvos.Count);
+        int randomIndex = UnityEngine.Random.Range(0, unusedArenaConvos.Count);
 
         // return random dialogue
         return unusedArenaConvos[randomIndex].Title;
@@ -266,6 +276,113 @@ public class DialogueGameCoordinator : MonoBehaviour, MMEventListener<PartyWipeE
 
         // play arena tutorial dialogue
         PlayDialogue(arenaTutorialDialogue);
+    }
+
+    #endregion
+
+
+
+
+    #region Dialogue Change Background Functions
+
+    /// <summary>
+    /// Sets dialogue layer-1 background based on the current activity and 
+    /// current time slot.
+    /// </summary>
+    public void ChangeBackgroundL1FromHavenActivity()
+    {
+        _dialgUiCoord.ChangeBackgroundL1FromHavenActivity(currentActivityId,
+            _gameManager.GetCurrentTimeSlot());
+    }
+
+    public void ChangeBackgroundL1FromHavenLocationActivityHub(string locationStringArg)
+    {
+        // initialize var for upcoming conditional
+        HavenLocation havLoc;
+
+        // if given string can be assigned to a havenlocation enum
+        if (Enum.TryParse<HavenLocation>(locationStringArg, out havLoc))
+        {
+            _dialgUiCoord.ChangeBackgroundL1FromHavenLocationActivityHub(havLoc,
+                _gameManager.GetCurrentTimeSlot());
+        }
+        else
+        {
+            // print warning to console
+            Debug.LogWarning("In ChangeBackgroundL1FromHavenLocationActivityHub(), " +
+                $"no HavenLocation associated with given locationStringArg: {locationStringArg}");
+        }
+    }
+
+    public void ChangeBackgroundL1FromHavenLocationEvent(string locationEventIdArg)
+    {
+        _dialgUiCoord.ChangeBackgroundL1FromHavenLocationEvent(locationEventIdArg,
+            _gameManager.GetCurrentTimeSlot());
+    }
+
+    #endregion
+
+
+
+
+    #region Hcontent Activity Background Functions
+
+    /// <summary>
+    /// Sets up the H-Content activity background information based on the given character.
+    /// </summary>
+    /// <param name="charIdArg"></param>
+    private void SetupHcontentActivityBackgroundSet(string charIdArg)
+    {
+        /// get the total number of sets related to the Hcontent activity backgrounds for the 
+        /// given character. 
+        /// IMPORTANT: This return value must be set manually as there is no way I'm aware 
+        /// of to reliably check the number of folders in each load method.
+        int maxSets = AssetRefMethods.
+            GetTotalNumberOfHcontentActivityBackgroundSets(charIdArg);
+
+        // set a random set as the current bg set
+        hcontentActivityBackgroundSet = UnityEngine.Random.Range(1, maxSets);
+
+        // set the set's current BG num as the first BG
+        hcontentActivityBackgroundSetCurrentBgNum = 1;
+
+        // set char of BGs to the given char
+        hcontentActivityBackgroundCharId = charIdArg;
+    }
+
+    /// <summary>
+    /// Set the Layer-2 background based on the current H-Content activity progress.
+    /// </summary>
+    private void ChangeBackgroundL2FromCurrentHcontentActivityBackground()
+    {
+        _dialgUiCoord.ChangeBackgroundL2FromHcontentActivityBackground(
+            hcontentActivityBackgroundCharId, hcontentActivityBackgroundSet, 
+            hcontentActivityBackgroundSetCurrentBgNum);
+    }
+
+    /// <summary>
+    /// Start up fresh new progress for the H-content activity progress based on 
+    /// current activity partner.
+    /// </summary>
+    public void StartHcontentActivityBackground()
+    {
+        // sets up the H-Content activity background information based on the given character
+        SetupHcontentActivityBackgroundSet(currentActivityPartnerCharId);
+
+        // set the Layer-2 background based on the current H-Content activity progress
+        ChangeBackgroundL2FromCurrentHcontentActivityBackground();
+    }
+
+    /// <summary>
+    /// Go to the next H-Content activity background within the current activity progress.
+    /// </summary>
+    public void NextHcontentActivityBackground()
+    {
+        // increment current activity progress background number
+        hcontentActivityBackgroundSetCurrentBgNum++;
+
+        // set the Layer-2 background based on the current H-Content activity progress
+        ChangeBackgroundL2FromCurrentHcontentActivityBackground();
     }
 
     #endregion

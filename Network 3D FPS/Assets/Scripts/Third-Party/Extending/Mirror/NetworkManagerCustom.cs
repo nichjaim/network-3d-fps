@@ -413,8 +413,17 @@ public class NetworkManagerCustom : NetworkManager, MMEventListener<EnterGameSes
     /// <returns></returns>
     public bool CanHcontentBeViewed()
     {
-        Debug.Log("IMPL latter half of CanHcontentBeViewed()"); // NEED IMPL!!!
-        return AssetRefMethods.IsHcontentInstalled() && true; // second half has TEMP return!!!!
+        return AssetRefMethods.IsHcontentInstalled() && IsHcontentAccessEnabled();
+    }
+
+    /// <summary>
+    /// Returns whether access to H-Content is enabled to be viewed.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsHcontentAccessEnabled()
+    {
+        Debug.Log("NEED IMPL IsHcontentAccessEnabled(), temp return true"); // NEED IMPL!!!
+        return true; // TEMP RETURN
     }
 
     #endregion

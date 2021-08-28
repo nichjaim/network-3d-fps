@@ -71,3 +71,6 @@ MonoBehaviour:
   - functionName: DialogueUI/ChangeBackground/DialogueUIChangeBackgroundL1FromHavenLocationEvent
     parameters: 02000000
     returnValue: 0
+  - functionName: DialogueUI/DialogueUISetOverrideSpeakerName
+    parameters: 02000000
+    returnValue: 0

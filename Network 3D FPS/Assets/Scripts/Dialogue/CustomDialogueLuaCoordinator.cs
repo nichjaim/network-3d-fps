@@ -227,6 +227,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu2", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu2()));
         Lua.RegisterFunction("DialogueUIAssignSpeakerWaifu3", this, SymbolExtensions.GetMethodInfo(() => DialogueUIAssignSpeakerWaifu3()));
 
+        Lua.RegisterFunction("DialogueUISetOverrideSpeakerName", this, SymbolExtensions.GetMethodInfo(() => DialogueUISetOverrideSpeakerName(string.Empty)));
         Lua.RegisterFunction("DialogueUIRemoveSpeaker", this, SymbolExtensions.GetMethodInfo(() => DialogueUIRemoveSpeaker()));
 
 
@@ -343,6 +344,7 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
         Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu2");
         Lua.UnregisterFunction("DialogueUIAssignSpeakerWaifu3");
 
+        Lua.UnregisterFunction("DialogueUISetOverrideSpeakerName");
         Lua.UnregisterFunction("DialogueUIRemoveSpeaker");
 
 
@@ -833,6 +835,11 @@ public class CustomDialogueLuaCoordinator : MonoBehaviour
     private void DialogueUIAssignSpeakerWaifu3()
     {
         DialogueUIAssignSpeaker(CHAR_ID_WAIFU_3);
+    }
+
+    private void DialogueUISetOverrideSpeakerName(string nameArg)
+    {
+        _uiManager.DialgUICoordr.SetOverrideSpeakerName(nameArg);
     }
 
     private void DialogueUIRemoveSpeaker()

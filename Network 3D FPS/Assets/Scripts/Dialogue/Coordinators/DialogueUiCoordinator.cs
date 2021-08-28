@@ -46,6 +46,8 @@ public class DialogueUiCoordinator : MonoBehaviour
     private List<CharacterData> charactersInDialogueScene = new List<CharacterData>();
 
     private CharacterData currentSpeaker = null;
+    // speaker name
+    private string overrideSpeakerName = string.Empty;
 
     #endregion
 
@@ -491,8 +493,32 @@ public class DialogueUiCoordinator : MonoBehaviour
         // set the current speaker as the new speaker
         currentSpeaker = charArg;
 
+        // turn off the temporary speaker name that overrides the actual speaker's name
+        DeactivateOverrideSpeakerName();
+
         // setup the speaker name text based on the current character speaker
         RefreshSpeakerNameText();
+    }
+
+    /// <summary>
+    /// Turns on and sets the temporary speaker name that overrides the actual speaker's name.
+    /// </summary>
+    /// <param name="nameArg"></param>
+    public void SetOverrideSpeakerName(string nameArg)
+    {
+        overrideSpeakerName = nameArg;
+
+        // setup the speaker name text based on the current character speaker
+        RefreshSpeakerNameText();
+    }
+
+    /// <summary>
+    /// Returns whether speaker name should be replaced with the temporary speaker name.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsOverrideSpeakerNameActive()
+    {
+        return overrideSpeakerName != string.Empty;
     }
 
     /// <summary>
@@ -500,6 +526,22 @@ public class DialogueUiCoordinator : MonoBehaviour
     /// </summary>
     private void RefreshSpeakerNameText()
     {
+        // if override speaker name is active
+        if (IsOverrideSpeakerNameActive())
+        {
+            // set speaker name text to the current override speaker name
+            textSpeakerName.text = overrideSpeakerName;
+
+            // set speaker name text color to default name color
+            textSpeakerName.color = Color.white;
+
+            // activate the speaker name text object based
+            textSpeakerName.gameObject.SetActive(true);
+
+            // DONT continue code
+            return;
+        }
+
         // if there IS a speaker
         if (currentSpeaker != null)
         {
@@ -524,6 +566,14 @@ public class DialogueUiCoordinator : MonoBehaviour
     public void RemoveSpeaker()
     {
         SetCharSpeaker(null);
+    }
+
+    /// <summary>
+    /// Turns off the temporary speaker name that overrides the actual speaker's name.
+    /// </summary>
+    private void DeactivateOverrideSpeakerName()
+    {
+        overrideSpeakerName = string.Empty;
     }
 
     /// <summary>

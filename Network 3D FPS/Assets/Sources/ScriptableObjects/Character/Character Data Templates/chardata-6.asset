@@ -22,7 +22,7 @@ MonoBehaviour:
   template:
     characterInfo:
       characterId: 6
-      characterName: Vivian
+      characterName: Evelyn
       characterHeightInCm: 175
       characterHexColorCode: FFFFFF
     characterStats:

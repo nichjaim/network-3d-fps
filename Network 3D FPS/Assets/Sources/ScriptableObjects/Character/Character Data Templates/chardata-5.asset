@@ -22,7 +22,7 @@ MonoBehaviour:
   template:
     characterInfo:
       characterId: 5
-      characterName: Ashley
+      characterName: Morgan
       characterHeightInCm: 170
       characterHexColorCode: FFFFFF
     characterStats:

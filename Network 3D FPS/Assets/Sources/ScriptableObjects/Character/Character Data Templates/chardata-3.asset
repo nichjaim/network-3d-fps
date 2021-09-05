@@ -22,7 +22,7 @@ MonoBehaviour:
   template:
     characterInfo:
       characterId: 3
-      characterName: Hubert
+      characterName: Theodore
       characterHeightInCm: 188
       characterHexColorCode: FFFFFF
     characterStats:
